@@ -19,7 +19,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use('/', indexRouter)
 
-app.listen(process.env.PORT || 3000)
+app.listen(process.env.PORT)
 
 
 
