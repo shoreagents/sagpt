@@ -10,7 +10,7 @@ const chatbox = document.querySelector(".chatbox");
 const chatInput = document.querySelector(".chat-input textarea");
 const sendChatBtn = document.querySelector(".chat-input span");
   let userMessage = null; // Variable to store user's message
-  const API_KEY = "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"; // Paste your API key here
+  const API_KEY = "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"; // Paste your API key here
   const inputInitHeight = chatInput.scrollHeight;
 
   const createChatLi = (message, className) => {
@@ -35,17 +35,18 @@ const sendChatBtn = document.querySelector(".chat-input span");
                 "Authorization": `Bearer ${API_KEY}`
             },
             body: JSON.stringify({
-                model: "gpt-3.5-turbo",
+                model: "gpt-4",
                 messages: [{role: "user", content: userMessage}],
             })
         }
 
         // Send POST request to API, get response and set the reponse as paragraph text
         fetch(API_URL, requestOptions).then(res => res.json()).then(data => {
-            messageElement.textContent = data.choices[0].message.content.trim();console.log(data);
-        }).catch(() => {
+            messageElement.textContent = data.choices[0].message.content.trim();
+        }).catch((error) => {
             messageElement.classList.add("error");
             messageElement.textContent = "Oops! Something went wrong. Please try again.";
+            console.log(error);
         }).finally(() => chatbox.scrollTo(0, chatbox.scrollHeight));
     }
 
