@@ -53,7 +53,7 @@ export const runWithEmbeddings = async (question) => {
   Playwright: This is a synopsis for the article:`;
 
   const outlineTemplate = `Given the title above, create an outline format that is good for a 2000 word article with headings and sub-headings if needed. Start with the title and then the outline
-  Use this as a format
+  Use this as a format:
   "Title: {question}
 
   ARTICLE OUTLINE:
@@ -95,7 +95,6 @@ export const runWithEmbeddings = async (question) => {
   const res = await allChain.run(question);
 
   const output = res;
-  console.log(res);
   return output;
 };
 
