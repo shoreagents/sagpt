@@ -21,12 +21,9 @@ router.get('/', async (req,res) =>{
 })
 router.post('/', async (req,res) =>{
   const question = req.body.userinput;
-  // const output = await runWithEmbeddings(question);
-  // res.render('index', { response: output })
-  
+  const output = await runWithEmbeddings(question);
+  res.send({output})
 })
-
-
 
 export const runWithEmbeddings = async (question) => {
   const model = new OpenAI({temperature:0.7, modelName:"gpt-4"});
