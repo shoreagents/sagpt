@@ -1,5 +1,5 @@
 import { OpenAI } from 'langchain/llms/openai';
-import { RetrievalQAChain, loadQAStuffChain, SimpleSequentialChain } from 'langchain/chains';
+import { RetrievalQAChain, loadQAStuffChain } from 'langchain/chains';
 import { HNSWLib } from 'langchain/vectorstores/hnswlib';
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
@@ -21,13 +21,41 @@ router.get('/', async (req,res) =>{
 })
 router.post('/', async (req,res) =>{
   const question = req.body.userinput;
-  const output = await runWithEmbeddings(question);
+  const tone = req.body.tone;
+  const author = req.body.author;
+  const target = req.body.target;
+  const perspective = req.body.perspective;
+  const customerObjective = req.body.customerObjective;
+
+  var toneOutput = "";
+  var authorOutput = "";
+  var targetOutput = "";
+  var perspectiveOutput = "";
+  var customerObjectiveOutput = "";
+
+  if (tone != "Select Tone/Personality") {
+    toneOutput = `You are in ${tone} personality, so you will answer with the given subtones of that personality.`;
+  }
+  if (author != "Select Author") {
+    authorOutput = `The author is ${author}.`;
+  }
+  if (target != "Select Target Market") {
+    targetOutput = `Your Target Market will be ${target}.`;
+  }
+  if (perspective != "Select Perspective") {
+    perspectiveOutput = `You are in perspective of ${perspective}.`;
+  }
+  if (customerObjective != "Select Customer Objective") {
+    customerObjectiveOutput = `The selected Customer Objective is ${author}.`;
+  }
+
+  const output = await runWithEmbeddings(question, perspectiveOutput, toneOutput, targetOutput, authorOutput,customerObjectiveOutput);
   res.send({output})
 })
 
-export const runWithEmbeddings = async (question) => {
-  const model1 = new OpenAI({temperature:0.7, modelName:"gpt-4"});
-  const model2 = new OpenAI({temperature:0.7, modelName:"gpt-4"});
+export const runWithEmbeddings = async (question, perspectiveOutput, toneOutput, targetOutput, authorOutput,customerObjectiveOutput) => {
+  
+  const model = new OpenAI({temperature:0.7, modelName:"gpt-4"});
 
   let vectorStore;
   if (fs.existsSync(VECTOR_STORE_PATH)) {
@@ -40,61 +68,27 @@ export const runWithEmbeddings = async (question) => {
     await vectorStore.save(VECTOR_STORE_PATH);
   }
 
-  // You are most likely to create a 2000 word blog article. If you are to create an article, then this article should be written with an excited tone.
-  
-  // Creating an article Instructions:
-  //   Target the following keywords: {question}.
-  //   Start with creating a Title about {question}.
-  //   Make sure to include headings. The headings should be in bold.
-  //   Keywords within the content should also be highlighted in bold.
+  const promptTemplate = `You are a helpful assistant. ${perspectiveOutput} ${toneOutput} ${authorOutput} ${targetOutput} ${perspectiveOutput} ${customerObjectiveOutput}
 
-  const promptTemplate = `Create a good article title based on the provided keywords that the user has provided.
-  Title: {question}
-  Playwright: This is a synopsis for the article:`;
+  {question}`;
 
-  const outlineTemplate = `Given the title above, create an outline format that is good for a 2000 word article with headings and sub-headings if needed. Do not forget to start with the title and then the outline
-  Use this as a format:
-  "Title: {question}
-
-  ARTICLE OUTLINE:
-  Display the article outline here"`;
+  console.log(promptTemplate);
 
   const prompt = new PromptTemplate({
     template: promptTemplate,
     inputVariables: ["question"],
   });
 
-  const prompt2 = new PromptTemplate({
-    template: outlineTemplate,
-    inputVariables: ["question"]
-  });
 
-
-  const chain1 = new RetrievalQAChain({
-    combineDocumentsChain: loadQAStuffChain(model1, { prompt }),
+  const chain = new RetrievalQAChain({
+    combineDocumentsChain: loadQAStuffChain(model, { prompt }),
     retriever: vectorStore.asRetriever(),
   });
-
-  const chain2 = new RetrievalQAChain({
-    combineDocumentsChain: loadQAStuffChain(model2, { prompt: prompt2 }),
-    retriever: vectorStore.asRetriever(),
-  });
-
-
-  const allChain = new SimpleSequentialChain({
-    chains: [chain1, chain2],
-    verbose: true,
-  })
 
   // const chain = RetrievalQAChain.fromLLM(model, vectorStore.asRetriever());
-  
-  // const res = await chain.call({
-  //   query: question,
-  // });
 
-  const res = await allChain.run(question);
-
-  const output = res;
+  const res = await chain.call({ query: question });
+  const output = res.text;
   return output;
 };
 

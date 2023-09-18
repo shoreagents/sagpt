@@ -1,33 +1,31 @@
-/* .gpt-response{
-    white-space: pre-wrap;
-} */
-
-/* Import Google font - Poppins */
-/* Import Google font - Poppins */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap');
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Poppins", sans-serif;
+  font-family: "Montserrat", sans-serif;
+  -webkit-transition: all .2s;
+	-moz-transition: all .2s;
+	-ms-transition: all .2s;
+	-o-transition: all .2s;
+	transition: all .2s;
 }
 body {
   background: #fff;
 }
 .container-gpt{
     display: flex !important;
-    width: 100vw;
-    height: 100vh;
     justify-content: center;
     align-items: center;
+    width: 100vw;
+    height: 100vh;
 }
 .chatbot {
-  position: fixed;
-  width: 80%;
-  height: 80%;
+  position: relative;
+  width: 100%;
+  height: 100%;
   background: #fff;
-  border-radius: 15px;
   overflow: hidden;
   transform-origin: bottom right;
   box-shadow: 0 0 128px 0 rgba(0,0,0,0.1),
@@ -74,7 +72,7 @@ header h2 {
   background: #ccc;
   border-radius: 25px;
 }
-.chatbox .chat {
+.chatbox .chat , .chatbox .chat-title, .chatbox .chat-structure, .chatbox .chat-expand{
   display: flex;
   list-style: none;
 }
@@ -94,7 +92,7 @@ header h2 {
   border-radius: 4px;
   margin: 0 10px 7px 0;
 }
-.chatbox .chat p {
+.chatbox .chat p, .chatbox .chat-title p, .chatbox .chat-structure p, .chatbox .chat-expand p{
   white-space: pre-wrap;
   padding: 12px 16px;
   border-radius: 10px 10px 0 10px;
@@ -106,7 +104,7 @@ header h2 {
 .chatbox .incoming p {
   border-radius: 10px 10px 10px 0;
 }
-.chatbox .chat p.error {
+.chatbox .chat p.error, .chatbox .chat-title p.error, .chatbox .chat-structure p.error, .chatbox .chat-expand p.error{
   color: #721c24;
   background: #f8d7da;
 }
@@ -148,6 +146,156 @@ header h2 {
 .chat-input textarea:valid ~ span {
   visibility: visible;
 }
+
+.hide{
+  display: none;
+}
+
+/* Blog Builder style */
+
+.generator-outer{
+  display: flex !important;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 50%;
+}
+
+.generator{
+  height: 260px;
+}
+
+.user-outer{
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  width: 50%;
+  height: 100%;
+  right: 0;
+}
+
+.user-textarea{
+  padding: 30px 70px 100px !important;
+}
+
+.user-section{
+  height: 90%;
+  border-radius: 15px;
+  width: 90%;
+}
+
+.user-section .user-input{
+  display: flex;
+  gap: 5px;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border: none;
+  padding: 0;
+}
+
+.user-input{
+  height: 100%;
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 0.95rem;
+}
+
+.user-input .user-editor{
+  display: flex;
+  gap: 5px;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: none;
+}
+
+.fr-second-toolbar{
+  display: none;
+}
+
+.fr-toolbar.fr-top{
+  border-color: #fff;
+}
+
+.fr-box.fr-basic .fr-wrapper{
+  border-left: none !important;
+  border-right: none !important;
+  border-bottom: none !important;
+}
+
+.fr-wrapper.show-placeholder .fr-placeholder{
+  visibility: visible;
+  font-family: 'Montserrat'
+}
+
+/* Blog Assistant style */
+
+.assistant-section{
+  margin-top: 30px;
+  border-radius: 15px;
+  width: 90%;
+}
+
+.assistant{
+  height: 474px;
+}
+
+/* Column style */
+
+.col-1{
+  width: 50%;
+  height: 100%;
+  margin-right: 10px;
+}
+
+.col-2{
+  width: 50%;
+  height: 100%;
+  margin-left: 10px;
+}
+
+/* Details style */
+
+.details-section{
+  border-radius: 15px;
+  width: 90%;
+}
+
+.details-inner{
+  height: 280px !important;
+  padding: 30px !important;
+}
+
+.details-input{
+  width: 100%;
+  display: flex;
+}
+
+/* Select style */
+.selected{
+  color: #414141;
+}
+
+select{
+  border: none;
+  border-bottom: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 0 10px;
+  width: 100%;
+  height: 50px;
+  margin: 10px 0;
+  -moz-appearance:none;
+  -webkit-appearance:none;
+  appearance:none;
+  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%7eac0b%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
+  background-repeat: no-repeat, repeat;
+  background-position: right .7em top 50%, 0 0;
+  background-size: .65em auto, 100%;
+}
+/* Responsive style */
 
 @media (max-width: 490px) {
   .chatbot-toggler {

@@ -1,13 +1,90 @@
 
 <div class="container-gpt">
-    <div class="chatbot">
-        <header>
-          <h2>ShoreAgents GPT</h2>
-        </header>
+  <div class="generator-outer">
+    <div class="chatbot details-section">
+      <header>
+        <h2>Blog Details</h2>
+      </header>
+      <ul class="details-inner">
+        <label for="tone" class="hide" id="outputTone"></label>
+        <select name="tone" id="tone">
+          <option class="selected" value="Select Tone/Personality" disabled selected>Select Tone/Personality</option>
+          <option value="Analytical">Analytical</option>
+          <option value="Creative">Creative</option>
+          <option value="Inspirational">Inspirational</option>
+          <option value="Technical">Technical</option>
+          <option value="Persuasive">Persuasive</option>
+          <option value="Informal">Informal</option>
+          <option value="Formal">Formal</option>
+          <option value="Narrative">Narrative</option>
+          <option value="Analyzing">Analyzing</option>
+          <option value="Homorous">Homorous</option>
+          <option value="Reflective">Reflective</option>
+          <option value="Educational">Educational</option>
+          <option value="Adventurous">Adventurous</option>
+          <option value="Nurturing">Nurturing</option>
+          <option value="Intellectual">Intellectual</option>
+          <option value="Sentimental">Sentimental</option>
+        </select>
+        <div class="details-input">
+          <div class="col-1">
+            <label for="author" class="hide" id="outputAuthor"></label>
+            <select name="author" id="author">
+              <option class="selected" value="Select Author" disabled selected>Select Author</option>
+              <option value="Stephen Atcheler">Stephen Atcheler</option>
+              <option value="Kevin Macabanti">Kevin Macabanti</option>
+            </select>
+            <label for="perspective" class="hide" id="outputPerspective"></label>
+            <select name="perspective" id="perspective">
+              <option class="selected" value="Select Perspective" disabled selected>Select Perspective</option>
+              <option value="Stephen Atcheler">Stephen Atcheler</option>
+              <option value="Kevin Macabanti">Kevin Macabanti</option>
+            </select>
+          </div>
+          <div class="col-2">
+            <label for="target" class="hide" id="outputTarget"></label>
+            <select name="target" id="target">
+              <option class="selected" value="Select Target Market" disabled selected>Select Target Market</option>
+              <option value="Property Management">Property Management</option>
+              <option value="Real Estate Sales">Real Estate Sales</option>
+              <option value="Property Development">Property Development</option>
+              <option value="Construction Companies">Construction Companies</option>
+              <option value="Home Builders">Home Builders</option>
+              <option value="Conveyancing Companies">Conveyancing Companies</option>
+              <option value="Mortgage Companies">Mortgage Companies</option>
+              <option value="Real Estate Companies in the United States">Real Estate Companies in the United States</option>
+            </select>
+            <label for="customerObjective" class="hide" id="outputCustomerObjective"></label>
+            <select name="customerObjective" id="customerObjective">
+              <option class="selected" value="Select Customer Objective" disabled selected>Select Customer Objective</option>
+              <option value="Improve Efficiency">Improve Efficiency</option>
+              <option value="Expand Service Hours">Expand Service Hours</option>
+              <option value="Enhance Customer Support">Enhance Customer Support</option>
+              <option value="Increase Focus on Core Activities">Increase Focus on Core Activities</option>
+              <option value="Access Specialized Skills">Access Specialized Skills</option>
+              <option value="Scalability">Scalability</option>
+              <option value="Cost-Effective Growth">Cost-Effective Growth</option>
+              <option value="Faster Turnaround Times">Faster Turnaround Times</option>
+              <option value="Focus on Innovation">Focus on Innovation</option>
+              <option value="Flexibility in Staffing">Flexibility in Staffing</option>
+              <option value="Risk Mitigation">Risk Mitigation</option>
+              <option value="Market Expansion">Market Expansion</option>
+              <option value="Focus on Sales and Growth">Focus on Sales and Growth</option>
+              <option value="Work-Life Balance">Work-Life Balance</option>
+            </select>
+          </div>
+        </div>
+      </ul>
+    </div>
+    <div class="chatbot assistant-section">
+      <header>
+        <h2>Blog Assistant</h2>
+      </header>
+      <div class="chatbot generator assistant">
         <ul class="chatbox">
           <li class="chat incoming">
             <span class="material-symbols-outlined">smart_toy</span>
-            <p>Hey there! 🔍<br>Ready to dive in? Just type in your keyword and let the magic happen.</p>
+            <p>Hey there! How can i help you?</p>
           </li>
         </ul>
         <div class="chat-input">
@@ -15,5 +92,19 @@
           <span id="send-btn" class="material-symbols-rounded">send</span>
         </div>
       </div>
+    </div>
+  </div>
+  <div class="user-outer">
+    <div class="chatbot user-section">
+      <header>
+        <h2>Blog Builder</h2>
+      </header>
+      <ul class="chatbox user-textarea">
+        <div class="chat-input user-input">
+          <div id="user-editor"></div>
+        </div>
+      </ul>
+    </div>
+  </div>
 </div>
     

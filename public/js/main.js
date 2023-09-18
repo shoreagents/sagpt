@@ -1,32 +1,62 @@
-// function gptSubmit() {
-//     var gptResponse = document.createElement('p');
-//     gptResponse.className = 'gpt-response';
+/* Onchange Script */
 
-//     var container = document.getElementById('chat-box');
-//     container.appendChild(gptResponse);
-//     return true;
-//  }
+var tone = document.getElementById('tone');
+var outputTone = document.getElementById('outputTone');
+tone.onchange = function() {
+  outputTone.innerHTML = this.options[this.selectedIndex].getAttribute('value');
+};
+tone.onchange();
+
+var author = document.getElementById('author');
+var outputAuthor = document.getElementById('outputAuthor');
+author.onchange = function() {
+  outputAuthor.innerHTML = this.options[this.selectedIndex].getAttribute('value');
+};
+author.onchange();
+
+var target = document.getElementById('target');
+var outputTarget = document.getElementById('outputTarget');
+target.onchange = function() {
+  outputTarget.innerHTML = this.options[this.selectedIndex].getAttribute('value');
+};
+target.onchange();
+
+var perspective = document.getElementById('perspective');
+var outputPerspective = document.getElementById('outputPerspective');
+perspective.onchange = function() {
+  outputPerspective.innerHTML = this.options[this.selectedIndex].getAttribute('value');
+};
+perspective.onchange();
+
+var customerObjective = document.getElementById('customerObjective');
+var outputCustomerObjective = document.getElementById('outputCustomerObjective');
+customerObjective.onchange = function() {
+  outputCustomerObjective.innerHTML = this.options[this.selectedIndex].getAttribute('value');
+};
+customerObjective.onchange();
+
+/* GPT Script */
+
 const chatbox = document.querySelector(".chatbox");
 const chatInput = document.querySelector(".chat-input textarea");
 const sendChatBtn = document.querySelector(".chat-input span");
-let userMessage = null; // Variable to store user's message
+
+let userMessage = null; 
 const inputInitHeight = chatInput.scrollHeight;
 
 const createChatLi = (message, className) => {
-    // Create a chat <li> element with passed message and className
     const chatLi = document.createElement("li");
     chatLi.classList.add("chat", `${className}`);
     let chatContent = className === "outgoing" ? `<p></p>` : `<span class="material-symbols-outlined">smart_toy</span><p></p>`;
     chatLi.innerHTML = chatContent;
     chatLi.querySelector("p").textContent = message;
-    return chatLi; // return chat <li> element
+    return chatLi; 
 }
 
 const generateResponse = (chatElement) => {
     const API_URL = "/";
     const messageElement = chatElement.querySelector("p");
 
-    // Define the properties and message for the API request
     const requestOptions = {
         method: "POST",
 
@@ -34,11 +64,15 @@ const generateResponse = (chatElement) => {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            userinput: userMessage
+            userinput: userMessage,
+            tone: outputTone.textContent,
+            author: outputAuthor.textContent,
+            target: outputTarget.textContent,
+            perspective: outputPerspective.textContent,
+            customerObjective: outputCustomerObjective.textContent
         })
     }
 
-    // Send POST request to API, get response and set the reponse as paragraph text
     fetch(API_URL, requestOptions).then(res => res.json()).then(data => {
         messageElement.textContent = data.output;
     }).catch((error) => {
@@ -49,19 +83,16 @@ const generateResponse = (chatElement) => {
 }
 
 const handleChat = () => {
-    userMessage = chatInput.value.trim(); // Get user entered message and remove extra whitespace
+    userMessage = chatInput.value.trim(); 
     if(!userMessage) return;
 
-    // Clear the input textarea and set its height to default
     chatInput.value = "";
     chatInput.style.height = `${inputInitHeight}px`;
 
-    // Append the user's message to the chatbox
     chatbox.appendChild(createChatLi(userMessage, "outgoing"));
     chatbox.scrollTo(0, chatbox.scrollHeight);
     
     setTimeout(() => {
-        // Display "Thinking..." message while waiting for the response
         const incomingChatLi = createChatLi("Please wait, this may take a while...", "incoming");
         chatbox.appendChild(incomingChatLi);
         chatbox.scrollTo(0, chatbox.scrollHeight);
@@ -70,14 +101,11 @@ const handleChat = () => {
 }
 
 chatInput.addEventListener("input", () => {
-    // Adjust the height of the input textarea based on its content
     chatInput.style.height = `${inputInitHeight}px`;
     chatInput.style.height = `${chatInput.scrollHeight}px`;
 });
 
 chatInput.addEventListener("keydown", (e) => {
-    // If Enter key is pressed without Shift key and the window 
-    // width is greater than 800px, handle the chat
     if(e.key === "Enter" && !e.shiftKey && window.innerWidth > 800) {
         e.preventDefault();
         handleChat();
@@ -87,5 +115,29 @@ chatInput.addEventListener("keydown", (e) => {
 
 sendChatBtn.addEventListener("click", handleChat);
 
-    
-    
+
+
+/* Accordion Script */
+
+var acc = document.getElementsByClassName("accordion");
+
+for (let i = 0; i < acc.length; i++) {
+  acc[i].addEventListener("click", function() {
+    for (let j = 0; j < acc.length; j++) {
+    acc[j].classList.remove("active");
+      if(j!=i){
+        acc[j].nextElementSibling.style.display = "none";
+      }
+    }
+    this.classList.add("active");
+    var panel = this.nextElementSibling;
+    if (panel.style.display === "block") {
+      panel.style.display = "none";
+    } else {
+      panel.style.display = "block";
+    }
+  });
+}
+
+var acc = document.getElementsByClassName("accordion");
+var i;
