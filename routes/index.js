@@ -33,7 +33,7 @@ router.post('/', async (req,res) =>{
   var perspectiveOutput = "";
   var customerObjectiveOutput = "";
 
-  if (tone != "Select Tone/Personality" || tone != "None") {
+  if (tone != "Select Tone/Personality" || tone != "Standard") {
     toneOutput = `You are in ${tone} personality, so you will answer with the given subtones of that personality.`;
   }
   if (author != "Select Author" || author != "None") {

@@ -10,7 +10,7 @@
         <label for="tone">Tone/Personality</label>
         <select name="tone" id="tone">
           <option class="selected" value="Select Tone/Personality" disabled selected>Select Tone/Personality</option>
-          <option value="None">None</option>
+          <option value="None">Standard</option>
           <option value="Analytical">Analytical</option>
           <option value="Creative">Creative</option>
           <option value="Inspirational">Inspirational</option>
@@ -109,8 +109,10 @@
         <h2>Blog Builder</h2>
       </header>
       <ul class="chatbox user-textarea">
-        <div class="chat-input user-input">
-          <div id="user-editor"></div>
+        <div class="user-input">
+          <form action="" method="post">
+            <textarea name="textarea" id="default"></textarea>
+        </form>
         </div>
       </ul>
     </div>

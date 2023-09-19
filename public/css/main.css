@@ -158,7 +158,8 @@ header h2 {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 50%;
+  width: 45%;
+  border-right: 1px solid #f0f0f0;
 }
 
 
@@ -166,13 +167,13 @@ header h2 {
   display: flex !important;
   justify-content: center;
   align-items: center;
-  width: 50%;
+  width: 55%;
   height: 100%;
   right: 0;
 }
 
 .user-textarea{
-  padding: 30px 70px 100px !important;
+  padding: 0 !important;
 }
 
 .user-section{
@@ -343,3 +344,18 @@ select::after {
     display: block;
   }
 }
+
+form{
+  width: 100%;
+}
+
+.tox-promotion{
+  display: none;
+}
+
+.tox-tinymce{
+  border: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
