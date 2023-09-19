@@ -17,7 +17,7 @@ const txtPath = `./${txtFilename}.txt`;
 const VECTOR_STORE_PATH = `${txtFilename}.index`;
 
 router.get('/', async (req,res) =>{
-  res.render('index', { response:"Hi! How may I help you?" })
+  res.render('index')
 })
 router.post('/', async (req,res) =>{
   const question = req.body.userinput;
