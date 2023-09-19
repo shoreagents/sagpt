@@ -33,19 +33,19 @@ router.post('/', async (req,res) =>{
   var perspectiveOutput = "";
   var customerObjectiveOutput = "";
 
-  if (tone != "Select Tone/Personality") {
+  if (tone != "Select Tone/Personality" || tone != "None") {
     toneOutput = `You are in ${tone} personality, so you will answer with the given subtones of that personality.`;
   }
-  if (author != "Select Author") {
+  if (author != "Select Author" || author != "None") {
     authorOutput = `The author is ${author}.`;
   }
-  if (target != "Select Target Market") {
+  if (target != "Select Target Market" || target != "None") {
     targetOutput = `Your Target Market will be ${target}.`;
   }
-  if (perspective != "Select Perspective") {
+  if (perspective != "Select Perspective" || perspective != "None") {
     perspectiveOutput = `You are in perspective of ${perspective}.`;
   }
-  if (customerObjective != "Select Customer Objective") {
+  if (customerObjective != "Select Customer Objective" || customerObjective != "None") {
     customerObjectiveOutput = `The selected Customer Objective is ${author}.`;
   }
 
@@ -68,26 +68,11 @@ export const runWithEmbeddings = async (question, perspectiveOutput, toneOutput,
     await vectorStore.save(VECTOR_STORE_PATH);
   }
 
-  const promptTemplate = `You are a helpful assistant. ${perspectiveOutput} ${toneOutput} ${authorOutput} ${targetOutput} ${perspectiveOutput} ${customerObjectiveOutput}
+  const userprompt = `You are a helpful assistant. ${perspectiveOutput} ${toneOutput} ${authorOutput} ${targetOutput} ${perspectiveOutput} ${customerObjectiveOutput}` + `Question: ${question}`
 
-  {question}`;
+  const chain = RetrievalQAChain.fromLLM(model, vectorStore.asRetriever());
 
-  console.log(promptTemplate);
-
-  const prompt = new PromptTemplate({
-    template: promptTemplate,
-    inputVariables: ["question"],
-  });
-
-
-  const chain = new RetrievalQAChain({
-    combineDocumentsChain: loadQAStuffChain(model, { prompt }),
-    retriever: vectorStore.asRetriever(),
-  });
-
-  // const chain = RetrievalQAChain.fromLLM(model, vectorStore.asRetriever());
-
-  const res = await chain.call({ query: question });
+  const res = await chain.call({ query: userprompt });
   const output = res.text;
   return output;
 };
