@@ -35,6 +35,22 @@ customerObjective.onchange = function() {
 };
 customerObjective.onchange();
 
+/* Copy to Clipboard Script */
+
+function copyContent() {
+  var text = document.getElementById("gptAnswer").innerText;
+  var text = document.getElementById("gptAnswer").innerText;
+  var elem = document.createElement("textarea");
+  document.getElementById("copyClipboard").innerHTML = "done";
+  document.body.appendChild(elem);
+  elem.value = text;
+  elem.select();
+  document.execCommand("copy");
+  document.querySelector('.gpt-answer').removeAttribute('id');
+  document.querySelector('.copy-to-clipboard').removeAttribute('id');
+  document.body.removeChild(elem);
+}
+
 /* GPT Script */
 
 const chatbox = document.querySelector(".chatbox");
@@ -47,7 +63,8 @@ const inputInitHeight = chatInput.scrollHeight;
 const createChatLi = (message, className) => {
     const chatLi = document.createElement("li");
     chatLi.classList.add("chat", `${className}`);
-    let chatContent = className === "outgoing" ? `<p></p>` : `<span class="material-symbols-outlined">smart_toy</span><p></p>`;
+    let chatContent = className === "outgoing" ? `<p></p>` : `<span class="material-symbols-outlined">smart_toy</span><p class="gpt-answer" id="gptAnswer"></p><button onclick="copyContent()"><span class="material-symbols-outlined copy-to-clipboard" id="copyClipboard">
+    content_copy</span></button>`;
     chatLi.innerHTML = chatContent;
     chatLi.querySelector("p").textContent = message;
     return chatLi; 

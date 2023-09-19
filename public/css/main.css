@@ -1,5 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap');
 
+
+
 * {
   margin: 0;
   padding: 0;
@@ -14,6 +16,23 @@
 body {
   background: #fff;
 }
+
+.incoming button{
+  border: none;
+  background-color: #fff;
+}
+
+.copy-to-clipboard {
+  color: #303030 !important;
+  cursor: pointer !important;
+  background-color: #fff !important;
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 24
+}
+
 .container-gpt{
     display: flex !important;
     justify-content: center;
