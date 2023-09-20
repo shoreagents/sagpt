@@ -46,9 +46,11 @@ function copyContent() {
   elem.value = text;
   elem.select();
   document.execCommand("copy");
-  document.querySelector('.gpt-answer').removeAttribute('id');
-  document.querySelector('.copy-to-clipboard').removeAttribute('id');
+  setTimeout(function () {
+    document.getElementById("copyClipboard").innerHTML = "content_copy";
+	}, 2500);
   document.body.removeChild(elem);
+  
 }
 
 /* GPT Script */
@@ -63,7 +65,7 @@ const inputInitHeight = chatInput.scrollHeight;
 const createChatLi = (message, className) => {
     const chatLi = document.createElement("li");
     chatLi.classList.add("chat", `${className}`);
-    let chatContent = className === "outgoing" ? `<p></p>` : `<span class="material-symbols-outlined">smart_toy</span><p class="gpt-answer" id="gptAnswer"></p><button onclick="copyContent()"><span class="material-symbols-outlined copy-to-clipboard" id="copyClipboard">
+    let chatContent = className === "outgoing" ? `<p></p>` : `<span class="material-symbols-outlined">smart_toy</span><p class="gpt-answer" id="gptAnswer"></p><button class="copy-button" onclick="copyContent()"><span class="material-symbols-outlined copy-to-clipboard" id="copyClipboard">
     content_copy</span></button>`;
     chatLi.innerHTML = chatContent;
     chatLi.querySelector("p").textContent = message;
@@ -115,6 +117,12 @@ const handleChat = () => {
         chatbox.scrollTo(0, chatbox.scrollHeight);
         generateResponse(incomingChatLi);
     }, 600);
+    document.querySelector('.gpt-answer').removeAttribute('class');
+    document.querySelector('.copy-to-clipboard').removeAttribute('class');
+    document.querySelector('#copyClipboard').removeAttribute('id');
+    document.querySelector('.copy-button').style.display = "none";
+    document.querySelector('.copy-button').removeAttribute('class');
+    var text = document.getElementById("gptAnswer").removeAttribute('id');;
 }
 
 chatInput.addEventListener("input", () => {
