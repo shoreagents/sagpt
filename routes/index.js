@@ -3,7 +3,6 @@ import { RetrievalQAChain, loadQAStuffChain } from 'langchain/chains';
 import { HNSWLib } from 'langchain/vectorstores/hnswlib';
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
-import { PromptTemplate } from "langchain/prompts";
 import * as fs from 'fs';
 import * as dotenv from 'dotenv';
 
@@ -16,9 +15,24 @@ const txtFilename = "gptdata";
 const txtPath = `./${txtFilename}.txt`;
 const VECTOR_STORE_PATH = `${txtFilename}.index`;
 
-router.get('/', async (req,res) =>{
-  res.render('index')
+const sadata = fileName => {
+  let data = fs.readFileSync(fileName);
+  return data.toString()
+}
+
+router.post('/updatedata', async (req,res) =>{
+  const dataUpdated = req.body.database;
+  fs.writeFile(txtPath, dataUpdated, (err) => {
+    if (err) throw err;
+    console.log("Database Successfully Updated");
+  })
+  res.redirect('/')
 })
+
+router.get('/', async (req,res) =>{
+  res.render('index', {data: sadata(txtPath)})
+})
+
 router.post('/', async (req,res) =>{
   const question = req.body.userinput;
   const tone = req.body.tone;
@@ -67,6 +81,13 @@ export const runWithEmbeddings = async (question, perspectiveOutput, toneOutput,
     vectorStore = await HNSWLib.fromDocuments(docs, new OpenAIEmbeddings());
     await vectorStore.save(VECTOR_STORE_PATH);
   }
+
+  // const text = fs.readFileSync(txtPath, 'utf8');
+  // const textSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 1000 });
+  // const docs = await textSplitter.createDocuments([text]);
+  // const vectorStoreSave = await HNSWLib.fromDocuments(docs, new OpenAIEmbeddings());
+  // await vectorStoreSave.save(VECTOR_STORE_PATH);
+  // vectorStore = await HNSWLib.load(VECTOR_STORE_PATH, new OpenAIEmbeddings());
 
   const userprompt = `You are a helpful assistant. ${perspectiveOutput} ${toneOutput} ${authorOutput} ${targetOutput} ${perspectiveOutput} ${customerObjectiveOutput}` + `Question: ${question}`
 
