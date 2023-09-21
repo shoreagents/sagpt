@@ -98,6 +98,7 @@ const generateResponse = (chatElement) => {
         messageElement.classList.add("error");
         messageElement.textContent = "Oops! Something went wrong. Please try again.";
         console.log(error);
+        console.log(res);
     }).finally(() => chatbox.scrollTo(0, chatbox.scrollHeight));
 }
 
