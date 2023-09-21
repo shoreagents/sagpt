@@ -22,15 +22,17 @@ const sadata = fileName => {
 
 router.post('/updatedata', async (req,res) =>{
   const dataUpdated = req.body.database;
+  updateData();
   fs.writeFile(txtPath, dataUpdated, (err) => {
     if (err) throw err;
     console.log("Database Successfully Updated");
   })
-  res.redirect('/')
+  res.redirect('/');
 })
 
 router.get('/', async (req,res) =>{
-  res.render('index', {data: sadata(txtPath)})
+  updateData();
+  res.render('index', {data: sadata(txtPath)});
 })
 
 router.post('/', async (req,res) =>{
@@ -62,10 +64,17 @@ router.post('/', async (req,res) =>{
   if (customerObjective != "Select Customer Objective" || customerObjective != "None") {
     customerObjectiveOutput = `The selected Customer Objective is ${author}.`;
   }
-
   const output = await runWithEmbeddings(question, perspectiveOutput, toneOutput, targetOutput, authorOutput,customerObjectiveOutput);
   res.send({output})
 })
+
+export const updateData = async () => {
+  const text = fs.readFileSync(txtPath, 'utf8');
+  const textSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 1000 });
+  const docs = await textSplitter.createDocuments([text]);
+  const vectorStore = await HNSWLib.fromDocuments(docs, new OpenAIEmbeddings());
+  await vectorStore.save(VECTOR_STORE_PATH);
+};
 
 export const runWithEmbeddings = async (question, perspectiveOutput, toneOutput, targetOutput, authorOutput,customerObjectiveOutput) => {
   
@@ -81,13 +90,6 @@ export const runWithEmbeddings = async (question, perspectiveOutput, toneOutput,
     vectorStore = await HNSWLib.fromDocuments(docs, new OpenAIEmbeddings());
     await vectorStore.save(VECTOR_STORE_PATH);
   }
-
-  // const text = fs.readFileSync(txtPath, 'utf8');
-  // const textSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 1000 });
-  // const docs = await textSplitter.createDocuments([text]);
-  // const vectorStoreSave = await HNSWLib.fromDocuments(docs, new OpenAIEmbeddings());
-  // await vectorStoreSave.save(VECTOR_STORE_PATH);
-  // vectorStore = await HNSWLib.load(VECTOR_STORE_PATH, new OpenAIEmbeddings());
 
   const userprompt = `You are a helpful assistant. ${perspectiveOutput} ${toneOutput} ${authorOutput} ${targetOutput} ${perspectiveOutput} ${customerObjectiveOutput}` + `Question: ${question}`
 

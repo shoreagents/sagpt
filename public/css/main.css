@@ -506,11 +506,6 @@ select::after {
 		width: 24px;
 		height: 24px;
 	}
-
-	&:hover,
-	&:focus {
-		background-color: #dfdad7;
-	}
 }
 
 .dataupdate{
@@ -521,6 +516,7 @@ select::after {
   background-color: #7eac0b;
   border: none;
   color: white;
+  padding: 10px;
   height: 70px;
   width: 100%;
   border-radius: 6px;
@@ -548,10 +544,39 @@ select::after {
 }
 /* Responsive style */
 
-@media (max-width: 490px) {
+@media (max-width: 1024px){
+  select{
+    padding: 0.675em 2em 0.675em 1em;
+  }
+  .container-gpt{
+    flex-direction: column;
+    height: 100%;
+    margin-top: 50px;;
+  }
+  .generator-outer{
+    width: 100%;
+  }
+  .user-outer{
+    width: 98%;
+    margin-top: 30px;
+    height: 900px;
+  }
+}
+
+@media (max-width: 600px) {
+  .container-gpt{
+    margin-top: 0;
+  }
   .chatbot-toggler {
     right: 20px;
     bottom: 20px;
+  }
+  .assistant-section{
+    margin-top: 0;
+  }
+  .user-outer{
+    margin-top: 0;
+    height: 100%;
   }
   .chatbot {
     right: 0;
@@ -561,7 +586,7 @@ select::after {
     width: 100%;
   }
   .chatbot .chatbox {
-    height: 90%;
+    height: 50vh;
     padding: 25px 15px 100px;
   }
   .chatbot .chat-input {

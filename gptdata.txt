@@ -169,6 +169,9 @@ BIO: Meet Stephen Atcheler, the visionary behind ShoreAgents, reshaping real est
 Author Name: Kevin Macabanti
 Position: Systems and Automations Expert
 BIO: Kevin Macabanti has been an essential part of the ShoreAgents team for nearly two years. As the Systems & Automations expert, he is the organizational go-to for all things automation. Overseeing a range of tools like ClickUp, Slack, ActiveCampaign, and Make, Kevin's contributions have been crucial in enhancing workflow efficiency and technological capabilities. His strong command over systems and automations makes him an invaluable asset as he continues to foster innovation and streamline operations at ShoreAgents.
+Author Name: Jones Fundar
+Position: Web Developer
+BIO: Jones Fundar is the lead Full Stack Web Developer at ShoreAgents, specializing in a comprehensive suite of tools including WordPress, Technical SEO, Google Tag Manager, Google Analytics, HTML, CSS, Javascript, NodeJs, OpenAI, and more. Overseeing the entirety of the company's web and server landscape, Jones seamlessly blends aesthetics with functionality, ensuring ShoreAgents' digital footprint is both visually striking and technologically robust.
 
 Target Market
 Property Management: Property management companies handle the day-to-day operations and maintenance of rental properties on behalf of property owners. They often take care of tasks such as tenant screening, rent collection, property maintenance, and addressing tenant concerns.
