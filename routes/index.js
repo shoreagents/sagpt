@@ -97,6 +97,7 @@ export const runWithEmbeddings = async (question, perspectiveOutput, toneOutput,
 
   const res = await chain.call({ query: userprompt });
   const output = res.text;
+  console.log(output);
   return output;
 };
 

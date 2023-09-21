@@ -73,6 +73,7 @@ const createChatLi = (message, className) => {
 }
 
 const generateResponse = (chatElement) => {
+  
     const API_URL = "/";
     const messageElement = chatElement.querySelector("p");
 
