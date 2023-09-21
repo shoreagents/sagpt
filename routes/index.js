@@ -43,8 +43,6 @@ router.post('/', async (req,res) =>{
   const perspective = req.body.perspective;
   const customerObjective = req.body.customerObjective;
 
-  console.log("Im here")
-
   var toneOutput = "";
   var authorOutput = "";
   var targetOutput = "";
@@ -68,7 +66,6 @@ router.post('/', async (req,res) =>{
   }
   const output = await runWithEmbeddings(question, perspectiveOutput, toneOutput, targetOutput, authorOutput,customerObjectiveOutput);
   res.send({output});
-  console.log({output});
 })
 
 export const updateData = async () => {
@@ -100,7 +97,6 @@ export const runWithEmbeddings = async (question, perspectiveOutput, toneOutput,
 
   const res = await chain.call({ query: userprompt });
   const output = res.text;
-  console.log(res);
   return output;
 };
 
