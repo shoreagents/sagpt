@@ -89,7 +89,8 @@ const generateResponse = (chatElement) => {
             author: outputAuthor.textContent,
             target: outputTarget.textContent,
             perspective: outputPerspective.textContent,
-            customerObjective: outputCustomerObjective.textContent
+            customerObjective: outputCustomerObjective.textContent,
+            userAction: "ChatAI"
         })
     }
 
@@ -141,33 +142,6 @@ chatInput.addEventListener("keydown", (e) => {
 
 sendChatBtn.addEventListener("click", handleChat);
 
-
-
-/* Accordion Script */
-
-var acc = document.getElementsByClassName("accordion");
-
-for (let i = 0; i < acc.length; i++) {
-  acc[i].addEventListener("click", function() {
-    for (let j = 0; j < acc.length; j++) {
-    acc[j].classList.remove("active");
-      if(j!=i){
-        acc[j].nextElementSibling.style.display = "none";
-      }
-    }
-    this.classList.add("active");
-    var panel = this.nextElementSibling;
-    if (panel.style.display === "block") {
-      panel.style.display = "none";
-    } else {
-      panel.style.display = "block";
-    }
-  });
-}
-
-var acc = document.getElementsByClassName("accordion");
-var i;
-
 /* Tiny WYSIWYG Script */
 
 tinymce.init({
@@ -213,4 +187,432 @@ tinymce.init({
   },
   menubar: 'favs file edit view insert format tools table',
   content_style: 'body{ font-family:Montserrat,sans-serif; font-size:16px}'
+});
+
+/* Step Script */
+
+document.querySelectorAll('.heading-list input[type="checkbox"]').forEach(function(checkbox) {
+
+  let checkboxLabel = document.querySelector('label[for="' + checkbox.id + '"]');
+  const span = document.createElement("span");
+  span.classList.add('heading-value');
+  const textNode = document.createTextNode(checkbox.value);
+  span.appendChild(textNode);
+
+  if (checkboxLabel) checkboxLabel.appendChild(span);
+
+});
+
+var currentTab = 0; 
+showTab(currentTab); 
+
+function showTab(n) {
+  var x = document.getElementsByClassName("tab");
+  x[n].style.display = "block";
+  if (n == 0) {
+    document.getElementById("prevBtn").style.display = "none";
+  } else {
+    document.getElementById("prevBtn").style.display = "inline";
+  }
+  if (n == (x.length - 1)) {
+    document.getElementById("nextBtn").innerHTML = "Generate Article";
+  } else {
+    document.getElementById("nextBtn").innerHTML = "Next";
+  }
+  fixStepIndicator(n)
+}
+
+function nextPrev(n) {
+  var x = document.getElementsByClassName("tab");
+  if (n == 1 && !validateForm()) return false;
+  x[currentTab].style.display = "none";
+  currentTab = currentTab + n;
+  if (currentTab >= x.length) {
+    document.getElementById("regForm").submit();
+    return false;
+  }
+  showTab(currentTab);
+}
+
+function validateForm() {
+  var x, y, i, valid = true;
+  x = document.getElementsByClassName("tab");
+  y = x[currentTab].getElementsByTagName("input");
+  for (i = 0; i < y.length; i++) {
+    if (y[i].value == "") {
+      y[i].className += " invalid";
+      valid = false;
+    }
+  }
+  if (valid) {
+    document.getElementsByClassName("step")[currentTab].className += " finish";
+  }
+  return valid; 
+}
+
+function fixStepIndicator(n) {
+  var i, x = document.getElementsByClassName("step");
+  for (i = 0; i < x.length; i++) {
+    x[i].className = x[i].className.replace(" active", "");
+  }
+  x[n].className += " active";
+}
+
+/* Add Heading Script */
+
+var checkboxes = [];
+
+$('.add-list-container').on('click', function() {
+  document.querySelectorAll('.heading').forEach(function(checkbox) {
+    var idcheckbox = checkbox.id;
+    var lastChar = idcheckbox.substr(idcheckbox.length - 1);
+    var end = parseInt(lastChar);
+    checkboxes.push(end);
+  });
+  checkboxes.sort(function(a, b) {
+    return a - b
+  });
+  var headings = document.getElementsByClassName("heading");
+  var newId;
+  var newSpan;
+  var newlistId;
+  var newHeadingText;
+  var headingslength = headings.length + 1;
+  for (let i = 0; i < headingslength; i++) {
+    var num = i + 1;
+    if (num != checkboxes[i]) {
+      newId = "heading" + num;
+      newSpan = "Heading " + num;
+      newlistId = "list" + num;
+      newHeadingText = "headingText" + num;
+      break;
+    }
+  }
+  $(this).before(`
+  <div class="inner-list" draggable="true">
+  <div class='list' id='${newlistId}'>
+  <span class='list-title'>
+  <label for='${newId}'>
+  <span class="heading-value">${newSpan}</span>
+  <input type='checkbox' class="heading" id='${newId}' name='heading' checked='checked' value='${newSpan}'><span class='checkmark'></span>
+  </label><input type="text" class="heading-text" id="${newHeadingText}" value="${newSpan}">
+  </span>
+  <span class="material-symbols-outlined topic-actions checkheading" style="display:none;">check</span>
+  <span class="material-symbols-outlined topic-actions editheading">edit_square</span>
+  <span class='material-symbols-outlined topic-actions addsubheadings'>forms_add_on</span>
+  <span class="material-symbols-outlined topic-actions deleteheading">delete</span>
+  <span class='material-symbols-outlined'>drag_indicator</span></div>
+  </div>`);
+
+
+  $('input[type=checkbox]').trigger('create');
+  checkboxes = [];
+  $('.list :checkbox').change(function() {
+    if (this.checked) {
+      $(this).parents('.disabled-list').attr('draggable', true);
+      $(this).parents('.disabled-list').css('opacity', '1');
+      $(this).parents('.disabled-list').removeClass('disabled-list').addClass('inner-list');
+    } else {
+      $(this).parents('.inner-list').removeAttr("draggable");
+      $(this).parents('.inner-list').css('opacity', '0.3');
+      $(this).parents('.inner-list').removeClass('inner-list').addClass('disabled-list');
+    }
+  });
+
+  $('.editheading').on('click', function() {
+    $(this).closest('div').find("#" + newHeadingText).change(function() {
+      $("#" + newId).val($("#" + newHeadingText).val());
+    });
+  });
+  $('.checkheading').on('click', function() {
+    var inputValue = $(this).parent().find(".heading").val();
+    $(this).parent().find(".heading-value").text(inputValue);
+    $(this).parent().find(".heading-text").attr("value", inputValue);
+  });
+
+});
+
+/* Add Sub-Headings Script */
+
+var subcheckboxes = [];
+
+$(document).ready(function() {
+  $(document).on('click', '.addsubheadings', function() {
+    var parentID = $(this).parents('.list').attr('id');
+    let listnum = parentID.charAt(parentID.length - 1);
+    var query = ".subheading" + listnum;
+    var query2 = "subheading" + listnum;
+    document.querySelectorAll(query).forEach(function(checkbox) {
+      var idcheckbox = checkbox.id;
+      var lastChar = idcheckbox.substr(idcheckbox.length - 1);
+      var end = parseInt(lastChar);
+      subcheckboxes.push(end);
+    });
+    subcheckboxes.sort(function(a, b) {
+      return a - b
+    });
+    var headings = document.getElementsByClassName(query2);
+    var newId;
+    var newSpan;
+    var newSubheadingText;
+    var headingslength = headings.length + 1;
+    for (let i = 0; i < headingslength; i++) {
+      var num = i + 1;
+      if (num != subcheckboxes[i]) {
+        newId = "subheading" + listnum + "-" + num;
+        newSpan = "Subheading " + listnum + "." + +num;
+        newSubheadingText = "subheadingText" + listnum + "-" + num;
+        break;
+      }
+    }
+
+    $(this).parent().after(`<div class='sub-list'>
+    <span class='list-title'>
+    <label for='${newId}'>
+    <span class="heading-value">${newSpan}</span>
+    <input type='checkbox' class="subheadings subheading${listnum}" id='${newId}' name='subheading' checked='checked' value='${listnum}${newSpan}'>
+    <span class='checkmark'>
+    </span>
+    </label>
+    <input type="text" class="subheading-text" id="${newSubheadingText}" value="${newSpan}">
+    </span>
+    <span class="material-symbols-outlined topic-actions checkheading" style="display:none;">check</span>
+    <span class='material-symbols-outlined topic-actions editheading'>edit_square</span><span class="material-symbols-outlined topic-actions deletesub">delete</span>
+    <span class='material-symbols-outlined'>drag_indicator</span>
+    </div>`);
+    $('input[type=checkbox]').trigger('create');
+    subcheckboxes = [];
+    $('.sub-list :checkbox').change(function() {
+      if (this.checked) {
+        $(this).parents('.inner-list').attr('draggable', true);
+        $(this).parents('.disabled-sublist').css('opacity', '1');
+        $(this).parents('.disabled-sublist').removeClass('disabled-sublist').addClass('sub-list');
+      } else {
+        $(this).parents('.inner-list').removeAttr("draggable");
+        $(this).parents('.sub-list').css('opacity', '0.3');
+        $(this).parents('.sub-list').removeClass('sub-list').addClass('disabled-sublist');
+      }
+
+
+    });
+
+    $('.editheading').on('click', function() {
+      $(this).closest('div').find("#" + newSubheadingText).change(function() {
+        $("#" + newId).val(listnum+$("#" + newSubheadingText).val());
+      });
+    });
+    $('.checkheading').on('click', function() {
+      var temp = $(this).parent().find(".subheadings").val();
+      var inputValue = temp.substring(1, temp.length);
+      $(this).parent().find(".heading-value").text(inputValue);
+      $(this).parent().find(".subheading-text").attr("value", inputValue);
+    });
+
+  })
+});
+
+/* Delete Heading Script */
+
+$(document).ready(function() {
+  $(document).on('click', '.deleteheading', function() {
+    $(this).parents('.inner-list').remove();
+  });
+});
+
+$(document).ready(function() {
+  $(document).on('click', '.deletesub', function() {
+    $(this).parent().remove();
+  });
+});
+
+/* Draggable Script */
+
+function handleDragStart(e) {
+  this.style.opacity = '0.4';
+
+  dragSrcEl = this;
+
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/html', this.innerHTML);
+}
+
+function handleDragEnd(e) {
+  this.style.opacity = '1';
+
+  items.forEach(function(item) {
+    item.classList.remove('over');
+  });
+}
+
+function handleDragOver(e) {
+  e.preventDefault();
+  return false;
+}
+
+function handleDragEnter(e) {
+  this.classList.add('over');
+}
+
+function handleDragLeave(e) {
+  this.classList.remove('over');
+}
+
+let items = document.querySelectorAll('#topics .inner-list');
+items.forEach(function(item) {
+  item.addEventListener('dragstart', handleDragStart);
+  item.addEventListener('dragover', handleDragOver);
+  item.addEventListener('dragenter', handleDragEnter);
+  item.addEventListener('dragleave', handleDragLeave);
+  item.addEventListener('dragend', handleDragEnd);
+  item.addEventListener('drop', handleDrop);
+});
+
+$('.add-list-container').on('click', function() {
+  function handleDragStart(e) {
+    this.style.opacity = '0.4';
+
+    dragSrcEl = this;
+
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/html', this.innerHTML);
+  }
+
+  function handleDragEnd(e) {
+    this.style.opacity = '1';
+
+    items.forEach(function(item) {
+      item.classList.remove('over');
+    });
+  }
+
+  function handleDragOver(e) {
+    e.preventDefault();
+    return false;
+  }
+
+  function handleDragEnter(e) {
+    this.classList.add('over');
+  }
+
+  function handleDragLeave(e) {
+    this.classList.remove('over');
+  }
+
+  let items = document.querySelectorAll('#topics .inner-list');
+  items.forEach(function(item) {
+    item.addEventListener('dragstart', handleDragStart);
+    item.addEventListener('dragover', handleDragOver);
+    item.addEventListener('dragenter', handleDragEnter);
+    item.addEventListener('dragleave', handleDragLeave);
+    item.addEventListener('dragend', handleDragEnd);
+    item.addEventListener('drop', handleDrop);
+  });
+
+
+});
+
+function handleDrop(e) {
+  $('#dragswitch').text("false");
+  e.stopPropagation();
+  var checker = $(this).find(".heading").is(":checked");
+  var subexists = "#" + $(this).find(".subheadings").attr('id');
+  var subchecker = $(this).find(subexists).is(":checked");
+  var finalcheck1 = checker + "-" + subchecker;
+  var headingcheck = finalcheck1 == "true-false" && subexists == "#undefined";
+  var subheadingcheck = finalcheck1 == "true-true" && subexists != "#undefined";
+  if (headingcheck || subheadingcheck) {
+    if (dragSrcEl !== this) {
+      dragSrcEl.innerHTML = this.innerHTML;
+      this.innerHTML = e.dataTransfer.getData('text/html');
+    }
+  }
+  $('.list :checkbox').change(function() {
+    if (this.checked) {
+      $(this).parents('.disabled-list').attr('draggable', true);
+      $(this).parents('.disabled-list').css('opacity', '1');
+      $(this).parents('.disabled-list').removeClass('disabled-list').addClass('inner-list');
+    } else {
+      $(this).parents('.inner-list').removeAttr("draggable");
+      $(this).parents('.inner-list').css('opacity', '0.3');
+      $(this).parents('.inner-list').removeClass('inner-list').addClass('disabled-list');
+    }
+  });
+  $('.sub-list :checkbox').change(function() {
+    if (this.checked) {
+      $(this).parents('.inner-list').attr('draggable', true);
+      $(this).parents('.disabled-sublist').css('opacity', '1');
+      $(this).parents('.disabled-sublist').removeClass('disabled-sublist').addClass('sub-list');
+    } else {
+      $(this).parents('.inner-list').removeAttr("draggable");
+      $(this).parents('.sub-list').css('opacity', '0.3');
+      $(this).parents('.sub-list').removeClass('sub-list').addClass('disabled-sublist');
+    }
+  });
+  $('.editheading').on('click', function() {
+    $(this).parent().find(".heading-text").keyup(function() {
+      $(this).parent().find(".heading").val($(this).parent().find(".heading-text").val());
+    });
+  });
+  $('.checkheading').on('click', function() {
+    var inputValue = $(this).parent().find(".heading").val();
+    $(this).parent().find(".heading-value").text(inputValue);
+    $(this).parent().find(".heading-text").attr("value", inputValue);
+  });
+  $('.editheading').on('click', function() {
+      $(this).parent().find(".subheading-text").change(function() {
+        var parentID = $(this).parents('.list').attr('id');
+        let listnum = parentID.charAt(parentID.length - 1);
+        $(this).parent().find(".subheadings").val(listnum+$(this).parent().find(".subheading-text").val());
+      });
+    });
+    $('.checkheading').on('click', function() {
+      var temp = $(this).parent().find(".subheadings").val();
+      var inputValue = temp.substring(1, temp.length);
+      $(this).parent().find(".heading-value").text(inputValue);
+      $(this).parent().find(".subheading-text").attr("value", inputValue);
+    });
+  return false;
+}
+
+/* Heading Checker Script */
+
+$('.list :checkbox').change(function() {
+  if (this.checked) {
+    $(this).parents('.disabled-list').attr('draggable', true);
+    $(this).parents('.disabled-list').css('opacity', '1');
+    $(this).parents('.disabled-list').removeClass('disabled-list').addClass('inner-list');
+  } else {
+    $(this).parents('.inner-list').removeAttr("draggable");
+    $(this).parents('.inner-list').css('opacity', '0.3');
+    $(this).parents('.inner-list').removeClass('inner-list').addClass('disabled-list');
+  }
+});
+
+/* Heading Edit Hide Script */
+
+$(document).ready(function() {
+
+  $('.editheading').on('click', function() {
+    $(this).parent().find(".heading-text").keyup(function() {
+      $(this).parent().find(".heading").val($(this).parent().find(".heading-text").val());
+    });
+  });
+  $('.checkheading').on('click', function() {
+    var inputValue = $(this).parent().find(".heading").val();
+    $(this).parent().find(".heading-value").text(inputValue);
+    $(this).parent().find(".heading-text").attr("value", inputValue);
+  });
+
+  $(document).on('click', '.editheading', function() {
+    $(this).closest('div').find("label").hide()
+    $(this).closest('div').find(".editheading").hide()
+    $(this).closest('div').find(".checkheading").css("display", "block");
+    $(this).closest('div').find("input").css("display", "block");
+  });
+  $(document).on('click', '.checkheading', function() {
+    $(this).closest('div').find("label").show()
+    $(this).closest('div').find(".editheading").show()
+    $(this).closest('div').find(".checkheading").css("display", "none");
+    $(this).closest('div').find("input").css("display", "none");
+  });
 });
