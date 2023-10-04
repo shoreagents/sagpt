@@ -151,12 +151,12 @@ tinymce.init({
   plugins:[
       'advlist', 'autolink', 'link', 'image', 'lists', 'charmap', 'prewiew', 'anchor', 'pagebreak',
       'searchreplace', 'wordcount', 'visualblocks', 'code', 'fullscreen', 'insertdatetime', 'media', 
-      'table', 'emoticons', 'template', 'codesample', 'autosave', 'export', 'help', 'image','editimage', 'quickbars'
+      'table', 'emoticons', 'template', 'codesample', 'autosave', 'help', 'image', 'quickbars'
   ],
   editimage_toolbar: 'rotateleft rotateright | flipv fliph | editimage imageoptions',
   toolbar: 'undo redo | styles | bold italic underline | alignleft aligncenter alignright alignjustify |' + 
   'bullist numlist outdent indent | link image | print preview media fullscreen | ' +
-  'forecolor backcolor emoticons' + 'restoredraft' + 'export' + 'link image',
+  'forecolor backcolor emoticons' + 'restoredraft' + 'link image',
   image_title: true,
   automatic_uploads: true,
   file_picker_types: 'image',
@@ -261,8 +261,15 @@ function fixStepIndicator(n) {
 /* Add Heading Script */
 
 var checkboxes = [];
+$("#nextBtn").hide();
 
 $('.add-list-container').on('click', function() {
+  
+  var listlength = $(".inner-list").length;
+  if (listlength == 1) {
+    $("#nextBtn").show();
+  }
+
   document.querySelectorAll('.heading').forEach(function(checkbox) {
     var idcheckbox = checkbox.id;
     var lastChar = idcheckbox.substr(idcheckbox.length - 1);
@@ -366,7 +373,7 @@ $(document).ready(function() {
       }
     }
 
-    $(this).parent().after(`<div class='sub-list'>
+    $(this).parents('.inner-list').append(`<div class='sub-list'>
     <span class='list-title'>
     <label for='${newId}'>
     <span class="heading-value">${newSpan}</span>
@@ -415,6 +422,10 @@ $(document).ready(function() {
 
 $(document).ready(function() {
   $(document).on('click', '.deleteheading', function() {
+    var listlength = $(".inner-list").length;
+    if (listlength < 3) {
+      $("#nextBtn").hide();
+    }
     $(this).parents('.inner-list').remove();
   });
 });

@@ -65,7 +65,7 @@ router.post('/', async (req,res) =>{
       perspectiveOutput = `You are in perspective of ${perspective}.`;
     }
     if (customerObjective != "None") {
-      customerObjectiveOutput = `The selected Customer Objective is ${author}.`;
+      customerObjectiveOutput = `The selected Customer Objective is ${customerObjective}.`;
     }
 
     if (tone === undefined, author === undefined, target === undefined, perspective === undefined, customerObjective === undefined) {
@@ -126,7 +126,7 @@ router.post('/', async (req,res) =>{
       perspectiveOutput = `You are in perspective of ${perspective}.`;
     }
     if (customerObjective != "None") {
-      customerObjectiveOutput = `The selected Customer Objective is ${author}.`;
+      customerObjectiveOutput = `The selected Customer Objective is ${customerObjective}.`;
     }
 
     if (tone === undefined, author === undefined, target === undefined, perspective === undefined, customerObjective === undefined) {
@@ -136,8 +136,6 @@ router.post('/', async (req,res) =>{
       var perspectiveOutput = "";
       var customerObjectiveOutput = "";
     }
-
-    // console.log(articlearray);
 
     const articleTitle = articlearray.title;
     const articleKeyword = req.body.keyword;
@@ -153,7 +151,7 @@ router.post('/', async (req,res) =>{
 
     for (let i = 0; i < data.length; i++) {
       var articleHeading = data[i][1].title;
-      var articleTopic = "Article Heading: "+articleHeading;
+      var articleTopic = "Article Heading: "+articleHeading+"\n\nSubheadings:\n";
       /* console.log(articleTopic); */
       for (var key in data[i][1]) {
         data[i][1]['title'] && delete data[i][1]['title'];
@@ -221,11 +219,12 @@ export const articleGenerator = async (question, title, builder, keyword, perspe
   }
 
 
-  const userprompt = `You are a content writer for articles, and your responsibility is to elaborate on the provided heading title. Please refrain from creating an entire article. ${perspectiveOutput} ${toneOutput} ${authorOutput} ${targetOutput} ${perspectiveOutput} ${customerObjectiveOutput}` + `Expand this outline using the article title "${title}", and the focus keyword "${keyword}". The article outline: ${question}.
+  const userprompt = `You are a content writer for articles, and your responsibility is to elaborate on the provided heading title. Please refrain from creating an entire article. ${perspectiveOutput} ${toneOutput} ${authorOutput} ${targetOutput} ${perspectiveOutput} ${customerObjectiveOutput}` + ` Expand this outline using the article title "${title}", and the focus keyword "${keyword}". The article outline: ${question}.
   
-  Do not include the article heading
+  Do not include the article heading but you can include subheadings.
   Make sure that the heading body is long and explained in detail.
-  Make sure that the focus keyword is included in the heading body.
+  Do not add the word 'Subheading:' in the subheading titles.
+  Do not include 'In conclusion' unless the Heading title is Conclusion itself.
   Do not add the '${title}' itself.`
 
   console.log(userprompt);
