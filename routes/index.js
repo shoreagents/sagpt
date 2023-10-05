@@ -136,10 +136,10 @@ router.post('/', async (req,res) =>{
       var perspectiveOutput = "";
       var customerObjectiveOutput = "";
     }
-
+    const listquery = req.body.listquery;
     const articleTitle = articlearray.title;
     const articleKeyword = req.body.keyword;
-    var output = `Title: ${articleTitle}`;
+    var output = `<h1>Title: ${articleTitle}</h1>`;
 
     var data = [];
 
@@ -152,6 +152,7 @@ router.post('/', async (req,res) =>{
     for (let i = 0; i < data.length; i++) {
       var articleHeading = data[i][1].title;
       var articleTopic = "Article Heading: "+articleHeading+"\n\nSubheadings:\n";
+      var query = listquery[i];
       /* console.log(articleTopic); */
       for (var key in data[i][1]) {
         data[i][1]['title'] && delete data[i][1]['title'];
@@ -161,8 +162,8 @@ router.post('/', async (req,res) =>{
           articleTopic += "\n"+value;
         }
       }
-      const createArticleTitle = await articleGenerator(articleTopic, articleTitle, output, articleKeyword, perspectiveOutput, toneOutput, targetOutput, authorOutput,customerObjectiveOutput);
-      output += `\n\n${articleHeading}\n${createArticleTitle}`;
+      const createArticle = await articleGenerator(articleTopic, query, articleTitle, articleKeyword, perspectiveOutput, toneOutput, targetOutput, authorOutput,customerObjectiveOutput);
+      output += `\n\n<h2>${articleHeading}</h2>\n${createArticle}`;
     }
     console.log(output);
 
@@ -203,7 +204,7 @@ export const runWithEmbeddings = async (question, perspectiveOutput, toneOutput,
   return output;
 };
 
-export const articleGenerator = async (question, title, builder, keyword, perspectiveOutput, toneOutput, targetOutput, authorOutput,customerObjectiveOutput) => {
+export const articleGenerator = async (question, query, title, keyword, perspectiveOutput, toneOutput, targetOutput, authorOutput,customerObjectiveOutput) => {
   
   const model = new OpenAI({temperature:0.7, modelName:"gpt-4"});
 
@@ -218,9 +219,10 @@ export const articleGenerator = async (question, title, builder, keyword, perspe
     await vectorStore.save(VECTOR_STORE_PATH);
   }
 
+  const userprompt = `You are a content writer and will draft HTML formatted articles where at the start of every paragraph you will add '<p>' and must end with '</p>', it will be the same with Subheadings but with '<h3>' and '</h3>', and your responsibility is to elaborate on the provided heading title. "PLEASE DO NOT CREATE AN ENTIRE ARTICLE." ${perspectiveOutput} ${toneOutput} ${authorOutput} ${targetOutput} ${perspectiveOutput} ${customerObjectiveOutput}` + ` Expand this outline using the article title "${title}", and the focus keyword "${keyword}". The article outline: ${question}.
 
-  const userprompt = `You are a content writer for articles, and your responsibility is to elaborate on the provided heading title. Please refrain from creating an entire article. ${perspectiveOutput} ${toneOutput} ${authorOutput} ${targetOutput} ${perspectiveOutput} ${customerObjectiveOutput}` + ` Expand this outline using the article title "${title}", and the focus keyword "${keyword}". The article outline: ${question}.
-  
+  Instructions:
+  ${query}
   Do not include the article heading but you can include subheadings.
   Make sure that the heading body is long and explained in detail.
   Do not add the word 'Subheading:' in the subheading titles.

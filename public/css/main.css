@@ -75,14 +75,6 @@ body.show-chatbot .chatbot {
   background: #7eac0b;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
 }
-.chatbot header span {
-  position: absolute;
-  right: 15px;
-  top: 50%;
-  display: none;
-  cursor: pointer;
-  transform: translateY(-50%);
-}
 header h2 {
   font-size: 1.4rem;
 }
@@ -506,10 +498,6 @@ select::after {
 	cursor: pointer;
 	border-radius: 8px;
 	transition: 0.15s ease;
-	svg {
-		width: 24px;
-		height: 24px;
-	}
 }
 
 .dataupdate{
@@ -540,6 +528,14 @@ select::after {
 }
 
 #database{
+  width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 20px;
+  line-height: 1.5rem;
+}
+
+.listquery{
   width: 100%;
   border: 1px solid #ddd;
   border-radius: 6px;
@@ -982,7 +978,7 @@ input[type=checkbox]:checked+.list {
   display: none;
 }
 
-#regForm button{
+#regForm .icon-button{
   margin-right: 15px;
 }
 
