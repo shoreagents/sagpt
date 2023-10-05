@@ -146,8 +146,7 @@ sendChatBtn.addEventListener("click", handleChat);
 
 tinymce.init({
   selector: 'textarea#default',
-  width: 1000,
-  height: 300,
+  height: "100%",
   plugins:[
       'advlist', 'autolink', 'link', 'image', 'lists', 'charmap', 'prewiew', 'anchor', 'pagebreak',
       'searchreplace', 'wordcount', 'visualblocks', 'code', 'fullscreen', 'insertdatetime', 'media', 

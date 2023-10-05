@@ -785,6 +785,7 @@ input[type=checkbox]:checked+.list {
 .page {
 	position: relative;
 	margin: 0 auto;
+  height: 100%;
 }
 .pcss3t {
 	margin: 0;
@@ -792,6 +793,7 @@ input[type=checkbox]:checked+.list {
 	border: 0;
 	outline: none;
 	font-size: 0;
+  height: 100%;
 	text-align: center;
 }
 .pcss3t > input {
@@ -867,13 +869,57 @@ input[type=checkbox]:checked+.list {
 	-webkit-transform: scale(1,1);
 	-webkit-transform: rotate(0deg);
 }
-@media screen and (max-width: 767px) {
-	.pcss3t > label {
-		display: block;
-	}
-	.pcss3t > .right {
-		float: none;
-	}
+
+.pcss3t > ul,
+.pcss3t > ul > li {
+	height: 96.5%;
+}
+
+.pcss3t label{
+  width: 32%;
+  margin-right: 5px;
+  margin-top: 5px;
+  background-color: #7eac0b;
+  color: #fff;
+  font-weight: 700;
+}
+
+.pcss3t .innertab{
+  display: inline-block;
+  line-height: 15px;
+}
+
+@media screen and (max-width: 1222px) {
+  .container-gpt{
+    flex-direction: column;
+  }
+
+  .generator-outer{
+    width: 100%;
+    height: 3000;
+  }
+
+  .blog-builder{
+    width: 100%;
+    height: 100%;
+  }
+
+  .chatbot{
+    margin-top: 50px;
+    width: 90% !important;
+  }
+
+  .pcss3t > ul, .pcss3t > ul > li{
+    height: 94%;
+  }
+
+  .user-section {
+  height: 81%;
+  }
+
+  .tox-tinymce{
+    height: 90% !important;
+  }
 }
 .pcss3t > label {	
 	padding: 0 20px;
@@ -898,9 +944,9 @@ input[type=checkbox]:checked+.list {
 .pcss3t-theme-1 > label {
 	margin: 0 5px 5px 0;
 	border-radius: 5px;
-	background: #fff;
+	background: #7eac0b;
 	box-shadow: 0 2px #628509;
-	color: #808080;
+	color: #fff;
 }
 .pcss3t-theme-1 > label:hover {
 	background: #97BC34;
@@ -923,33 +969,6 @@ input[type=checkbox]:checked+.list {
 	border-top-left-radius: 0;
 }
 
-@media screen and (max-width: 767px) {
-	.pcss3t-theme-1 > label {
-		margin-right: 0;
-	}
-	.pcss3t-theme-1 > input:checked + label {
-		margin-bottom: 5px;
-		padding-bottom: 0;
-		border-radius: 5px;
-	}
-	.pcss3t-theme-1 > .tab-content-first:checked ~ ul {
-		border-top-left-radius: 5px;
-	}
-}
-
-.pcss3t > ul,
-.pcss3t > ul > li {
-	height: 850px;
-}
-
-.pcss3t label{
-  width: 32%;
-  margin-right: 5px;
-  margin-top: 5px;
-  background-color: #7eac0b;
-  color: #fff;
-  font-weight: 700;
-}
 
 /* Step style */
 
@@ -1007,28 +1026,14 @@ input[type=checkbox]:checked+.list {
 
 /* Responsive style */
 
-@media (max-width: 1024px){
-  select{
-    padding: 0.675em 2em 0.675em 1em;
-  }
-  .container-gpt{
-    flex-direction: column;
-    height: 100%;
-    margin-top: 50px;;
-  }
-  .generator-outer{
-    width: 100%;
-  }
-  .user-outer{
-    width: 98%;
-    margin-top: 30px;
-    height: 900px;
-  }
-}
 
 @media (max-width: 600px) {
+  .chatbot{
+    margin: 0 !important;
+  }
   .container-gpt{
     margin-top: 0;
+    height: 200vh !important;
   }
   .chatbot-toggler {
     right: 20px;
@@ -1043,10 +1048,10 @@ input[type=checkbox]:checked+.list {
     bottom: 0;
     height: 100%;
     border-radius: 0;
-    width: 100%;
+    width: 100% !important;
   }
   .chatbot .chatbox {
-    height: 50vh;
+    height: 92%;
     padding: 25px 15px 100px;
   }
   .chatbot .chat-input {
@@ -1054,6 +1059,15 @@ input[type=checkbox]:checked+.list {
   }
   .chatbot header span {
     display: block;
+  }
+  .tox-tinymce{
+    height: 100% !important;
+  }
+  form{
+    height: 100% !important;
+  }
+  .pcss3t > ul, .pcss3t > ul > li {
+    height: 97% !important;
   }
 }
 
@@ -1068,7 +1082,7 @@ form{
 
 .tox-tinymce{
   border: 0 !important;
-  width: 100% !important;
-  height: 100% !important;
+  width: 100%;
+  height: 100%;
 }
 
