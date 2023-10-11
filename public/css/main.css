@@ -428,6 +428,17 @@ select::after {
   background: #97BC34 !important;
 }
 
+.query-modal .modal-container-title{
+  display: flex;
+  align-items: center;
+  text-align: left;
+  gap: 8px;
+  padding: 10px 50px;
+  line-height: 1;
+  font-weight: 700;
+  font-size: 1.125;
+}
+
 .modal-container {
   height: auto;
   width: 80%;
