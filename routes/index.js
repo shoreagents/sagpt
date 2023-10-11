@@ -52,7 +52,7 @@ router.post('/', async (req,res) =>{
     var perspectiveOutput = "";
     var customerObjectiveOutput = "";
 
-    if (tone != "Standard") {
+    if (tone != "None") {
       toneOutput = `You are in ${tone} personality, so you will answer with the given subtones of that personality.`;
     }
     if (author != "None") {
@@ -68,7 +68,7 @@ router.post('/', async (req,res) =>{
       customerObjectiveOutput = `The selected Customer Objective is ${customerObjective}.`;
     }
 
-    if (tone === undefined, author === undefined, target === undefined, perspective === undefined, customerObjective === undefined) {
+    if (tone == "Select Tone/Personality", author == "Select Author", target == "Select Target Market", perspective == "Select Perspective", customerObjective === "Select Customer Objective") {
       var toneOutput = "";
       var authorOutput = "";
       var targetOutput = "";
