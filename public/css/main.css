@@ -346,6 +346,58 @@ select::after {
   pointer-events: none;
 }
 
+/* Generating content style */
+
+.generating-text{
+  margin-bottom: -50px;
+  width: 30%;
+  text-align: center;
+  font-family: Montserrat;
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.overlay {
+  height: 100%;
+  width: 100%;
+  display: none;
+  position: fixed;
+  z-index: 10;
+  top: 0;
+  left: 0;
+  background-color: #ffffffd6;
+}
+
+.overlay-content {
+  position: relative;
+  flex-direction: column;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+
+@media only screen and (max-width: 1650px) {
+   .generating-text{
+    margin-bottom: -50px;
+    width: 50%;
+    text-align: center;
+    font-family: Montserrat;
+    font-size: 24px;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+   .generating-text{
+    margin-bottom: -50px;
+    width: 80%;
+    text-align: center;
+    font-family: Montserrat;
+    font-size: 24px;
+  }
+}
+
 /* Modal style */
 
 .modal {
@@ -359,6 +411,21 @@ select::after {
   justify-content: center;
   background-color: rgba(0, 0, 0, 0.25);
   z-index: 10;
+}
+
+.query-modal{
+  margin-top: -150px;
+  position: absolute;
+  left: 0;
+  width: 100%;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.query-modal .modal-container-header{
+  background: #97BC34 !important;
 }
 
 .modal-container {
@@ -477,12 +544,13 @@ select::after {
  background-color: #97BC34 !important;
 }
 .button.is-primary {
-  background-color: #7eac0b;
+  background-color: #97BC34;
+  border: #97BC34;
   color: #fff;
 }
 .button.is-primary:hover, .button.is-primary:focus {
-  background-color: #97BC34;
-  border: 2px solid #97BC34;
+  background-color: #c3db63 !important;
+  border: none;
 }
 
 .icon-button {
@@ -645,6 +713,18 @@ select::after {
   align-self: end;
   cursor: grab;
   border-radius: 6px;
+}
+
+/* 
+.sub-position{
+  width: 15%;
+  display: flex;
+  align-items: center;
+} */
+
+.up, .down{
+  width: 100%;
+  cursor: pointer;
 }
 
 .material-symbols-outlined{
@@ -985,6 +1065,12 @@ input[type=checkbox]:checked+.list {
 #nextBtn{
   color: #fff;
   background-color: #7eac0b;
+  margin-right: 15px;
+}
+
+.btn-disabled{
+  opacity: 0.4;
+  pointer-events: none;
 }
 
 #regForm h3{

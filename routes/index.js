@@ -225,6 +225,7 @@ export const articleGenerator = async (question, query, title, keyword, perspect
   ${query}
   Do not include the article heading but you can include subheadings.
   Make sure that the heading body is long and explained in detail.
+  You can add h4 subheadings inside h3 if possible.
   Do not add the word 'Subheading:' in the subheading titles.
   Do not include 'In conclusion' unless the Heading title is Conclusion itself.
   Do not add the '${title}' itself.`
