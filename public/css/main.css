@@ -668,13 +668,11 @@ select::after {
 }
 
 #articletitle{
-  width: 70%;
+  width: 100%;
   height: 50px;
-  margin-bottom: 30px;
   padding: 0 20px;
   border: none;
-  box-shadow: 0 7px 18px 1px rgba(0,0,0,0.1);
-  border-radius: 6px;
+  border-radius: 0 6px 6px 6px;
 }
 
 .list{
@@ -684,7 +682,7 @@ select::after {
   color: #fff;
   display: flex; 
   align-items: center;
-  padding: 0 15px;
+  padding: 15px;
   cursor: grab;
   border-radius: 6px;
 }
@@ -714,24 +712,46 @@ select::after {
 
 .sub-list{
   background: #7eac0b;
-  height: 60px;
-  margin: 5px 15px;
-  width: 85%;
-  color: #fff;
-  display: flex; 
-  align-items: center;
-  padding: 0 15px;
-  align-self: end;
-  cursor: grab;
-  border-radius: 6px;
+    margin: 5px 15px;
+    padding: 15px;
+    width: 85%;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    align-self: end;
+    cursor: grab;
+    border-radius: 6px;
 }
 
-/* 
-.sub-position{
-  width: 15%;
+.title-container{
   display: flex;
   align-items: center;
-} */
+  justify-content: center;
+  border-radius: 6px;
+  margin: 0 15px;
+  box-shadow: 0 7px 18px 1px rgba(0,0,0,0.1);
+}
+
+.title-input{
+  width: 80%;
+  border-radius: 0 6px 6px 0;
+}
+
+.article-title{
+  width: 20%;
+  background-color: #7eac0b;
+  color: #fff;
+  font-weight: 600;
+  height: 50px;
+  display: flex;
+  border-radius: 6px 0 0 6px;
+  justify-content: center;
+  align-items: center;
+}
+
+.title-container input:focus{
+  outline: none;
+}
 
 .up, .down{
   width: 100%;
@@ -739,10 +759,15 @@ select::after {
 }
 
 .material-symbols-outlined{
-  font-size: 30px !important;
   text-align: right;
   display: flex;
   width: 6.67%;
+}
+
+.heading-text, .subheading-text{
+  padding: 5px 15px;
+  border: none;
+  border-radius: 6px;
 }
 
 .topic-actions{
@@ -854,17 +879,29 @@ input[type=checkbox]:checked+.list {
   font-size: 16px;
   font-weight: 600;
   color: #7eac0b;
-  margin-bottom: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
 }
 
 #keyword{
   padding: 10px;
-  margin-bottom: 20px;
   margin-left: 5px;
   width: 50%;
   border: none;
   box-shadow: 0 7px 18px 1px rgba(0,0,0,0.1);
   border-radius: 6px;
+}
+
+#keyword:focus{
+  outline: none;
+}
+
+.focus-keyword{
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
 }
 
 #generatedArticle{

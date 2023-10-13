@@ -142,10 +142,13 @@
               <form id="regForm" action="/" method="POST">
                 <input type="hidden" name="userAction" id="userAction" value="ArticleGenerator">
                 <div class="tab">
-                  <h3>Article Title</h3>
-                  <center><input type="text" name="articletitle" id="articletitle" placeholder="Enter your desired article title..." required></center>
-                  <h3>Article Topics</h3>
-                  <center><span class="keyword-title">Focus Keyword: <input type="text" name="keyword" id="keyword" placeholder="Enter your focus keyword..." required></span></center>
+                  <div class="title-container">
+                    <div class="article-title">Article Title</div>
+                    <div class="title-input"><input type="text" name="articletitle" id="articletitle" placeholder="Enter your desired article title..." required></div>
+                  </div>
+                  <div class="focus-keyword">
+                    <span class="keyword-title">Focus Keyword: <input type="text" name="keyword" id="keyword" placeholder="Enter your focus keyword..." required></span>
+                  </div>
                   <div id="topics">
                     <div class="inner-list" draggable="true">
                       <div class="list" id="list1">

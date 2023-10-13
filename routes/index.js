@@ -1,8 +1,10 @@
 import { OpenAI } from 'langchain/llms/openai';
-import { RetrievalQAChain } from 'langchain/chains';
+import { ChatOpenAI } from "langchain/chat_models/openai";
+import { RetrievalQAChain, ConversationalRetrievalQAChain } from 'langchain/chains';
 import { HNSWLib } from 'langchain/vectorstores/hnswlib';
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
+import { BufferMemory } from "langchain/memory";
 import * as fs from 'fs';
 import * as dotenv from 'dotenv';
 
@@ -89,7 +91,7 @@ router.post('/', async (req,res) =>{
     const perspective = req.body.perspective;
     const customerObjective = req.body.customerObjective;
     var articlearray = {};
-    articlearray.title = title;
+    articlearray.title = title; 
     for (let i = 0; i < heading.length; i++) {
       var num = i+1;
       var obj = new Object();
@@ -181,7 +183,7 @@ export const updateData = async () => {
 
 export const runWithEmbeddings = async (question, perspectiveOutput, toneOutput, targetOutput, authorOutput,customerObjectiveOutput) => {
   
-  const model = new OpenAI({temperature:0.7, modelName:"gpt-4"});
+  const model = new ChatOpenAI({temperature:0.7, modelName:"gpt-4"});
 
   let vectorStore;
   if (fs.existsSync(VECTOR_STORE_PATH)) {
@@ -196,9 +198,32 @@ export const runWithEmbeddings = async (question, perspectiveOutput, toneOutput,
 
   const userprompt = `You are a helpful assistant. ${perspectiveOutput} ${toneOutput} ${authorOutput} ${targetOutput} ${perspectiveOutput} ${customerObjectiveOutput}` + `Question: ${question}`
 
-  const chain = RetrievalQAChain.fromLLM(model, vectorStore.asRetriever());
+  const fasterModel = new ChatOpenAI({
+    temperature:0.7,
+    modelName: "gpt-4",
+  });
 
-  const res = await chain.call({ query: userprompt });
+  // const chain = RetrievalQAChain.fromLLM(model, vectorStore.asRetriever());
+  const chain = ConversationalRetrievalQAChain.fromLLM(
+    model,
+    vectorStore.asRetriever(),
+    {
+      returnSourceDocuments: true,
+      memory: new BufferMemory({
+        memoryKey: "chat_history",
+        inputKey: "question",
+        outputKey: "text",
+        returnMessages: true,
+      }),
+      questionGeneratorChainOptions: {
+        llm: fasterModel,
+      },
+    }
+  );
+
+  // const res = await chain.call({ query: userprompt });
+  const res = await chain.call({ question });
+
   const output = res.text;
   console.log(userprompt);
   return output;
