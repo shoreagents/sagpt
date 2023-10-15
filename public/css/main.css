@@ -414,7 +414,7 @@ select::after {
 }
 
 .query-modal{
-  margin-top: -150px;
+  margin-top: 150px;
   position: absolute;
   left: 0;
   width: 100%;
