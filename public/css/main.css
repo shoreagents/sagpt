@@ -29,6 +29,14 @@ body {
   margin-top: -25px !important;
 }
 
+.instruction{
+  text-align: center;
+  margin-bottom: 20px;
+  font-style: italic;
+  color: #7eac0b;
+  font-weight: 500;
+}
+
 .copy-to-clipboard {
   display: flex !important;
   align-self: flex-start !important;
@@ -545,6 +553,17 @@ select::after {
   color: #7eac0b;
   background-color: transparent;
   border: 2px solid #7eac0b;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.15s ease;
+}
+.query-button{
+  background-color: #97BC34;
+  border: #97BC34;
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 8px;
+  margin: auto;
   font-weight: 600;
   cursor: pointer;
   transition: 0.15s ease;

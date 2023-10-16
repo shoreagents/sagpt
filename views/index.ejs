@@ -142,12 +142,13 @@
               <form id="regForm" action="/" method="POST">
                 <input type="hidden" name="userAction" id="userAction" value="ArticleGenerator">
                 <div class="tab">
+                  <p class="instruction">* Article Title and Focus Keyword is required, make sure to add content.</p>
                   <div class="title-container">
                     <div class="article-title">Article Title</div>
-                    <div class="title-input"><input type="text" name="articletitle" id="articletitle" placeholder="Enter your desired article title..." required></div>
+                    <div class="title-input"><input type="text" name="articletitle" class="generator-input" id="articletitle" placeholder="Enter your desired article title..." required></div>
                   </div>
                   <div class="focus-keyword">
-                    <span class="keyword-title">Focus Keyword: <input type="text" name="keyword" id="keyword" placeholder="Enter your focus keyword..." required></span>
+                    <span class="keyword-title">Focus Keyword: <input type="text" name="keyword" class="generator-input" id="keyword" placeholder="Enter your focus keyword..." required></span>
                   </div>
                   <div id="topics">
                     <div class="inner-list" draggable="true">
@@ -183,7 +184,7 @@
                               <textarea type="textarea" name="listquery" class="listquery" id="listquery1" cols="10" rows="10"></textarea>
                             </section>
                             <footer class="modal-container-footer">
-                              <span class="button is-primary" onclick="document.getElementById('query1').style.display='none'">Okay</span>
+                              <span class="query-button is-primary" onclick="document.getElementById('query1').style.display='none'">Okay</span>
                             </footer>
                           </div>
                         </div>
