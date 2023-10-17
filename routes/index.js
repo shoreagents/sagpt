@@ -125,29 +125,32 @@ router.post('/', async (req,res) =>{
     var perspectiveOutput = "";
     var customerObjectiveOutput = "";
 
-    if (tone != "Standard") {
+    if (tone === undefined){
+      var toneOutput = "";
+    } else if (tone != "None") {
       toneOutput = `You are in ${tone} personality, so you will answer with the given subtones of that personality.`;
-    }
-    if (author != "None") {
+    } 
+    if (author === undefined){
+      var authorOutput = "";
+    } else if (author != "None") {
       authorOutput = `The author is ${author}.`;
-    }
-    if (target != "None") {
+    } 
+    if (target === undefined){
+      var targetOutput = "";
+    } else if (target != "None") {
       targetOutput = `Your Target Market will be ${target}.`;
     }
-    if (perspective != "None") {
+    if (perspective === undefined){
+      var perspectiveOutput = "";
+    } else if (perspective != "None") {
       perspectiveOutput = `You are in perspective of ${perspective}.`;
     }
-    if (customerObjective != "None") {
+    if (customerObjective === undefined){
+      var customerObjectiveOutput = "";
+    } else if (customerObjective != "None") {
       customerObjectiveOutput = `The selected Customer Objective is ${customerObjective}.`;
     }
-
-    if (tone === undefined, author === undefined, target === undefined, perspective === undefined, customerObjective === undefined) {
-      var toneOutput = "";
-      var authorOutput = "";
-      var targetOutput = "";
-      var perspectiveOutput = "";
-      var customerObjectiveOutput = "";
-    }
+    
     const listquery = req.body.listquery;
     const articleTitle = articlearray.title;
     const articleKeyword = req.body.keyword;
