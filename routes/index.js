@@ -54,29 +54,39 @@ router.post('/', async (req,res) =>{
     var perspectiveOutput = "";
     var customerObjectiveOutput = "";
 
-    if (tone != "None") {
+    if (tone == "Select Tone/Personality"){
+      var toneOutput = "";
+    } else if (tone != "None") {
       toneOutput = `You are in ${tone} personality, so you will answer with the given subtones of that personality.`;
-    }
-    if (author != "None") {
+    } 
+    if (author == "Select Author"){
+      var authorOutput = "";
+    } else if (author != "None") {
       authorOutput = `The author is ${author}.`;
-    }
-    if (target != "None") {
+    } 
+    if (target ==  "Select Target Market"){
+      var targetOutput = "";
+    } else if (target != "None") {
       targetOutput = `Your Target Market will be ${target}.`;
     }
-    if (perspective != "None") {
+    if (perspective == "Select Perspective"){
+      var perspectiveOutput = "";
+    } else if (perspective != "None") {
       perspectiveOutput = `You are in perspective of ${perspective}.`;
     }
-    if (customerObjective != "None") {
+    if (customerObjective == "Select Customer Objective"){
+      var customerObjectiveOutput = "";
+    } else if (customerObjective != "None") {
       customerObjectiveOutput = `The selected Customer Objective is ${customerObjective}.`;
     }
 
-    if (tone == "Select Tone/Personality", author == "Select Author", target == "Select Target Market", perspective == "Select Perspective", customerObjective === "Select Customer Objective") {
-      var toneOutput = "";
-      var authorOutput = "";
-      var targetOutput = "";
-      var perspectiveOutput = "";
-      var customerObjectiveOutput = "";
-    }
+    // if (tone == "Select Tone/Personality", author == "Select Author", target ==  "Select Target Market", perspective == "Select Perspective", customerObjective == "Select Customer Objective") {
+    //   var toneOutput = "";
+    //   var authorOutput = "";
+    //   var targetOutput = "";
+    //   var perspectiveOutput = "";
+    //   var customerObjectiveOutput = "";
+    // }
 
     const output = await runWithEmbeddings(question, perspectiveOutput, toneOutput, targetOutput, authorOutput,customerObjectiveOutput);
     res.send({output});
@@ -221,8 +231,7 @@ export const runWithEmbeddings = async (question, perspectiveOutput, toneOutput,
     }
   );
 
-  // const res = await chain.call({ query: userprompt });
-  const res = await chain.call({ question });
+  const res = await chain.call({ question: userprompt });
 
   const output = res.text;
   console.log(userprompt);
