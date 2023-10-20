@@ -80,15 +80,13 @@ router.post('/', async (req,res) =>{
       customerObjectiveOutput = `The selected Customer Objective is ${customerObjective}.`;
     }
 
-    // if (tone == "Select Tone/Personality", author == "Select Author", target ==  "Select Target Market", perspective == "Select Perspective", customerObjective == "Select Customer Objective") {
-    //   var toneOutput = "";
-    //   var authorOutput = "";
-    //   var targetOutput = "";
-    //   var perspectiveOutput = "";
-    //   var customerObjectiveOutput = "";
-    // }
-
-    const output = await runWithEmbeddings(question, perspectiveOutput, toneOutput, targetOutput, authorOutput,customerObjectiveOutput);
+    let output;
+    try {
+      output = await runWithEmbeddings(question, perspectiveOutput, toneOutput, targetOutput, authorOutput,customerObjectiveOutput);
+    } catch (error) {
+      output = "There is an error on our server. Sorry for inconvenience. Please try again later."
+      console.log(output);
+    }
     res.send({output});
     
   } else if (userAction == "ArticleGenerator"){
@@ -150,7 +148,7 @@ router.post('/', async (req,res) =>{
     } else if (customerObjective != "None") {
       customerObjectiveOutput = `The selected Customer Objective is ${customerObjective}.`;
     }
-    
+
     const listquery = req.body.listquery;
     const articleTitle = articlearray.title;
     const articleKeyword = req.body.keyword;
@@ -164,22 +162,26 @@ router.post('/', async (req,res) =>{
       }
     }
 
-    for (let i = 0; i < data.length; i++) {
-      var articleHeading = data[i][1].title;
-      var articleTopic = "Article Heading: "+articleHeading+"\n\nSubheadings:\n";
-      var query = listquery[i];
-      /* console.log(articleTopic); */
-      for (var key in data[i][1]) {
-        data[i][1]['title'] && delete data[i][1]['title'];
-        if (data[i][1].hasOwnProperty(key)) {
-          var valuetemp = data[i][1][key];
-          let value = valuetemp.substring(1);
-          articleTopic += "\n"+value;
+    try {
+      for (let i = 0; i < data.length; i++) {
+        var articleHeading = data[i][1].title;
+        var articleTopic = "Article Heading: "+articleHeading+"\n\nSubheadings:\n";
+        var query = listquery[i];
+        for (var key in data[i][1]) {
+          data[i][1]['title'] && delete data[i][1]['title'];
+          if (data[i][1].hasOwnProperty(key)) {
+            var valuetemp = data[i][1][key];
+            let value = valuetemp.substring(1);
+            articleTopic += "\n"+value;
+          }
         }
+        const createArticle = await articleGenerator(articleTopic, query, articleTitle, articleKeyword, perspectiveOutput, toneOutput, targetOutput, authorOutput,customerObjectiveOutput);
+        output += `\n\n<h2>${articleHeading}</h2>\n${createArticle}`;
       }
-      const createArticle = await articleGenerator(articleTopic, query, articleTitle, articleKeyword, perspectiveOutput, toneOutput, targetOutput, authorOutput,customerObjectiveOutput);
-      output += `\n\n<h2>${articleHeading}</h2>\n${createArticle}`;
+    } catch (error) {
+      output = "There is an error on our server. Sorry for inconvenience. Please try again later."
     }
+
     console.log(output);
 
     res.render('index', {data: sadata(txtPath), articleGenerated: output});

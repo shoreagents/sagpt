@@ -31,10 +31,17 @@ body {
 
 .instruction{
   text-align: center;
-  margin-bottom: 20px;
   font-style: italic;
   color: #7eac0b;
   font-weight: 500;
+}
+
+.ins-1{
+}
+
+.ins-2{
+  margin-top: 5px !important;
+  margin-bottom: 30px;
 }
 
 .copy-to-clipboard {
@@ -763,6 +770,8 @@ select::after {
   font-weight: 600;
   height: 50px;
   display: flex;
+  padding: 10px;
+  text-align: center;
   border-radius: 6px 0 0 6px;
   justify-content: center;
   align-items: center;
