@@ -152,7 +152,7 @@ router.post('/', async (req,res) =>{
     const listquery = req.body.listquery;
     const articleTitle = articlearray.title;
     const articleKeyword = req.body.keyword;
-    var output = `<h1>Title: ${articleTitle}</h1>`;
+    var output = `<h1 class="article-title">${articleTitle}</h1>`;
 
     var data = [];
 

@@ -439,6 +439,20 @@ select::after {
   z-index: 10;
 }
 
+.login {
+  /* display: none; */
+  display: flex;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.25);
+  z-index: 10;
+}
+
 .query-modal .modal-container-header{
   background: #97BC34 !important;
 }
@@ -466,6 +480,11 @@ select::after {
   flex-direction: column;
   box-shadow: 0 15px 30px 0 rgba(0, 0, 0, 0.25);
 }
+
+.login-modal{
+  width: 40%;
+}
+
 @media (max-width: 600px) {
   .modal-container {
     width: 90%;
@@ -651,16 +670,13 @@ select::after {
 /* Floating button style */
 
 .float{
-	position:fixed;
-	width:200px;
-	height:60px;
-	bottom:40px;
-	right:30px;
-	background-color:#7eac0b;
-	color:#FFF;
-	border-radius:50px;
-	text-align:center;
-	box-shadow: 2px 2px 3px #999;
+	position: absolute;
+  width: 230px;
+  height: 60px;
+  bottom: 0px;
+  background-color: #7eac0b;
+  color: #FFF;
+  text-align: center;
   text-decoration: none;
   display: flex;
   align-items: center;
@@ -672,7 +688,7 @@ select::after {
 
 .my-float{
   font-size: 30px !important;
-  margin-right: 10px;
+  margin-right: 20px !important;
 }
 
 .float-content{
@@ -698,6 +714,15 @@ select::after {
   height: 50px;
   padding: 0 20px;
   border: none;
+  border-radius: 0 6px 6px 6px;
+}
+
+.login-input{
+  width: 100%;
+  height: 50px;
+  padding: 0 20px;
+  border: none;
+  outline: none;
   border-radius: 0 6px 6px 6px;
 }
 
@@ -756,6 +781,21 @@ select::after {
   border-radius: 6px;
   margin: 0 15px;
   box-shadow: 0 7px 18px 1px rgba(0,0,0,0.1);
+}
+
+.login-container{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin: 10px 0!important;
+  border-radius: 6px;
+  margin: 0 15px;
+  box-shadow: 0 7px 18px 1px rgba(0,0,0,0.1);
+}
+
+.login-body{
+  flex-direction: column;
 }
 
 .title-input{
@@ -1046,6 +1086,10 @@ input[type=checkbox]:checked+.list {
 }
 
 @media screen and (max-width: 1222px) {
+  .float{
+    height: 49px;
+  }
+
   .container-gpt{
     flex-direction: column;
   }

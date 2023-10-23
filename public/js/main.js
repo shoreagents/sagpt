@@ -148,9 +148,9 @@ tinymce.init({
   selector: 'textarea#default',
   height: "100%",
   plugins:[
-      'advlist', 'autolink', 'link', 'image', 'lists', 'charmap', 'prewiew', 'anchor', 'pagebreak',
+      'advlist', 'autolink', 'link', 'image', 'lists', 'charmap', 'preview', 'anchor', 'pagebreak',
       'searchreplace', 'wordcount', 'visualblocks', 'code', 'fullscreen', 'insertdatetime', 'media', 
-      'table', 'emoticons', 'template', 'codesample', 'autosave', 'help', 'image', 'quickbars'
+      'table', 'emoticons', 'codesample', 'autosave', 'help', 'image', 'quickbars'
   ],
   editimage_toolbar: 'rotateleft rotateright | flipv fliph | editimage imageoptions',
   toolbar: 'undo redo | styles | bold italic underline | alignleft aligncenter alignright alignjustify |' + 
@@ -703,12 +703,6 @@ $('#regForm .generator-input').keyup(function() {
   }
 });
 
-fetch('https://www.shoreagents.com/wp-json/wp/v2/posts').then(function(response){
-    return response.json()
-}).then(function(posts){
-    console.log(posts)
-});
-
 fetch('https://www.shoreagents.com/wp-json/jwt-auth/v1/token',{
 method: "POST",
 headers:{
@@ -723,6 +717,28 @@ body:JSON.stringify({
 }).then(function(response){
     return response.json()
 }).then(function(user){
-    console.log(user.token)
-    // localStorage.setItem('jwt', user.token)
+    localStorage.setItem('jwt', user.token)
 });
+
+const addPostButton = document.querySelector('.float')
+addPostButton.addEventListener('click', () => addPost())
+function addPost() {
+  fetch('https://www.shoreagents.com/wp-json/wp/v2/posts',{
+      method: "POST",
+      headers: {
+          'Content-Type': 'application/json',
+          'accept': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('jwt')}`
+      },
+      body:JSON.stringify({
+          title: $("#default_ifr").contents().find(".article-title").html(),
+          content: $("#default_ifr").contents().find("body").clone().find("h1").remove().end().html(),
+          status: 'private'
+      })
+  }).then(function(response){
+      return response.json()
+  }).then(function(post){
+      console.log(post)
+  });
+}
+

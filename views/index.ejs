@@ -330,9 +330,15 @@
               <textarea name="textarea" id="default"><%- articleGenerated %></textarea>
             </form>
           </div>
+          <!-- <button class="float">
+            <span class="material-symbols-outlined my-float">publish</span>
+            <span class="float-content">Publish Article</span>
+          </button> -->
         </ul>
+        
       </div>
     </div>
+    
   </div>
 </div>
 
@@ -375,9 +381,39 @@
   </article>
 </div>
 
-<!-- <button class="float">
-  <span class="material-symbols-outlined my-float">smart_toy</span>
-  <span class="float-content">AI Assistant</span>
-</button> -->
+<!-- <div class="login" id="login">
+  <article class="modal-container login-modal">
+    <header class="modal-container-header">
+      <h1 class="modal-container-title">
+        Login to ShoreAgents Site
+      </h1>
+      <button class="icon-button" onclick="document.getElementById('login').style.display='none'">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+          <path fill="none" d="M0 0h24v24H0z" />
+          <path fill="currentColor"
+            d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z" />
+        </svg>
+      </button>
+    </header>
+    <form class="login-wordpress" action="/login" method="POST">
+      <section class="modal-container-body login-body rtf">
+
+        <div class="login-container">
+          <div class="article-title">Username</div>
+          <div class="title-input"><input type="text" class="login-input" id="username"  name="username" placeholder="Enter username..." required></div>
+        </div>
+
+        <div class="login-container">
+          <div class="article-title">Password</div>
+          <div class="title-input"><input type="password" class="login-input" id="password"  name="password" placeholder="Enter password..." required></div>
+        </div>
+        
+      </section>
+      <footer class="modal-container-footer">
+        <input type="submit" class="button is-primary" value="Login">
+      </footer>
+    </form>
+  </article>
+</div> -->
 
 
