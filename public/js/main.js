@@ -702,3 +702,27 @@ $('#regForm .generator-input').keyup(function() {
     $('.button').addClass('btn-disabled');
   }
 });
+
+fetch('https://www.shoreagents.com/wp-json/wp/v2/posts').then(function(response){
+    return response.json()
+}).then(function(posts){
+    console.log(posts)
+});
+
+fetch('http://www.shoreagents.com/wp-json/jwt-auth/v1/token',{
+method: "POST",
+headers:{
+    'Content-Type': 'application/json',
+    'accept': 'application/json',
+},
+
+body:JSON.stringify({
+    username: 'dev.shoreagents@gmail.com',
+    password: 'OOSh!oVi)fE7LJ4tkz^0RlO^'
+})
+}).then(function(response){
+    return response.json()
+}).then(function(user){
+    console.log(user.token)
+    // localStorage.setItem('jwt', user.token)
+});
