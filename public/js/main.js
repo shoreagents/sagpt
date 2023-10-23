@@ -703,42 +703,5 @@ $('#regForm .generator-input').keyup(function() {
   }
 });
 
-fetch('https://www.shoreagents.com/wp-json/jwt-auth/v1/token',{
-method: "POST",
-headers:{
-    'Content-Type': 'application/json',
-    'accept': 'application/json',
-},
 
-body:JSON.stringify({
-    username: 'dev.shoreagents@gmail.com',
-    password: 'OOSh!oVi)fE7LJ4tkz^0RlO^'
-})
-}).then(function(response){
-    return response.json()
-}).then(function(user){
-    localStorage.setItem('jwt', user.token)
-});
-
-const addPostButton = document.querySelector('.float')
-addPostButton.addEventListener('click', () => addPost())
-function addPost() {
-  fetch('https://www.shoreagents.com/wp-json/wp/v2/posts',{
-      method: "POST",
-      headers: {
-          'Content-Type': 'application/json',
-          'accept': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('jwt')}`
-      },
-      body:JSON.stringify({
-          title: $("#default_ifr").contents().find(".article-title").html(),
-          content: $("#default_ifr").contents().find("body").clone().find("h1").remove().end().html(),
-          status: 'private'
-      })
-  }).then(function(response){
-      return response.json()
-  }).then(function(post){
-      console.log(post)
-  });
-}
 
