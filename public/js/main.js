@@ -799,7 +799,7 @@ $(document).on('click', '.updatepost', function() {
 
   $(".my-float").text("autorenew");
   $(".float-content").text("Updating");
-  $(".float").css("background-color", "#c3db63");
+  $(".updatepost").css("background-color", "#c3db63");
   
   fetch('https://www.shoreagents.com/wp-json/wp/v2/posts/'+postID,{
       method: "PUT",
@@ -819,7 +819,7 @@ $(document).on('click', '.updatepost', function() {
   }).then(function(post){
       $(".my-float").text("update");
       $(".float-content").text("Update");
-      $(".float").css("background-color", "#7eac0b");
+      $(".updatepost").css("background-color", "#7eac0b");
       console.log("Article successfully updated.");
       console.log({post})
   });
