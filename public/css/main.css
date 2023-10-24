@@ -439,9 +439,8 @@ select::after {
   z-index: 10;
 }
 
-.login {
-  /* display: none; */
-  display: flex;
+.login{
+  display: none;
   position: absolute;
   top: 0;
   left: 0;
@@ -451,6 +450,17 @@ select::after {
   justify-content: center;
   background-color: rgba(0, 0, 0, 0.25);
   z-index: 10;
+}
+
+.error{
+  display: none;
+  color: #fff;
+  background-color: #de3c3c;
+  padding: 10px;
+  width: 100%;
+  text-align: center;
+  border-radius: 6px;
+  margin-bottom: 10px;
 }
 
 .query-modal .modal-container-header{
@@ -483,6 +493,20 @@ select::after {
 
 .login-modal{
   width: 40%;
+}
+
+@keyframes shake {
+  0% { transform: translate(1px, 1px) rotate(0deg); }
+  10% { transform: translate(-1px, -2px) rotate(-1deg); }
+  20% { transform: translate(-3px, 0px) rotate(1deg); }
+  30% { transform: translate(3px, 2px) rotate(0deg); }
+  40% { transform: translate(1px, -1px) rotate(1deg); }
+  50% { transform: translate(-1px, 2px) rotate(-1deg); }
+  60% { transform: translate(-3px, 1px) rotate(0deg); }
+  70% { transform: translate(3px, 1px) rotate(-1deg); }
+  80% { transform: translate(-1px, -1px) rotate(1deg); }
+  90% { transform: translate(1px, 2px) rotate(0deg); }
+  100% { transform: translate(1px, -2px) rotate(-1deg); }
 }
 
 @media (max-width: 600px) {
@@ -669,11 +693,55 @@ select::after {
 
 /* Floating button style */
 
+.tox .tox-statusbar__text-container.tox-statusbar__text-container-3-cols>.tox-statusbar__help-text, .tox .tox-statusbar__text-container.tox-statusbar__text-container-3-cols>.tox-statusbar__path, .tox .tox-statusbar__text-container.tox-statusbar__text-container-3-cols>.tox-statusbar__right-container{
+  flex: 0 0 calc(100% / 4) !important;
+}
+
+.login .modal-container-header{
+  background-color: #7eac0b;
+}
+
+.login .modal-container-title{
+  color: #fff;
+  font-weight: 700;
+}
+
+.login svg{
+  color: #FFF;
+}
+
+.loginbtn{
+  color: #7eac0b;
+}
+
+.tox .tox-statusbar__help-text{
+  visibility: hidden;
+}
+
 .float{
 	position: absolute;
   width: 230px;
   height: 60px;
   bottom: 0px;
+  right: 0;
+  background-color: #7eac0b;
+  color: #FFF;
+  text-align: center;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+  cursor: pointer;
+  border: none;
+}
+
+.updatepost{
+	position: absolute;
+  width: 230px;
+  height: 60px;
+  bottom: 0px;
+  right: 0;
   background-color: #7eac0b;
   color: #FFF;
   text-align: center;

@@ -703,5 +703,127 @@ $('#regForm .generator-input').keyup(function() {
   }
 });
 
+/* Publish and Update Private Article Script */
+
+function getCookie(jwt) {
+  let name = jwt + "=";
+  let decodedCookie = decodeURIComponent(document.cookie);
+  let ca = decodedCookie.split(';');
+  for(let i = 0; i <ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
+}
+
+var jwt = "jwt";
+var jwtToken = getCookie(jwt);
+var postID;
+
+$(document).on('click', '.float', function() {
+  $("#login").css("display", "flex");
+});
+
+$(document).on('click', '.loginbtn', function() {
+  var status;
+  try {
+    fetch('https://www.shoreagents.com/wp-json/jwt-auth/v1/token',{
+    method: "POST",
+    headers:{
+        'Content-Type': 'application/json',
+        'accept': 'application/json',
+    },
+
+    body:JSON.stringify({
+        username: $("#username").val(),
+        password: $("#password").val()
+    })
+    }).then(function(response){
+      status = response.status;
+      console.log("Status: "+response.status);
+      if (response.ok) {
+        return response.json();
+      }
+    }).then(function(user){
+        if (status == 200) {
+          document.cookie = "jwt="+user.token;
+          $("#login").css("display", "none");
+          console.log("Login Success");
+          $(".my-float").text("autorenew");
+          $(".float-content").text("Updating");
+          $(".float").css("background-color", "#c3db63");
+          fetch('https://www.shoreagents.com/wp-json/wp/v2/posts',{
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'accept': 'application/json',
+                'Authorization': `Bearer ${jwtToken}`
+            },
+            body:JSON.stringify({
+                title: $("#default_ifr").contents().find("h1").html(),
+                content: $("#default_ifr").contents().find("body").clone().find("h1").remove().end().html(),
+                author: 1,
+                status: 'private'
+            })
+        }).then(function(response){
+            return response.json()
+        }).then(function(post){
+            $(".my-float").text("update");
+            $(".float-content").text("Update");
+            $(".float").css("background-color", "#7eac0b");
+            $(".float").removeClass('float').addClass('updatepost');
+            postID = post.id;
+            console.log("Article successfully published as private.");
+        });
+        } else {
+          $(".error").css("display", "block");
+          $(".error").css('animation', "shake 0.5s")
+          $(".error").css('animation-iteration-count', "1")
+          console.log("Login Failed");
+        }
+    });
+    } catch (error) {
+      $(".error").css("display", "block");
+      $(".error").css('animation', "shake 0.5s")
+      $(".error").css('animation-iteration-count', "1")
+      console.log("Login Failed: "+error);
+    }
+});
+
+$(document).on('click', '.updatepost', function() {
+
+  $(".my-float").text("autorenew");
+  $(".float-content").text("Updating");
+  $(".float").css("background-color", "#c3db63");
+  
+  fetch('https://www.shoreagents.com/wp-json/wp/v2/posts/'+postID,{
+      method: "PUT",
+      headers: {
+          'Content-Type': 'application/json',
+          'accept': 'application/json',
+          'Authorization': `Bearer ${jwtToken}`
+      },
+      body:JSON.stringify({
+          title: $("#default_ifr").contents().find(".article-title").html(),
+          content: $("#default_ifr").contents().find("body").clone().find("h1").remove().end().html(),
+          author: 1,
+          status: 'private'
+      })
+  }).then(function(response){
+      return response.json()
+  }).then(function(post){
+      $(".my-float").text("update");
+      $(".float-content").text("Update");
+      $(".float").css("background-color", "#7eac0b");
+      console.log("Article successfully updated.");
+      console.log({post})
+  });
+});
+
 
 
