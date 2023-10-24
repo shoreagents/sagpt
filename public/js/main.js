@@ -757,6 +757,8 @@ $(document).on('click', '.loginbtn', function() {
           $(".my-float").text("autorenew");
           $(".float-content").text("Updating");
           $(".float").css("background-color", "#c3db63");
+          $(".float").css("pointer-events", "none");
+          $(".float").css("cursor", "not-allowed");
           fetch('https://www.shoreagents.com/wp-json/wp/v2/posts',{
             method: "POST",
             headers: {
@@ -776,6 +778,8 @@ $(document).on('click', '.loginbtn', function() {
             $(".my-float").text("update");
             $(".float-content").text("Update");
             $(".float").css("background-color", "#7eac0b");
+            $(".float").css("pointer-events", "all");
+            $(".float").css("cursor", "pointer");
             $(".float").removeClass('float').addClass('updatepost');
             postID = post.id;
             console.log("Article successfully published as private.");
@@ -800,6 +804,8 @@ $(document).on('click', '.updatepost', function() {
   $(".my-float").text("autorenew");
   $(".float-content").text("Updating");
   $(".updatepost").css("background-color", "#c3db63");
+  $(".updatepost").css("pointer-events", "none");
+  $(".updatepost").css("cursor", "not-allowed");
   
   fetch('https://www.shoreagents.com/wp-json/wp/v2/posts/'+postID,{
       method: "PUT",
@@ -820,6 +826,8 @@ $(document).on('click', '.updatepost', function() {
       $(".my-float").text("update");
       $(".float-content").text("Update");
       $(".updatepost").css("background-color", "#7eac0b");
+      $(".updatepost").css("pointer-events", "all");
+      $(".updatepost").css("cursor", "pointer");
       console.log("Article successfully updated.");
       console.log({post})
   });
