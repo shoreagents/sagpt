@@ -239,7 +239,7 @@ function nextPrev(n) {
     return false;
   }
   showTab(currentTab);
-  setTimeout(checkStatus, 3000);
+  // setTimeout(checkStatus, 3000);
 }
 
 

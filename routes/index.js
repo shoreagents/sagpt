@@ -183,10 +183,10 @@ router.post('/', async (req,res) =>{
       res.render('index', {data: sadata(txtPath), articleGenerated: output});
     } catch (error) {
       output = "There is an error on our server. Sorry for inconvenience. Please try again later.";
-      console.log(error);
-      res.status(204);
-      res.send();
-      // res.render('index', {data: sadata(txtPath), articleGenerated: output});
+      // console.log(error);
+      // res.status(204);
+      // res.send();
+      res.render('index', {data: sadata(txtPath), articleGenerated: output});
     }
   }
 })
