@@ -73,34 +73,38 @@ const createChatLi = (message, className) => {
 }
 
 const generateResponse = (chatElement) => {
-  
-    const API_URL = "/";
     const messageElement = chatElement.querySelector("p");
+    try {
+      const API_URL = "/";
+      
+      const requestOptions = {
+          method: "POST",
 
-    const requestOptions = {
-        method: "POST",
+          headers: {
+              "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+              userinput: userMessage,
+              tone: outputTone.textContent,
+              author: outputAuthor.textContent,
+              target: outputTarget.textContent,
+              perspective: outputPerspective.textContent,
+              customerObjective: outputCustomerObjective.textContent,
+              userAction: "ChatAI"
+          })
+      }
 
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            userinput: userMessage,
-            tone: outputTone.textContent,
-            author: outputAuthor.textContent,
-            target: outputTarget.textContent,
-            perspective: outputPerspective.textContent,
-            customerObjective: outputCustomerObjective.textContent,
-            userAction: "ChatAI"
-        })
+      fetch(API_URL, requestOptions).then(res => res.json()).then(data => {
+          messageElement.textContent = data.output;
+      }).catch((error) => {
+          messageElement.textContent = "Oops! Something went wrong. Please try again.";
+          messageElement.classList.add("error");
+          console.log(error);
+      }).finally(() => chatbox.scrollTo(0, chatbox.scrollHeight));
+    } catch (error) {
+      messageElement.textContent = "Oops! Something went wrong. Please try again.";
+      messageElement.classList.add("error");
     }
-
-    fetch(API_URL, requestOptions).then(res => res.json()).then(data => {
-        messageElement.textContent = data.output;
-    }).catch((error) => {
-        messageElement.classList.add("error");
-        messageElement.textContent = "Oops! Something went wrong. Please try again.";
-        console.log(error);
-    }).finally(() => chatbox.scrollTo(0, chatbox.scrollHeight));
 }
 
 const handleChat = () => {
@@ -119,12 +123,22 @@ const handleChat = () => {
         chatbox.scrollTo(0, chatbox.scrollHeight);
         generateResponse(incomingChatLi);
     }, 600);
-    document.querySelector('.gpt-answer').removeAttribute('class');
-    document.querySelector('.copy-to-clipboard').removeAttribute('class');
-    document.querySelector('#copyClipboard').removeAttribute('id');
-    document.querySelector('.copy-button').style.display = "none";
-    document.querySelector('.copy-button').removeAttribute('class');
-    var text = document.getElementById("gptAnswer").removeAttribute('id');;
+    if (document.querySelector('.gpt-answer')) {
+      document.querySelector('.gpt-answer').removeAttribute('class');
+    }
+    if (document.querySelector('.copy-to-clipboard')) {
+      document.querySelector('.copy-to-clipboard').removeAttribute('class');
+    }
+    if (document.querySelector('#copyClipboard')) {
+      document.querySelector('#copyClipboard').removeAttribute('id');
+    }
+    if (document.querySelector('.copy-button')) {
+      document.querySelector('.copy-button').style.display = "none";
+      document.querySelector('.copy-button').removeAttribute('class');
+    }
+    if (document.getElementById("gptAnswer")) {
+      document.getElementById("gptAnswer").removeAttribute('id');
+    }
 }
 
 chatInput.addEventListener("input", () => {
