@@ -164,6 +164,7 @@ router.post('/', async (req,res) =>{
 
     try {
       for (let i = 0; i < data.length; i++) {
+        // throw new Error('Uh oh!');
         var articleHeading = data[i][1].title;
         var articleTopic = "Article Heading: "+articleHeading+"\n\nSubheadings:\n";
         var query = listquery[i];
@@ -178,13 +179,15 @@ router.post('/', async (req,res) =>{
         const createArticle = await articleGenerator(articleTopic, query, articleTitle, articleKeyword, perspectiveOutput, toneOutput, targetOutput, authorOutput,customerObjectiveOutput);
         output += `\n\n<h2>${articleHeading}</h2>\n${createArticle}`;
       }
+      console.log(output);
+      res.render('index', {data: sadata(txtPath), articleGenerated: output});
     } catch (error) {
-      output = "There is an error on our server. Sorry for inconvenience. Please try again later."
+      output = "There is an error on our server. Sorry for inconvenience. Please try again later.";
+      console.log(error);
+      res.status(204);
+      res.send();
+      // res.render('index', {data: sadata(txtPath), articleGenerated: output});
     }
-
-    console.log(output);
-
-    res.render('index', {data: sadata(txtPath), articleGenerated: output});
   }
 })
 

@@ -221,6 +221,13 @@ function showTab(n) {
   fixStepIndicator(n)
 }
 
+function checkStatus() {
+  fetch('/').then((response)=>{
+    console.log({response});
+    document.getElementById("myNav").style.display = "none";
+  })
+}
+
 function nextPrev(n) {
   var x = document.getElementsByClassName("tab");
   if (n == 1 && !validateForm()) return false;
@@ -232,7 +239,9 @@ function nextPrev(n) {
     return false;
   }
   showTab(currentTab);
+  setTimeout(checkStatus, 3000);
 }
+
 
 function validateForm() {
   var x, y, i, valid = true;
