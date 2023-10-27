@@ -295,6 +295,7 @@ function articleResponse() {
         $("#server-notice span").text("Article Generated Successfully.");
         document.getElementById("myNav").style.display = "none";
         document.getElementById("server-notice").style.display = "flex";
+        setTimeout(function(){ document.getElementById("server-notice").style.display = "none"; }, 6000);
       }
     }).catch((error) => {
       $("#server-notice").addClass("error").removeClass("success");
@@ -344,33 +345,6 @@ function showTab(n) {
   }
   fixStepIndicator(n)
 }
-
-// function getCookie(name) {
-//   const value = `; ${document.cookie}`;
-//   const parts = value.split(`; ${name}=`);
-//   if (parts.length === 2) return parts.pop().split(';').shift();
-// }
-
-// function deleteCookie(name) {
-//   if( getCookie(name) ) {
-//     document.cookie = name + "=" +
-//       ";expires=Thu, 01 Jan 1970 00:00:01 GMT";
-//   }
-// }
-
-// setInterval(function() {
-//   fetch('/').then((response)=>{
-//     const error = "error";
-//     var errorcheck = getCookie(error);
-//     if (errorcheck == "openai server error") {
-//       document.getElementById("myNav").style.display = "none";
-//       document.getElementById("server-error").style.display = "flex";
-//       errorcheck = deleteCookie(error);
-//       console.log("Cookie deleted.")
-//     }
-//   });
-// }, 60 * 1000);
-
 
 function nextPrev(n) {
   var x = document.getElementsByClassName("tab");
