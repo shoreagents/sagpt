@@ -124,27 +124,27 @@ router.post('/', async (req,res) =>{
     var perspectiveOutput = "";
     var customerObjectiveOutput = "";
 
-    if (tone === undefined){
+    if (tone == "Select Tone/Personality"){
       var toneOutput = "";
     } else if (tone != "None") {
       toneOutput = `You are in ${tone} personality, so you will answer with the given subtones of that personality.`;
     } 
-    if (author === undefined){
+    if (author == "Select Author"){
       var authorOutput = "";
     } else if (author != "None") {
       authorOutput = `The author is ${author}.`;
     } 
-    if (target === undefined){
+    if (target ==  "Select Target Market"){
       var targetOutput = "";
     } else if (target != "None") {
       targetOutput = `Your Target Market will be ${target}.`;
     }
-    if (perspective === undefined){
+    if (perspective == "Select Perspective"){
       var perspectiveOutput = "";
     } else if (perspective != "None") {
       perspectiveOutput = `You are in perspective of ${perspective}.`;
     }
-    if (customerObjective === undefined){
+    if (customerObjective == "Select Customer Objective"){
       var customerObjectiveOutput = "";
     } else if (customerObjective != "None") {
       customerObjectiveOutput = `The selected Customer Objective is ${customerObjective}.`;
@@ -184,7 +184,6 @@ router.post('/', async (req,res) =>{
     } catch (error) {
       output = "There is an error on our server. Sorry for inconvenience. Please try again later.";
       console.log(output+" | "+error);
-      // res.cookie('error', 'openai server error');
       res.send({output});
     }
   }
