@@ -463,6 +463,46 @@ select::after {
   margin-bottom: 10px;
 }
 
+.success{
+  display: none;
+  color: #fff;
+  background-color: #97BC34;
+  padding: 10px;
+  width: 100%;
+  text-align: center;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+
+.server-notice-container{
+  display: flex;
+  justify-content: center;
+  position: relative;
+  z-index: 10;
+  width: 100%;
+}
+
+#server-notice{
+  align-items: center;
+  position: relative;
+  border-radius: 0;
+  max-width: 100%;
+  margin: 0;
+}
+
+#server-notice span{
+  width: 95%;
+}
+
+#server-notice button{
+  width: 5%;
+  height: auto;
+}
+
+#server-notice svg{
+  color: #fff;
+}
+
 .query-modal .modal-container-header{
   background: #97BC34 !important;
 }
@@ -510,6 +550,9 @@ select::after {
 }
 
 @media (max-width: 600px) {
+  .instruction{
+    margin-top: 30px;
+  }
   .modal-container {
     width: 90%;
  }

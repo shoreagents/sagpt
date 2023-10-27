@@ -152,8 +152,6 @@ chatInput.addEventListener("keydown", (e) => {
         handleChat();
     }
 });
-
-
 sendChatBtn.addEventListener("click", handleChat);
 
 /* Tiny WYSIWYG Script */
@@ -202,6 +200,118 @@ tinymce.init({
   content_style: 'body{ font-family:Montserrat,sans-serif; font-size:16px}'
 });
 
+/* Article Generate Response Script */
+
+function articleResponse() {
+  const messageElement = document.getElementById('articleGenerated');
+  const articletitle = document.getElementById('articletitle').value;
+  const heading = document.getElementsByClassName('heading');
+  const subheading = document.getElementsByClassName('subheadings');
+  var tone = document.getElementById('articleTone');
+  var outputTone = document.getElementById('outputTone');
+  tone.onchange = function() {
+    outputTone.innerHTML = this.options[this.selectedIndex].getAttribute('value');
+  };
+  tone.onchange();
+
+  var author = document.getElementById('articleAuthor');
+  var outputAuthor = document.getElementById('outputAuthor');
+  author.onchange = function() {
+    outputAuthor.innerHTML = this.options[this.selectedIndex].getAttribute('value');
+  };
+  author.onchange();
+
+  var target = document.getElementById('articleTarget');
+  var outputTarget = document.getElementById('outputTarget');
+  target.onchange = function() {
+    outputTarget.innerHTML = this.options[this.selectedIndex].getAttribute('value');
+  };
+  target.onchange();
+
+  var perspective = document.getElementById('articlePerspective');
+  var outputPerspective = document.getElementById('outputPerspective');
+  perspective.onchange = function() {
+    outputPerspective.innerHTML = this.options[this.selectedIndex].getAttribute('value');
+  };
+  perspective.onchange();
+
+  var customerObjective = document.getElementById('articleCO');
+  var outputCustomerObjective = document.getElementById('outputCustomerObjective');
+  customerObjective.onchange = function() {
+    outputCustomerObjective.innerHTML = this.options[this.selectedIndex].getAttribute('value');
+  };
+  customerObjective.onchange();
+  const keyword = document.getElementById('keyword').value;
+  const listquery = document.getElementsByClassName('listquery');
+  var headingArr = [];
+  var subheadingArr = [];
+  var listqueryArr = [];
+  for (let i = 0; i < heading.length; i++) {
+    var value = document.getElementsByClassName('heading')[i].value;
+    headingArr.push(value);
+  }
+  for (let i = 0; i < subheading.length; i++) {
+    var value = document.getElementsByClassName('subheadings')[i].value;
+    subheadingArr.push(value);
+  }
+  for (let i = 0; i < listquery.length; i++) {
+    var value = document.getElementsByClassName('listquery')[i].value;
+    listqueryArr.push(value);
+  }
+  try {
+    const API_URL = "/";
+    const requestOptions = {
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            articletitle: articletitle,
+            heading: headingArr,
+            subheading: subheadingArr,
+            tone: outputTone.textContent,
+            author: outputAuthor.textContent,
+            target: outputTarget.textContent,
+            perspective: outputPerspective.textContent,
+            customerObjective: outputCustomerObjective.textContent,
+            keyword: keyword,
+            listquery: listqueryArr,
+            userAction: "ArticleGenerator"
+        })
+    }
+    fetch(API_URL, requestOptions).then(res => res.json()).then(data => {
+      if (data.output == "There is an error on our server. Sorry for inconvenience. Please try again later.") {
+        $("#server-notice").addClass("error").removeClass("success");
+        $("#server-notice span").text("There is an error on our server. Sorry for inconvenience. Please try again later.");
+        document.getElementById("myNav").style.display = "none";
+        document.getElementById("server-notice").style.display = "flex";
+      } else {
+        var $iframe = $('#default_ifr');
+        $iframe.ready(function() {
+            $iframe.contents().find("body").append(data.output);
+        });
+        $("#server-notice").addClass("success").removeClass("error");
+        $("#server-notice span").text("Article Generated Successfully.");
+        document.getElementById("myNav").style.display = "none";
+        document.getElementById("server-notice").style.display = "flex";
+      }
+    }).catch((error) => {
+      $("#server-notice").addClass("error").removeClass("success");
+      $("#server-notice span").text("Oops! Something went wrong. Please try again.");
+      document.getElementById("myNav").style.display = "none";
+      document.getElementById("server-notice").style.display = "flex";
+      console.log(error);
+    }).finally(() => chatbox.scrollTo(0, chatbox.scrollHeight));
+  } catch (error) {
+    $("#server-notice").addClass("error").removeClass("success");
+    $("#server-notice span").text("Oops! Something went wrong. Please try again.");
+    document.getElementById("myNav").style.display = "none";
+    document.getElementById("server-notice").style.display = "flex";
+    console.log(error);
+  }
+}
+
 /* Step Script */
 
 document.querySelectorAll('.heading-list input[type="checkbox"]').forEach(function(checkbox) {
@@ -235,12 +345,32 @@ function showTab(n) {
   fixStepIndicator(n)
 }
 
-function checkStatus() {
-  fetch('/').then((response)=>{
-    console.log({response});
-    document.getElementById("myNav").style.display = "none";
-  })
-}
+// function getCookie(name) {
+//   const value = `; ${document.cookie}`;
+//   const parts = value.split(`; ${name}=`);
+//   if (parts.length === 2) return parts.pop().split(';').shift();
+// }
+
+// function deleteCookie(name) {
+//   if( getCookie(name) ) {
+//     document.cookie = name + "=" +
+//       ";expires=Thu, 01 Jan 1970 00:00:01 GMT";
+//   }
+// }
+
+// setInterval(function() {
+//   fetch('/').then((response)=>{
+//     const error = "error";
+//     var errorcheck = getCookie(error);
+//     if (errorcheck == "openai server error") {
+//       document.getElementById("myNav").style.display = "none";
+//       document.getElementById("server-error").style.display = "flex";
+//       errorcheck = deleteCookie(error);
+//       console.log("Cookie deleted.")
+//     }
+//   });
+// }, 60 * 1000);
+
 
 function nextPrev(n) {
   var x = document.getElementsByClassName("tab");
@@ -248,14 +378,14 @@ function nextPrev(n) {
   x[currentTab].style.display = "none";
   currentTab = currentTab + n;
   if (currentTab >= x.length) {
-    document.getElementById("regForm").submit();
     document.getElementById("myNav").style.display = "block";
+    showTab(currentTab-1);
+    articleResponse();
+    currentTab = 1;
     return false;
   }
   showTab(currentTab);
-  // setTimeout(checkStatus, 3000);
 }
-
 
 function validateForm() {
   var x, y, i, valid = true;

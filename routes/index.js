@@ -34,7 +34,7 @@ router.post('/updatedata', async (req,res) =>{
 
 router.get('/', async (req,res) =>{
   updateData();
-  res.render('index', {data: sadata(txtPath), articleGenerated: ""});
+  res.render('index', {data: sadata(txtPath)});
 })
 
 router.post('/', async (req,res) =>{
@@ -85,6 +85,7 @@ router.post('/', async (req,res) =>{
       output = await runWithEmbeddings(question, perspectiveOutput, toneOutput, targetOutput, authorOutput,customerObjectiveOutput);
     } catch (error) {
       output = "There is an error on our server. Sorry for inconvenience. Please try again later."
+      console.log(error);
       console.log(output);
     }
     res.send({output});
@@ -164,7 +165,6 @@ router.post('/', async (req,res) =>{
 
     try {
       for (let i = 0; i < data.length; i++) {
-        // throw new Error('Uh oh!');
         var articleHeading = data[i][1].title;
         var articleTopic = "Article Heading: "+articleHeading+"\n\nSubheadings:\n";
         var query = listquery[i];
@@ -180,13 +180,12 @@ router.post('/', async (req,res) =>{
         output += `\n\n<h2>${articleHeading}</h2>\n${createArticle}`;
       }
       console.log(output);
-      res.render('index', {data: sadata(txtPath), articleGenerated: output});
+      res.send({output});
     } catch (error) {
       output = "There is an error on our server. Sorry for inconvenience. Please try again later.";
-      // console.log(error);
-      // res.status(204);
-      // res.send();
-      res.render('index', {data: sadata(txtPath), articleGenerated: output});
+      console.log(output+" | "+error);
+      // res.cookie('error', 'openai server error');
+      res.send({output});
     }
   }
 })

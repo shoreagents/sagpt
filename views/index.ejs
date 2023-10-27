@@ -1,3 +1,15 @@
+<div class="server-notice-container">
+  <p class="error notice" id="server-notice">
+    <span>There is an error on our server. Sorry for inconvenience. Please try again later.</span>
+    <button class="icon-button" onclick="document.getElementById('server-notice').style.display='none'">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+        <path fill="none" d="M0 0h24v24H0z" />
+        <path fill="currentColor"
+          d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z" />
+      </svg>
+    </button>
+  </p>  
+</div>
 <div class="container-gpt">
   <div class="generator-outer">
     <div class="chatbot tabs-section">
@@ -139,7 +151,7 @@
 
             <li class="tab-content tab-content-3 typography">
 
-              <form id="regForm" action="/" method="POST">
+              <form id="regForm">
                 <input type="hidden" name="userAction" id="userAction" value="ArticleGenerator">
                 <div class="tab">
                   <p class="instruction ins-1">* Article Title and Focus Keyword is required, make sure to add content.</p>
@@ -204,7 +216,7 @@
                         <div class="column">
                           <div for="customerObjective" class="hide" id="outputCustomerObjective"></div>
                           <label for="customerObjective">Customer Objectives</label>
-                          <select name="customerObjective" id="customerObjective">
+                          <select name="customerObjective" id="articleCO">
                             <option class="selected" value="Select Customer Objective" disabled selected>Select Customer Objective
                             </option>
                             <option value="None">None</option>
@@ -229,7 +241,7 @@
                         <div class="column">
                           <div for="tone" class="hide" id="outputTone"></div>
                           <label for="tone" class="firstlabel">Tone/Personality</label>
-                          <select name="tone" id="tone">
+                          <select name="tone" id="articleTone">
                             <option class="selected" value="Select Tone/Personality" disabled selected>Select Tone/Personality
                             </option>
                             <option value="None">Standard</option>
@@ -256,7 +268,7 @@
                         <div class="column">
                           <div for="target" class="hide" id="outputTarget"></div>
                           <label for="target">Target Market</label>
-                          <select name="target" id="target">
+                          <select name="target" id="articleTarget">
                             <option class="selected" value="Select Target Market" disabled selected>Select Target Market</option>
                             <option value="None">None</option>
                             <option value="Property Management">Property Management</option>
@@ -275,7 +287,7 @@
                         <div class="column">
                           <div for="author" class="hide" id="outputAuthor"></div>
                           <label for="author">Author</label>
-                          <select name="author" id="author">
+                          <select name="author" id="articleAuthor">
                             <option class="selected" value="Select Author" disabled selected>Select Author</option>
                             <option value="None">None</option>
                             <option value="Stephen Atcheler">Stephen Atcheler</option>
@@ -287,7 +299,7 @@
                         <div class="column">
                           <div for="perspective" class="hide" id="outputPerspective"></div>
                           <label for="perspective">Perspective</label>
-                          <select name="perspective" id="perspective">
+                          <select name="perspective" id="articlePerspective">
                             <option class="selected" value="Select Perspective" disabled selected>Select Perspective</option>
                             <option value="Stephen Atcheler">Stephen Atcheler</option>
                             <option value="Kevin Macabanti">Kevin Macabanti</option>
@@ -327,7 +339,7 @@
         <ul class="chatbox user-textarea">
           <div class="user-input">
             <form action="" method="post">
-              <textarea name="textarea" id="default"><%- articleGenerated %></textarea>
+              <textarea name="textarea" id="default"></textarea>
             </form>
           </div>
           <button class="float">
@@ -375,7 +387,7 @@
         <textarea type="textarea" name="database" id="database" cols="50" rows="20"><%- data %></textarea>
       </section>
       <footer class="modal-container-footer">
-        <input type="submit" class="button is-primary" value="Update">
+        <button class="button is-primary">Update</button>
       </footer>
     </form>
   </article>
