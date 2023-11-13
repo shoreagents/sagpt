@@ -832,24 +832,6 @@ $('#regForm .generator-input').keyup(function() {
 
 /* Publish and Update Private Article Script */
 
-function getCookie(jwt) {
-  let name = jwt + "=";
-  let decodedCookie = decodeURIComponent(document.cookie);
-  let ca = decodedCookie.split(';');
-  for(let i = 0; i <ca.length; i++) {
-    let c = ca[i];
-    while (c.charAt(0) == ' ') {
-      c = c.substring(1);
-    }
-    if (c.indexOf(name) == 0) {
-      return c.substring(name.length, c.length);
-    }
-  }
-  return "";
-}
-
-var jwt = "jwt";
-var jwtToken = getCookie(jwt);
 var postID;
 
 $(document).on('click', '.float', function() {
@@ -878,7 +860,6 @@ $(document).on('click', '.loginbtn', function() {
       }
     }).then(function(user){
         if (status == 200) {
-          document.cookie = "jwt="+user.token;
           $("#login").css("display", "none");
           console.log("Login Success");
           $(".my-float").text("autorenew");
@@ -891,7 +872,7 @@ $(document).on('click', '.loginbtn', function() {
             headers: {
                 'Content-Type': 'application/json',
                 'accept': 'application/json',
-                'Authorization': `Bearer ${jwtToken}`
+                'Authorization': `Bearer ${user.token}`
             },
             body:JSON.stringify({
                 title: $("#default_ifr").contents().find("h1").html(),

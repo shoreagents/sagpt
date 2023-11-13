@@ -754,7 +754,20 @@ select::after {
 }
 
 .loginbtn{
+  padding: 12px 20px;
+  border-radius: 8px;
+  margin: auto;
   color: #7eac0b;
+  background-color: transparent;
+  border: 2px solid #7eac0b;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.15s ease;
+}
+
+.loginbtn:hover{
+  background-color: #7eac0b;
+  color: #fff;
 }
 
 .tox .tox-statusbar__help-text{
