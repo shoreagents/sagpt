@@ -385,10 +385,11 @@ function fixStepIndicator(n) {
   x[n].className += " active";
 }
 
-var checkboxes = [];
 $("#nextBtn").hide();
 
 /* Add Headings Script */
+
+var checkboxes = [];
 
 $('.add-list-container').on('click', function() {
 
@@ -398,9 +399,10 @@ $('.add-list-container').on('click', function() {
   }
 
   document.querySelectorAll('.heading').forEach(function(checkbox) {
-    var idcheckbox = checkbox.id;
-    var lastChar = idcheckbox.substr(idcheckbox.length - 1);
-    var end = parseInt(lastChar);
+    var regex = /\d+/g;
+    var string = checkbox.id;
+    var matches = string.match(regex);
+    var end = parseInt(matches);
     checkboxes.push(end);
   });
   checkboxes.sort(function(a, b) {
@@ -413,8 +415,13 @@ $('.add-list-container').on('click', function() {
   var newHeadingText;
   var headingslength = headings.length + 1;
   var listnum;
+
   for (let i = 0; i < headingslength; i++) {
     var num = i + 1;
+    console.log("HEADING: "+headingslength);
+    console.log("CHECKBOXES: "+checkboxes);
+    console.log(num);
+    console.log(checkboxes[i]);
     if (num != checkboxes[i]) {
       newId = "heading" + num;
       newSpan = "New Heading " + num;
