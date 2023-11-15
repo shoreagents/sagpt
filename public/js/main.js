@@ -1,3 +1,8 @@
+/* Select Multiple Script */
+
+new MultiSelectTag('articleTarget');
+new MultiSelectTag('target');
+
 /* Onchange Script */
 
 var tone = document.getElementById('tone');
@@ -13,13 +18,6 @@ author.onchange = function() {
   outputAuthor.innerHTML = this.options[this.selectedIndex].getAttribute('value');
 };
 author.onchange();
-
-var target = document.getElementById('target');
-var outputTarget = document.getElementById('outputTarget');
-target.onchange = function() {
-  outputTarget.innerHTML = this.options[this.selectedIndex].getAttribute('value');
-};
-target.onchange();
 
 var perspective = document.getElementById('perspective');
 var outputPerspective = document.getElementById('outputPerspective');
@@ -73,6 +71,8 @@ const createChatLi = (message, className) => {
 }
 
 const generateResponse = (chatElement) => {
+
+    const outputTarget = $("#targetOptions").val();
     const messageElement = chatElement.querySelector("p");
     try {
       const API_URL = "/";
@@ -87,7 +87,7 @@ const generateResponse = (chatElement) => {
               userinput: userMessage,
               tone: outputTone.textContent,
               author: outputAuthor.textContent,
-              target: outputTarget.textContent,
+              target: outputTarget,
               perspective: outputPerspective.textContent,
               customerObjective: outputCustomerObjective.textContent,
               userAction: "ChatAI"
@@ -108,6 +108,9 @@ const generateResponse = (chatElement) => {
 }
 
 const handleChat = () => {
+    var values = Array.from(document.querySelectorAll(".tab-content-2 .item-label")).map(t => t.innerText)
+    $('#targetOptions').val(values);
+    values = [];
     userMessage = chatInput.value.trim(); 
     if(!userMessage) return;
 
@@ -221,13 +224,6 @@ function articleResponse() {
   };
   author.onchange();
 
-  var target = document.getElementById('articleTarget');
-  var outputTarget = document.getElementById('outputTarget');
-  target.onchange = function() {
-    outputTarget.innerHTML = this.options[this.selectedIndex].getAttribute('value');
-  };
-  target.onchange();
-
   var perspective = document.getElementById('articlePerspective');
   var outputPerspective = document.getElementById('outputPerspective');
   perspective.onchange = function() {
@@ -260,6 +256,7 @@ function articleResponse() {
   }
   try {
     const API_URL = "/";
+    const outputTarget = $("#articleTargetOptions").val();
     const requestOptions = {
         method: "POST",
 
@@ -272,7 +269,7 @@ function articleResponse() {
             subheading: subheadingArr,
             tone: outputTone.textContent,
             author: outputAuthor.textContent,
-            target: outputTarget.textContent,
+            target: outputTarget,
             perspective: outputPerspective.textContent,
             customerObjective: outputCustomerObjective.textContent,
             keyword: keyword,
@@ -353,6 +350,9 @@ function nextPrev(n) {
   currentTab = currentTab + n;
   if (currentTab >= x.length) {
     document.getElementById("myNav").style.display = "block";
+    var values = Array.from(document.querySelectorAll(".tab-content-3 .item-label")).map(t => t.innerText)
+    $('#articleTargetOptions').val(values);
+    values = [];
     showTab(currentTab-1);
     articleResponse();
     currentTab = 1;
@@ -363,17 +363,17 @@ function nextPrev(n) {
 
 function validateForm() {
   var x, y, i, valid = true;
-  x = document.getElementsByClassName("tab");
-  y = x[currentTab].getElementsByTagName("input");
-  for (i = 0; i < y.length; i++) {
-    if (y[i].value == "") {
-      y[i].className += " invalid";
-      valid = false;
-    }
-  }
-  if (valid) {
+  // x = document.getElementsByClassName("tab");
+  // y = x[currentTab].getElementsByTagName("input");
+  // for (i = 0; i < y.length; i++) {
+  //   if (y[i].value == "") {
+  //     y[i].className += " invalid";
+  //     valid = false;
+  //   }
+  // }
+  // if (valid) {
     document.getElementsByClassName("step")[currentTab].className += " finish";
-  }
+  // }
   return valid; 
 }
 
@@ -386,6 +386,18 @@ function fixStepIndicator(n) {
 }
 
 $("#nextBtn").hide();
+
+$('.tab-content-3 .input-container').on('click', function() {
+  if ( $('.tab-content-3 .input-container').children().length == 0 ) {
+    $("#nextBtn").addClass('btn-disabled');
+   }
+});
+
+$('.drawer ul').on('click', function() {
+  if ( $('.tab-content-3 .input-container').children().length > 0 ) {
+    $("#nextBtn").removeClass('btn-disabled');
+  }
+});
 
 /* Add Headings Script */
 
@@ -418,10 +430,6 @@ $('.add-list-container').on('click', function() {
 
   for (let i = 0; i < headingslength; i++) {
     var num = i + 1;
-    console.log("HEADING: "+headingslength);
-    console.log("CHECKBOXES: "+checkboxes);
-    console.log(num);
-    console.log(checkboxes[i]);
     if (num != checkboxes[i]) {
       newId = "heading" + num;
       newSpan = "New Heading " + num;
@@ -947,6 +955,3 @@ $(document).on('click', '.updatepost', function() {
       console.log({post})
   });
 });
-
-
-

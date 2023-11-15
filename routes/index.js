@@ -67,12 +67,12 @@ router.post('/', async (req,res) =>{
     if (target ==  "Select Target Market"){
       var targetOutput = "";
     } else if (target != "None") {
-      targetOutput = `Your Target Market will be ${target}.`;
+      targetOutput = `Your Target Market/s will be ${target}.`;
     }
     if (perspective == "Select Perspective"){
       var perspectiveOutput = "";
     } else if (perspective != "None") {
-      perspectiveOutput = `You are in perspective of ${perspective}.`;
+      perspectiveOutput = `You will write in ${perspective} writing perspective.`;
     }
     if (customerObjective == "Select Customer Objective"){
       var customerObjectiveOutput = "";
@@ -137,12 +137,12 @@ router.post('/', async (req,res) =>{
     if (target ==  "Select Target Market"){
       var targetOutput = "";
     } else if (target != "None") {
-      targetOutput = `Your Target Market will be ${target}.`;
+      targetOutput = `Your Target Market/s will be ${target}.`;
     }
     if (perspective == "Select Perspective"){
       var perspectiveOutput = "";
     } else if (perspective != "None") {
-      perspectiveOutput = `You are in perspective of ${perspective}.`;
+      perspectiveOutput = `You will write in ${perspective} writing perspective.`;
     }
     if (customerObjective == "Select Customer Objective"){
       var customerObjectiveOutput = "";
@@ -212,7 +212,7 @@ export const runWithEmbeddings = async (question, perspectiveOutput, toneOutput,
     await vectorStore.save(VECTOR_STORE_PATH);
   }
 
-  const userprompt = `You are a helpful assistant. ${perspectiveOutput} ${toneOutput} ${authorOutput} ${targetOutput} ${perspectiveOutput} ${customerObjectiveOutput}` + `Question: ${question}`
+  const userprompt = `You are a helpful assistant. ${perspectiveOutput} ${toneOutput} ${authorOutput} ${targetOutput} ${customerObjectiveOutput}` + `Question: ${question}`
 
   const fasterModel = new ChatOpenAI({
     temperature:0.7,
@@ -259,7 +259,7 @@ export const articleGenerator = async (question, query, title, keyword, perspect
     await vectorStore.save(VECTOR_STORE_PATH);
   }
 
-  const userprompt = `You are a content writer and will draft HTML formatted articles where at the start of every paragraph you will add '<p>' and must end with '</p>', it will be the same with Subheadings but with '<h3>' and '</h3>', and your responsibility is to elaborate on the provided heading title. "PLEASE DO NOT CREATE AN ENTIRE ARTICLE." ${perspectiveOutput} ${toneOutput} ${authorOutput} ${targetOutput} ${perspectiveOutput} ${customerObjectiveOutput}` + ` Expand this outline using the article title "${title}", and the focus keyword "${keyword}". The article outline: ${question}.
+  const userprompt = `You are a content writer and will draft HTML formatted articles where at the start of every paragraph you will add '<p>' and must end with '</p>', it will be the same with Subheadings but with '<h3>' and '</h3>', and your responsibility is to elaborate on the provided heading title. "PLEASE DO NOT CREATE AN ENTIRE ARTICLE." ${perspectiveOutput} ${toneOutput} ${authorOutput} ${targetOutput} ${customerObjectiveOutput}` + ` Expand this outline using the article title "${title}", and the focus keyword "${keyword}". The article outline: ${question}.
 
   Instructions:
   ${query}

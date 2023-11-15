@@ -33,7 +33,7 @@
                 </li>
               </ul>
               <div class="chat-input">
-                <textarea placeholder="Enter target keyword here..." required></textarea>
+                <textarea placeholder="Ask questions here..." required></textarea>
                 <span id="send-btn" class="material-symbols-rounded">send</span>
               </div>
             </li>
@@ -95,12 +95,11 @@
                   </div>
                   <div class="row">
                     <div class="column">
-                      <div for="target" class="hide" id="outputTarget"></div>
+                      <input type="hidden" name="targetOptions" id="targetOptions">
                       <label for="target">Target Market</label>
-                      <select name="target" id="target">
-                        <option class="selected" value="Select Target Market" disabled selected>Select Target Market</option>
-                        <option value="None">None</option>
-                        <option value="Property Management">Property Management</option>
+                      <select name="target" id="target" multiple>
+                        <option value="None" selected>None</option>
+                        <option value="Property Management" >Property Management</option>
                         <option value="Real Estate Sales">Real Estate Sales</option>
                         <option value="Property Development">Property Development</option>
                         <option value="Construction Companies">Construction Companies</option>
@@ -131,8 +130,13 @@
                       <select name="perspective" id="perspective">
                         <option class="selected" value="Select Perspective" disabled selected>Select Perspective</option>
                         <option value="None">None</option>
-                        <option value="Stephen Atcheler">Stephen Atcheler</option>
-                        <option value="Kevin Macabanti">Kevin Macabanti</option>
+                        <option value="First Person">First Person</option>
+                        <option value="Second Person">Second Person</option>
+                        <option value="Third Person Limited">Third Person Limited</option>
+                        <option value="Third Person Omniscient">Third Person Omniscient</option>
+                        <option value="Objective/Narrative">Objective/Narrative</option>
+                        <option value="Multiple Perspectives">Multiple Perspectives</option>
+                        <option value="Impersonal/Analytical">Impersonal/Analytical</option>
                       </select>
                     </div>
                   </div>
@@ -266,11 +270,10 @@
                       </div>
                       <div class="row">
                         <div class="column">
-                          <div for="target" class="hide" id="outputTarget"></div>
+                          <input type="hidden" name="articleTargetOptions" id="articleTargetOptions" required>
                           <label for="target">Target Market</label>
-                          <select name="target" id="articleTarget">
-                            <option class="selected" value="Select Target Market" disabled selected>Select Target Market</option>
-                            <option value="None">None</option>
+                          <select name="target" id="articleTarget" multiple>
+                            <option value="None" selected>None</option>
                             <option value="Property Management">Property Management</option>
                             <option value="Real Estate Sales">Real Estate Sales</option>
                             <option value="Property Development">Property Development</option>
@@ -297,12 +300,18 @@
                       </div>
                       <div class="row">
                         <div class="column">
-                          <div for="perspective" class="hide" id="outputPerspective"></div>
+                          <input type="hidden" name="targetOptions" id="targetOptions" value="hello">
                           <label for="perspective">Perspective</label>
                           <select name="perspective" id="articlePerspective">
                             <option class="selected" value="Select Perspective" disabled selected>Select Perspective</option>
-                            <option value="Stephen Atcheler">Stephen Atcheler</option>
-                            <option value="Kevin Macabanti">Kevin Macabanti</option>
+                            <option value="None">None</option>
+                            <option value="First Person">First Person</option>
+                            <option value="Second Person">Second Person</option>
+                            <option value="Third Person Limited">Third Person Limited</option>
+                            <option value="Third Person Omniscient">Third Person Omniscient</option>
+                            <option value="Objective/Narrative">Objective/Narrative</option>
+                            <option value="Multiple Perspectives">Multiple Perspectives</option>
+                            <option value="Impersonal/Analytical">Impersonal/Analytical</option>
                           </select>
                         </div>
                       </div>
