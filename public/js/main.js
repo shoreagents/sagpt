@@ -1,7 +1,8 @@
 /* Select Multiple Script */
 
-new MultiSelectTag('articleTarget');
 new MultiSelectTag('target');
+new MultiSelectTag('articleTarget');
+new MultiSelectTag('articleTargetBulk');
 
 /* Onchange Script */
 
@@ -203,6 +204,23 @@ tinymce.init({
   content_style: 'body{ font-family:Montserrat,sans-serif; font-size:16px}'
 });
 
+/* Article Generator Options Button Script */
+$('.manual-generator').on('click', function() {
+  $('#regForm').css('display', 'block');
+  $('.generator-options').css('display', 'none');
+});
+
+$('.back').on('click', function() {
+  $('#regForm').css('display', 'none');
+  $('#bulkGenerator').css('display', 'none');
+  $('.generator-options').css('display', 'flex');
+});
+
+// $('.bulk-generator').on('click', function() {
+//   $('#bulkGenerator').css('display', 'flex');
+//   $('.generator-options').css('display', 'none');
+// });
+
 /* Article Generate Response Script */
 
 function articleResponse() {
@@ -257,6 +275,7 @@ function articleResponse() {
   try {
     const API_URL = "/";
     const outputTarget = $("#articleTargetOptions").val();
+    const generalQ = document.getElementById('generalquery').value;
     const requestOptions = {
         method: "POST",
 
@@ -273,6 +292,7 @@ function articleResponse() {
             perspective: outputPerspective.textContent,
             customerObjective: outputCustomerObjective.textContent,
             keyword: keyword,
+            generalQuery: generalQ,
             listquery: listqueryArr,
             userAction: "ArticleGenerator"
         })
@@ -387,15 +407,85 @@ function fixStepIndicator(n) {
 
 $("#nextBtn").hide();
 
-$('.tab-content-3 .input-container').on('click', function() {
-  if ( $('.tab-content-3 .input-container').children().length == 0 ) {
+$('#regForm .input-container').on('click', function() {
+  if ( $('#regForm .input-container').children().length == 0 ) {
     $("#nextBtn").addClass('btn-disabled');
    }
 });
 
-$('.drawer ul').on('click', function() {
-  if ( $('.tab-content-3 .input-container').children().length > 0 ) {
+$('#regForm .drawer ul').on('click', function() {
+  if ( $('#regForm .input-container').children().length > 0 ) {
     $("#nextBtn").removeClass('btn-disabled');
+  }
+});
+
+/* Bulk Generator Step Script */
+
+var currentTabBulk = 0; 
+showTabBulk(currentTabBulk); 
+
+function showTabBulk(n) {
+  var x = document.getElementsByClassName("bulk-tab");
+  x[n].style.display = "flex";
+  if (n == 0) {
+    document.getElementById("prevBtnBulk").style.display = "none";
+  } else {
+    document.getElementById("prevBtnBulk").style.display = "inline";
+  }
+  if (n == (x.length - 1)) {
+    document.getElementById("nextBtnBulk").innerHTML = "Generate";
+  } else {
+    document.getElementById("nextBtnBulk").innerHTML = "Next";
+  }
+  fixStepIndicator(n)
+}
+
+function nextPrevBulk(n) {
+  var x = document.getElementsByClassName("bulk-tab");
+  if (n == 1 && !validateForm()) return false;
+  x[currentTabBulk].style.display = "none";
+  currentTabBulk = currentTabBulk + n;
+  if (currentTabBulk >= x.length) {
+    document.getElementById("myNav").style.display = "block";
+    var values = Array.from(document.querySelectorAll(".tab-content-3 .item-label")).map(t => t.innerText)
+    $('#articleTargetOptions').val(values);
+    values = [];
+    showTab(currentTabBulk-1);
+    articleResponse();
+    currentTabBulk = 1;
+    return false;
+  }
+  console.log(currentTabBulk);
+  showTabBulk(currentTabBulk);
+}
+
+function validateForm() {
+  var x, y, i, valid = true;
+  // x = document.getElementsByClassName("tab");
+  // y = x[currentTab].getElementsByTagName("input");
+  // for (i = 0; i < y.length; i++) {
+  //   if (y[i].value == "") {
+  //     y[i].className += " invalid";
+  //     valid = false;
+  //   }
+  // }
+  // if (valid) {
+    document.getElementsByClassName("step")[currentTabBulk].className += " finish";
+  // }
+  return valid; 
+}
+
+function fixStepIndicator(n) {
+  var i, x = document.getElementsByClassName("step");
+  for (i = 0; i < x.length; i++) {
+    x[i].className = x[i].className.replace(" active", "");
+  }
+  x[n].className += " active";
+}
+
+$('#bulkGenerator .drawer ul').on('click', function() {
+  if ( $('#bulkGenerator .input-container').children().length > 0 ) {
+    $("#nextBtnBulk").removeClass('btn-disabled');
   }
 });
 

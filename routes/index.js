@@ -88,6 +88,7 @@ router.post('/', async (req,res) =>{
       console.log(error);
       console.log(output);
     }
+    
     res.send({output});
     
   } else if (userAction == "ArticleGenerator"){
@@ -153,6 +154,7 @@ router.post('/', async (req,res) =>{
     const listquery = req.body.listquery;
     const articleTitle = articlearray.title;
     const articleKeyword = req.body.keyword;
+    const generalQuery = req.body.generalQuery;
     var output = `<h1>${articleTitle}</h1>`;
 
     var data = [];
@@ -176,10 +178,12 @@ router.post('/', async (req,res) =>{
             articleTopic += "\n"+value;
           }
         }
-        const createArticle = await articleGenerator(articleTopic, query, articleTitle, articleKeyword, perspectiveOutput, toneOutput, targetOutput, authorOutput,customerObjectiveOutput);
+        const createArticle = await articleGenerator(generalQuery, articleTopic, query, articleTitle, articleKeyword, perspectiveOutput, toneOutput, targetOutput, authorOutput,customerObjectiveOutput);
         output += `\n\n<h2>${articleHeading}</h2>\n${createArticle}`;
       }
       console.log(output);
+      var wordCount = output.match(/(\w+)/g).length;
+      console.log(wordCount);
       res.send({output});
     } catch (error) {
       output = "There is an error on our server. Sorry for inconvenience. Please try again later.";
@@ -244,7 +248,7 @@ export const runWithEmbeddings = async (question, perspectiveOutput, toneOutput,
   return output;
 };
 
-export const articleGenerator = async (question, query, title, keyword, perspectiveOutput, toneOutput, targetOutput, authorOutput,customerObjectiveOutput) => {
+export const articleGenerator = async (generalQuery, question, query, title, keyword, perspectiveOutput, toneOutput, targetOutput, authorOutput,customerObjectiveOutput) => {
   
   const model = new OpenAI({temperature:0.7, modelName:"gpt-4"});
 
@@ -263,6 +267,7 @@ export const articleGenerator = async (question, query, title, keyword, perspect
 
   Instructions:
   ${query}
+  ${generalQuery}
   Do not include the article heading but you can include subheadings.
   Make sure that the heading body is long and explained in detail.
   You can add h4 subheadings inside h3 if possible.
