@@ -190,6 +190,99 @@ router.post('/', async (req,res) =>{
       console.log(output+" | "+error);
       res.send({output});
     }
+  } else if (userAction == "BulkArticleGenerator"){
+    const focuskeyword1 = req.body.focuskeyword1;
+    const focuskeyword2 = req.body.focuskeyword2;
+    const focuskeyword3 = req.body.focuskeyword3;
+    const focuskeyword4 = req.body.focuskeyword4;
+    const focuskeyword5 = req.body.focuskeyword5;
+    const focuskeyword6 = req.body.focuskeyword6;
+    const focuskeyword7 = req.body.focuskeyword7;
+    const focuskeyword8 = req.body.focuskeyword8;
+    const focuskeyword9 = req.body.focuskeyword9;
+    const focuskeyword10 = req.body.focuskeyword10;
+    const tone = req.body.tone;
+    const author = req.body.author;
+    const target = req.body.target;
+    const perspective = req.body.perspective;
+    const customerObjective = req.body.customerObjective;
+    const generalQuery = req.body.generalQuery;
+
+    // console.log(focuskeyword1,focuskeyword2,focuskeyword3, focuskeyword4,focuskeyword5,focuskeyword6,focuskeyword7,focuskeyword8,focuskeyword9,focuskeyword10);
+    // console.log(tone,author,target,perspective,customerObjective);
+
+    var keyword = [];
+    var title = [];
+    keyword.push(focuskeyword1);
+    keyword.push(focuskeyword2);
+    keyword.push(focuskeyword3);
+    keyword.push(focuskeyword4);
+    keyword.push(focuskeyword5);
+    keyword.push(focuskeyword6);
+    keyword.push(focuskeyword7);
+    keyword.push(focuskeyword8);
+    keyword.push(focuskeyword9);
+    keyword.push(focuskeyword10);
+
+    var toneOutput = "";
+    var authorOutput = "";
+    var targetOutput = "";
+    var perspectiveOutput = "";
+    var customerObjectiveOutput = "";
+
+    if (tone == "Select Tone/Personality"){
+      var toneOutput = "";
+    } else if (tone != "None") {
+      toneOutput = `You are in ${tone} personality, so you will answer with the given subtones of that personality.`;
+    } 
+    if (author == "Select Author"){
+      var authorOutput = "";
+    } else if (author != "None") {
+      authorOutput = `The author is ${author}.`;
+    } 
+    if (target ==  "Select Target Market"){
+      var targetOutput = "";
+    } else if (target != "None") {
+      targetOutput = `Your Target Market/s will be ${target}.`;
+    }
+    if (perspective == "Select Perspective"){
+      var perspectiveOutput = "";
+    } else if (perspective != "None") {
+      perspectiveOutput = `You will write in ${perspective} writing perspective.`;
+    }
+    if (customerObjective == "Select Customer Objective"){
+      var customerObjectiveOutput = "";
+    } else if (customerObjective != "None") {
+      customerObjectiveOutput = `The selected Customer Objective is ${customerObjective}.`;
+    }
+
+    var bulkdata = [];
+
+    try {
+      //keyword.length
+      for (let i = 0; i < keyword.length; i++) {
+        var focuskeyword = keyword[i]
+        const createTitle = await titleGenerator(focuskeyword, perspectiveOutput, toneOutput, targetOutput, customerObjectiveOutput);
+        var titleTemp = createTitle.replace(/['"]+/g, '')
+        title.push(titleTemp);
+      }
+      //title.length
+      for (let i = 0; i < title.length; i++) {
+        var articleKeyword = keyword[i];
+        var articleTitle = title[i];
+        var createArticle = await bulkArticleGenerator(generalQuery, articleTitle, articleKeyword, perspectiveOutput, toneOutput, targetOutput, authorOutput,customerObjectiveOutput);
+        bulkdata.push([i, title[i], createArticle]);
+      }
+      console.log(bulkdata);
+      // var wordCount = output.match(/(\w+)/g).length;
+      // console.log(wordCount);
+      res.send({bulkdata});
+    } catch (error) {
+      output = "There is an error on our server. Sorry for inconvenience. Please try again later.";
+      console.log(bulkdata+" | "+error);
+      res.send({bulkdata});
+    }
+
   }
 })
 
@@ -281,6 +374,63 @@ export const articleGenerator = async (generalQuery, question, query, title, key
 
   const res = await chain.call({ query: userprompt });
   const output = res.text;
+  return output;
+};
+
+export const titleGenerator = async (focuskeyword, perspectiveOutput, toneOutput, targetOutput, customerObjectiveOutput) => {
+  const model = new OpenAI({temperature:0.7, modelName:"gpt-4-1106-preview"});
+  let vectorStore;
+  if (fs.existsSync(VECTOR_STORE_PATH)) {
+    vectorStore = await HNSWLib.load(VECTOR_STORE_PATH, new OpenAIEmbeddings());
+  } else {
+    const text = fs.readFileSync(txtPath, 'utf8');
+    const textSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 1000 });
+    const docs = await textSplitter.createDocuments([text]);
+    vectorStore = await HNSWLib.fromDocuments(docs, new OpenAIEmbeddings());
+    await vectorStore.save(VECTOR_STORE_PATH);
+  }
+
+  const userprompt = `Create a good article title using the keyword '${focuskeyword}'. Make sure to make it SEO optimized. ${perspectiveOutput} ${toneOutput} ${targetOutput} ${customerObjectiveOutput}`
+
+  console.log(userprompt);
+
+  const chain = RetrievalQAChain.fromLLM(model, vectorStore.asRetriever());
+
+  const res = await chain.call({ query: userprompt });
+  const output = res.text;
+  return output;
+};
+
+export const bulkArticleGenerator = async (generalQuery, title, keyword, perspectiveOutput, toneOutput, targetOutput, authorOutput, customerObjectiveOutput) => {
+  
+  const model = new OpenAI({temperature:0.7, modelName:"gpt-4-1106-preview"});
+
+  let vectorStore;
+  if (fs.existsSync(VECTOR_STORE_PATH)) {
+    vectorStore = await HNSWLib.load(VECTOR_STORE_PATH, new OpenAIEmbeddings());
+  } else {
+    const text = fs.readFileSync(txtPath, 'utf8');
+    const textSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 1000 });
+    const docs = await textSplitter.createDocuments([text]);
+    vectorStore = await HNSWLib.fromDocuments(docs, new OpenAIEmbeddings());
+    await vectorStore.save(VECTOR_STORE_PATH);
+  }
+
+  const userprompt = `You are a content writer and will draft HTML formatted articles where at the start of every paragraph you will just add '<p>' and must end with '</p>', it will be the same with Headings using '<h2>' and '</h2>', as well as Subheadings but with '<h3>' and '</h3>'. Your responsibility is to generate a good article that is SEO optimized, using the article title "${title}", and the focus keyword "${keyword}". ${perspectiveOutput} ${toneOutput} ${authorOutput} ${targetOutput} ${customerObjectiveOutput}
+
+  Instructions:
+  ${generalQuery}
+  You can be creative such as adding <ul> <li> and <h4> subheadings.
+  Do not add the word 'Subheading:' in the subheading titles.
+  Do not add the '${title}' itself.`
+
+  console.log(userprompt);
+
+  const chain = RetrievalQAChain.fromLLM(model, vectorStore.asRetriever());
+
+  const res = await chain.call({ query: userprompt });
+  const output = res.text;
+  console.log(output);
   return output;
 };
 

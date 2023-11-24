@@ -4,6 +4,25 @@ new MultiSelectTag('target');
 new MultiSelectTag('articleTarget');
 new MultiSelectTag('articleTargetBulk');
 
+/* Accordion Script */
+
+var acc = document.getElementsByClassName("accordion");
+var i;
+
+for (i = 0; i < acc.length; i++) {
+  acc[i].addEventListener("click", function() {
+    this.classList.toggle("active");
+    var panel = this.nextElementSibling;
+    if (panel.style.maxHeight) {
+      panel.style.maxHeight = null;
+      $('.user-accordion h3').css('display', 'block');
+    } else {
+      panel.style.maxHeight = "100%";
+      $('.user-accordion h3').css('display', 'none');
+    } 
+  });
+}
+
 /* Onchange Script */
 
 var tone = document.getElementById('tone');
@@ -216,15 +235,14 @@ $('.back').on('click', function() {
   $('.generator-options').css('display', 'flex');
 });
 
-// $('.bulk-generator').on('click', function() {
-//   $('#bulkGenerator').css('display', 'flex');
-//   $('.generator-options').css('display', 'none');
-// });
+$('.bulk-generator').on('click', function() {
+  $('#bulkGenerator').css('display', 'flex');
+  $('.generator-options').css('display', 'none');
+});
 
 /* Article Generate Response Script */
 
 function articleResponse() {
-  const messageElement = document.getElementById('articleGenerated');
   const articletitle = document.getElementById('articletitle').value;
   const heading = document.getElementsByClassName('heading');
   const subheading = document.getElementsByClassName('subheadings');
@@ -308,6 +326,121 @@ function articleResponse() {
         $iframe.ready(function() {
             $iframe.contents().find("body").append(data.output);
         });
+        $(".user-section").removeClass("hide");
+        $(".user-accordion").css("display", "none");
+        $("#server-notice").addClass("success").removeClass("error");
+        $("#server-notice span").text("Article Generated Successfully.");
+        document.getElementById("myNav").style.display = "none";
+        document.getElementById("server-notice").style.display = "flex";
+        setTimeout(function(){ document.getElementById("server-notice").style.display = "none"; }, 6000);
+      }
+    }).catch((error) => {
+      $("#server-notice").addClass("error").removeClass("success");
+      $("#server-notice span").text("Oops! Something went wrong. Please try again.");
+      document.getElementById("myNav").style.display = "none";
+      document.getElementById("server-notice").style.display = "flex";
+      console.log(error);
+    }).finally(() => chatbox.scrollTo(0, chatbox.scrollHeight));
+  } catch (error) {
+    $("#server-notice").addClass("error").removeClass("success");
+    $("#server-notice span").text("Oops! Something went wrong. Please try again.");
+    document.getElementById("myNav").style.display = "none";
+    document.getElementById("server-notice").style.display = "flex";
+    console.log(error);
+  }
+}
+
+/* Bulk Article Generate Response Script */
+
+function bulkArticleResponse() {
+
+  var focuskeyword1 = document.getElementById('focuskeyword1').value;
+  var focuskeyword2 = document.getElementById('focuskeyword2').value;
+  var focuskeyword3 = document.getElementById('focuskeyword3').value;
+  var focuskeyword4 = document.getElementById('focuskeyword4').value;
+  var focuskeyword5 = document.getElementById('focuskeyword5').value;
+  var focuskeyword6 = document.getElementById('focuskeyword6').value;
+  var focuskeyword7 = document.getElementById('focuskeyword7').value;
+  var focuskeyword8 = document.getElementById('focuskeyword8').value;
+  var focuskeyword9 = document.getElementById('focuskeyword9').value;
+  var focuskeyword10 = document.getElementById('focuskeyword10').value;
+
+  var tone = document.getElementById('bulkArticleTone');
+  var outputTone = document.getElementById('bulkOutputTone');
+  tone.onchange = function() {
+    outputTone.innerHTML = this.options[this.selectedIndex].getAttribute('value');
+  };
+  tone.onchange();
+
+  var author = document.getElementById('bulkArticleAuthor');
+  var outputAuthor = document.getElementById('bulkOutputAuthor');
+  author.onchange = function() {
+    outputAuthor.innerHTML = this.options[this.selectedIndex].getAttribute('value');
+  };
+  author.onchange();
+
+  var perspective = document.getElementById('bulkArticlePerspective');
+  var outputPerspective = document.getElementById('bulkOutputPerspective');
+  perspective.onchange = function() {
+    outputPerspective.innerHTML = this.options[this.selectedIndex].getAttribute('value');
+  };
+  perspective.onchange();
+
+  var customerObjective = document.getElementById('bulkCO');
+  var outputCustomerObjective = document.getElementById('bulkOutputCO');
+  customerObjective.onchange = function() {
+    outputCustomerObjective.innerHTML = this.options[this.selectedIndex].getAttribute('value');
+  };
+  customerObjective.onchange();
+  
+  try {
+    const API_URL = "/";
+    const outputTarget = $("#bulkArticleTO").val();
+    const generalQ = document.getElementById('bulkGeneralQuery').value;
+    const requestOptions = {
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            focuskeyword1: focuskeyword1,
+            focuskeyword2: focuskeyword2,
+            focuskeyword3: focuskeyword3,
+            focuskeyword4: focuskeyword4,
+            focuskeyword5: focuskeyword5,
+            focuskeyword6: focuskeyword6,
+            focuskeyword7: focuskeyword7,
+            focuskeyword8: focuskeyword8,
+            focuskeyword9: focuskeyword9,
+            focuskeyword10: focuskeyword10,
+            tone: outputTone.textContent,
+            author: outputAuthor.textContent,
+            target: outputTarget,
+            perspective: outputPerspective.textContent,
+            customerObjective: outputCustomerObjective.textContent,
+            generalQuery: generalQ,
+            userAction: "BulkArticleGenerator"
+        })
+    }
+    fetch(API_URL, requestOptions).then(res => res.json()).then(data => {
+      if (data.output == "There is an error on our server. Sorry for inconvenience. Please try again later.") {
+        $("#server-notice").addClass("error").removeClass("success");
+        $("#server-notice span").text("There is an error on our server. Sorry for inconvenience. Please try again later.");
+        document.getElementById("myNav").style.display = "none";
+        document.getElementById("server-notice").style.display = "flex";
+      } else {
+        for (let i = 0; i < data.bulkdata.length; i++) {
+          var num = i+1;
+          const iframe = ".panel-article"+num;
+          const titleSpan = ".article"+num;
+          var iframeOutput = $(`${iframe} iframe`);
+          iframeOutput.contents().find("body").append("<h1>"+data.bulkdata[i][1]+"</h1>");
+          iframeOutput.contents().find("body").append(data.bulkdata[i][2]);
+          $(`${titleSpan} span`).text(data.bulkdata[i][1]);
+        }
+        $(".user-section").addClass("hide");
+        $(".user-accordion").css("display", "flex");
         $("#server-notice").addClass("success").removeClass("error");
         $("#server-notice span").text("Article Generated Successfully.");
         document.getElementById("myNav").style.display = "none";
@@ -370,7 +503,7 @@ function nextPrev(n) {
   currentTab = currentTab + n;
   if (currentTab >= x.length) {
     document.getElementById("myNav").style.display = "block";
-    var values = Array.from(document.querySelectorAll(".tab-content-3 .item-label")).map(t => t.innerText)
+    var values = Array.from(document.querySelectorAll("#regForm .item-label")).map(t => t.innerText)
     $('#articleTargetOptions').val(values);
     values = [];
     showTab(currentTab-1);
@@ -437,29 +570,27 @@ function showTabBulk(n) {
   } else {
     document.getElementById("nextBtnBulk").innerHTML = "Next";
   }
-  fixStepIndicator(n)
+  fixStepIndicatorBulk(n)
 }
 
 function nextPrevBulk(n) {
   var x = document.getElementsByClassName("bulk-tab");
-  if (n == 1 && !validateForm()) return false;
+  if (n == 1 && !validateFormBulk()) return false;
   x[currentTabBulk].style.display = "none";
   currentTabBulk = currentTabBulk + n;
   if (currentTabBulk >= x.length) {
     document.getElementById("myNav").style.display = "block";
-    var values = Array.from(document.querySelectorAll(".tab-content-3 .item-label")).map(t => t.innerText)
-    $('#articleTargetOptions').val(values);
+    var values = Array.from(document.querySelectorAll("#bulkGenerator .item-label")).map(t => t.innerText)
+    $('#bulkArticleTO').val(values);
     values = [];
-    showTab(currentTabBulk-1);
-    articleResponse();
+    showTabBulk(currentTabBulk-1);
+    bulkArticleResponse();
     currentTabBulk = 1;
-    return false;
   }
-  console.log(currentTabBulk);
   showTabBulk(currentTabBulk);
 }
 
-function validateForm() {
+function validateFormBulk() {
   var x, y, i, valid = true;
   // x = document.getElementsByClassName("tab");
   // y = x[currentTab].getElementsByTagName("input");
@@ -470,18 +601,24 @@ function validateForm() {
   //   }
   // }
   // if (valid) {
-    document.getElementsByClassName("step")[currentTabBulk].className += " finish";
+    document.getElementsByClassName("bulk-step")[currentTabBulk].className += " finish";
   // }
   return valid; 
 }
 
-function fixStepIndicator(n) {
-  var i, x = document.getElementsByClassName("step");
+function fixStepIndicatorBulk(n) {
+  var i, x = document.getElementsByClassName("bulk-step");
   for (i = 0; i < x.length; i++) {
     x[i].className = x[i].className.replace(" active", "");
   }
   x[n].className += " active";
 }
+
+$('#bulkGenerator .input-container').on('click', function() {
+  if ( $('#bulkGenerator .input-container').children().length == 0 ) {
+    $("#nextBtnBulk").addClass('btn-disabled');
+   }
+});
 
 $('#bulkGenerator .drawer ul').on('click', function() {
   if ( $('#bulkGenerator .input-container').children().length > 0 ) {
@@ -934,6 +1071,33 @@ $('#regForm .generator-input').keyup(function() {
     $('.button').addClass('btn-disabled');
   }
 });
+
+$('#bulkGenerator .focuskeyword').keyup(function() {
+  var validate = isEveryInputEmpty();
+  if (validate == true) {
+    $('#nextBtnBulk').removeClass('btn-disabled');
+  } else {
+    $('#nextBtnBulk').addClass('btn-disabled');
+  }
+  // if($('.focuskeyword').val().length >1) {
+  //   $('.button').removeClass('btn-disabled');
+  // } else {
+  //   $('.button').addClass('btn-disabled');
+  // }
+});
+
+function isEveryInputEmpty() {
+  var validation = true;
+
+  $('.focuskeyword').each(function() {
+      if ($(this).val().length == 0) {
+          validation = false;
+          return false; 
+      }
+  });
+  return validation;
+}
+
 
 /* Publish and Update Private Article Script */
 

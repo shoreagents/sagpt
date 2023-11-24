@@ -417,9 +417,9 @@
                     <div class="details-input">
                       <div class="row">
                         <div class="column">
-                          <div for="customerObjective" class="hide" id="outputCustomerObjective"></div>
+                          <div for="customerObjective" class="hide" id="bulkOutputCO"></div>
                           <label for="customerObjective">Customer Objectives</label>
-                          <select name="customerObjective" id="articleCO">
+                          <select name="customerObjective" id="bulkCO">
                             <option class="selected" value="Select Customer Objective" disabled selected>Select Customer Objective
                             </option>
                             <option value="None">None</option>
@@ -442,9 +442,9 @@
                       </div>
                       <div class="row">
                         <div class="column">
-                          <div for="tone" class="hide" id="outputTone"></div>
+                          <div for="tone" class="hide" id="bulkOutputTone"></div>
                           <label for="tone" class="firstlabel">Tone/Personality</label>
-                          <select name="tone" id="articleTone">
+                          <select name="tone" id="bulkArticleTone">
                             <option class="selected" value="Select Tone/Personality" disabled selected>Select Tone/Personality
                             </option>
                             <option value="None">Standard</option>
@@ -469,7 +469,7 @@
                       </div>
                       <div class="row">
                         <div class="column">
-                          <input type="hidden" name="articleTargetOptions" id="articleTargetOptions" required>
+                          <input type="hidden" name="articleTargetOptions" id="bulkArticleTO" required>
                           <label for="target">Target Market</label>
                           <select name="target" id="articleTargetBulk" multiple>
                             <option value="None" selected>None</option>
@@ -487,9 +487,9 @@
                       </div>
                       <div class="row">
                         <div class="column">
-                          <div for="author" class="hide" id="outputAuthor"></div>
+                          <div for="author" class="hide" id="bulkOutputAuthor"></div>
                           <label for="author">Author</label>
-                          <select name="author" id="articleAuthor">
+                          <select name="author" id="bulkArticleAuthor">
                             <option class="selected" value="Select Author" disabled selected>Select Author</option>
                             <option value="None">None</option>
                             <option value="Stephen Atcheler">Stephen Atcheler</option>
@@ -499,9 +499,9 @@
                       </div>
                       <div class="row">
                         <div class="column">
-                          <input type="hidden" name="targetOptions" id="targetOptions" value="hello">
+                          <div for="perspective" class="hide" id="bulkOutputPerspective"></div>
                           <label for="perspective">Perspective</label>
-                          <select name="perspective" id="articlePerspective">
+                          <select name="perspective" id="bulkArticlePerspective">
                             <option class="selected" value="Select Perspective" disabled selected>Select Perspective</option>
                             <option value="None">None</option>
                             <option value="First Person">First Person</option>
@@ -517,17 +517,17 @@
                       <div class="row">
                         <div class="column">
                           <div class="button-container">
-                            <span onclick="document.getElementById('generalPrompt').style.display='flex'" class="editdata generalprompt">General Prompt</span>
+                            <span onclick="document.getElementById('bulkGeneralPrompt').style.display='flex'" class="editdata generalprompt">General Prompt</span>
                           </div>
                         </div>
                       </div>
-                      <div class="general-query-modal" id="generalPrompt">
+                      <div class="general-query-modal" id="bulkGeneralPrompt">
                         <div class="modal-container">
                           <header class="modal-container-header">
                             <h1 class="modal-container-title">
                               Set General Query/Instruction
                             </h1>
-                            <span class="icon-button" onclick="document.getElementById('generalPrompt').style.display='none'">
+                            <span class="icon-button" onclick="document.getElementById('bulkGeneralPrompt').style.display='none'">
                               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
                                 <path fill="none" d="M0 0h24v24H0z"/>
                                 <path fill="currentColor"
@@ -536,10 +536,10 @@
                             </span>
                           </header>
                           <section class="modal-container-body rtf">
-                            <textarea type="textarea" name="generalquery" class="generalquery" id="generalquery" cols="10" rows="10"></textarea>
+                            <textarea type="textarea" name="generalquery" class="generalquery" id="bulkGeneralQuery" cols="10" rows="10"></textarea>
                           </section>
                           <footer class="modal-container-footer">
-                            <span class="query-button is-primary" onclick="document.getElementById('generalPrompt').style.display='none'">Okay</span>
+                            <span class="query-button is-primary" onclick="document.getElementById('bulkGeneralPrompt').style.display='none'">Okay</span>
                           </footer>
                         </div>
                       </div>
@@ -550,13 +550,13 @@
                 <div>
                   <div style="float:right;">
                     <button type="button" id="prevBtnBulk" class="button" onclick="nextPrevBulk(-1)">Previous</button>
-                    <button type="button" id="nextBtnBulk" class="button" onclick="nextPrevBulk(1)">Next</button>
+                    <button type="button" id="nextBtnBulk" class="button btn-disabled" onclick="nextPrevBulk(1)">Next</button>
                   </div>
                 </div>
                 
                 <div style="text-align:center;margin-top:40px;">
-                  <span class="step"></span>
-                  <span class="step"></span>
+                  <span class="bulk-step"></span>
+                  <span class="bulk-step"></span>
                 </div>
 
               </div>
@@ -571,7 +571,7 @@
     <div class="user-outer">
       <div class="chatbot user-section">
         <header>
-          <h2>Editor</h2>
+          <h2><img src="/images/sagpt-logo.png" alt="ShoreAgents Logo">Editor</h2>
         </header>
         <ul class="chatbox user-textarea">
           <div class="user-input">
@@ -584,11 +584,53 @@
             <span class="float-content">Publish Article</span>
           </button>
         </ul>
-        
+      </div>
+      <div class="user-accordion">
+        <h3>Articles Generated</h3>
+        <button class="accordion article1"><span>Section 1</span></button>
+        <div class="panel panel-article1">
+          <textarea name="textarea" id="default"></textarea>
+        </div>
+        <button class="accordion article2"><span>Section 2</span></button>
+        <div class="panel panel-article2">
+          <textarea name="textarea" id="default"></textarea>
+        </div>
+        <button class="accordion article3"><span>Section 3</span></button>
+        <div class="panel panel-article3">
+          <textarea name="textarea" id="default"></textarea>
+        </div>
+        <button class="accordion article4"><span>Section 4</span></button>
+        <div class="panel panel-article4">
+          <textarea name="textarea" id="default"></textarea>
+        </div>
+        <button class="accordion article5"><span>Section 5</span></button>
+        <div class="panel panel-article5">
+          <textarea name="textarea" id="default"></textarea>
+        </div>
+        <button class="accordion article6"><span>Section 6</span></button>
+        <div class="panel panel-article6">
+          <textarea name="textarea" id="default"></textarea>
+        </div>
+        <button class="accordion article7"><span>Section 7</span></button>
+        <div class="panel panel-article7">
+          <textarea name="textarea" id="default"></textarea>
+        </div>
+        <button class="accordion article8"><span>Section 8</span></button>
+        <div class="panel panel-article8">
+          <textarea name="textarea" id="default"></textarea>
+        </div>
+        <button class="accordion article9"><span>Section 9</span></button>
+        <div class="panel panel-article9">
+          <textarea name="textarea" id="default"></textarea>
+        </div>
+        <button class="accordion article10"><span>Section 10</span></button>
+        <div class="panel panel-article10">
+          <textarea name="textarea" id="default"></textarea>
+        </div>
       </div>
     </div>
-    
   </div>
+  
     
   </div>
 </div>

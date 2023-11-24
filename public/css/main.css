@@ -193,6 +193,59 @@ header h2 {
   display: none;
 }
 
+/* Accordion style */
+
+.user-accordion{
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.user-accordion h3{
+  font-size: 32px;
+  color: #7eac0b;
+  margin-bottom: 15px;
+}
+
+.accordion {
+  background-color: #7eac0b;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  padding: 18px;
+  margin: 3px 0;
+  border-radius: 6px;
+  width: 90%;
+  border: none;
+  text-align: left;
+  outline: none;
+  transition: 0.4s;
+}
+
+.user-outer .active, .accordion:hover {
+  background-color: #97BC34;
+}
+
+.user-outer .active {
+  margin-top: 3px !important;
+}
+
+.panel {
+  padding: 0 18px;
+  background-color: white;
+  max-height: 0;
+  height: 100%;
+  width: 90%;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+  border-radius: 6px;
+  box-shadow: 0 15px 30px 0 rgba(0, 0, 0, 0.25);
+}
+
 /* Blog Builder style */
 
 .generator-outer{
@@ -208,7 +261,8 @@ header h2 {
 .user-outer{
   display: flex !important;
   justify-content: center;
-  align-items: start;
+  flex-direction: column;
+  align-items: center;
   width: 100%;
   height: 100%;
 }
@@ -219,6 +273,18 @@ header h2 {
   align-items: center;
   width: 55%;
   height: 90%;
+}
+
+.chatbot header h2{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chatbot header img{
+  width: 30px;
+  position: absolute;
+  left: 20px;
 }
 
 .user-textarea{
@@ -1496,7 +1562,7 @@ input[type=checkbox]:checked+.list {
   margin-bottom: 20px;
 }
 
-.step {
+.step, .bulk-step {
   height: 15px;
   width: 15px;
   margin: 0 2px;
@@ -1507,11 +1573,11 @@ input[type=checkbox]:checked+.list {
   opacity: 0.5;
 }
 
-.step.active {
+.step.active, .bulk-step.active {
   opacity: 1;
 }
 
-.step.finish {
+.step.finish, .bulk-step.finish {
   background-color: #c3db63;
 }
 
