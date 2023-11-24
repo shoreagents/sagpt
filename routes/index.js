@@ -422,6 +422,7 @@ export const bulkArticleGenerator = async (generalQuery, title, keyword, perspec
   ${generalQuery}
   You can be creative such as adding <ul> <li> and <h4> subheadings.
   Do not add the word 'Subheading:' in the subheading titles.
+  Strictly, you will not give any comments on the generated content, it must be content article body only.
   Do not add the '${title}' itself.`
 
   console.log(userprompt);
