@@ -627,6 +627,9 @@
         <div class="panel panel-article10">
           <textarea name="textarea" id="default"></textarea>
         </div>
+        <div class="publish-container">
+          <button class="publish" onclick="document.getElementById('bulkLogin').style.display='flex'"><span>Publish Articles</span></button>
+        </div>
       </div>
     </div>
   </div>
@@ -688,7 +691,7 @@
         </svg>
       </button>
     </header>
-    <form class="login-wordpress" action="/login" method="POST">
+    <form class="login-wordpress">
       <section class="modal-container-body login-body rtf">
         <p class="error">Invalid username/password</p>
         <div class="login-container">
@@ -704,6 +707,41 @@
       </section>
       <footer class="modal-container-footer">
         <span class="is-primary loginbtn">Login</span>
+      </footer>
+    </form>
+  </article>
+</div>
+
+<div class="login" id="bulkLogin">
+  <article class="modal-container login-modal">
+    <header class="modal-container-header">
+      <h1 class="modal-container-title">
+        Login to ShoreAgents Site
+      </h1>
+      <button class="icon-button" onclick="document.getElementById('bulkLogin').style.display='none'">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+          <path fill="none" d="M0 0h24v24H0z" />
+          <path fill="currentColor"
+            d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z" />
+        </svg>
+      </button>
+    </header>
+    <form class="login-wordpress">
+      <section class="modal-container-body login-body rtf">
+        <p class="login-error">Invalid username/password</p>
+        <div class="login-container">
+          <div class="article-title">Username</div>
+          <div class="title-input"><input type="text" class="login-input" id="bulkUsername"  name="username" placeholder="Enter username..." required></div>
+        </div>
+
+        <div class="login-container">
+          <div class="article-title">Password</div>
+          <div class="title-input"><input type="password" class="login-input" id="bulkPassword"  name="password" placeholder="Enter password..." required></div>
+        </div>
+        
+      </section>
+      <footer class="modal-container-footer">
+        <span class="is-primary loginBulk">Login</span>
       </footer>
     </form>
   </article>

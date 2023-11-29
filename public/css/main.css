@@ -226,6 +226,27 @@ header h2 {
   transition: 0.4s;
 }
 
+.publish-container{
+  width: 90%;
+  display: flex;
+  justify-content: right;
+}
+
+.publish{
+  background-color: #97BC34;
+  border: dotted 1px;
+  margin-top: 10px;
+  text-align: center;
+  width: auto;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  padding: 18px;
+  border-radius: 6px;
+  outline: none;
+}
+
 .user-outer .active, .accordion:hover {
   background-color: #97BC34;
 }
@@ -545,7 +566,7 @@ select::after {
   z-index: 10;
 }
 
-.error{
+.error, .login-error{
   display: none;
   color: #fff;
   background-color: #de3c3c;
@@ -858,7 +879,7 @@ textarea{
   color: #FFF;
 }
 
-.loginbtn{
+.loginbtn, .loginBulk{
   padding: 12px 20px;
   border-radius: 8px;
   margin: auto;
@@ -870,8 +891,8 @@ textarea{
   transition: 0.15s ease;
 }
 
-.loginbtn:hover{
-  background-color: #7eac0b;
+.loginbtn:hover, .loginBulk:hover{
+  background-color: #7eac0b !important;
   color: #fff;
 }
 

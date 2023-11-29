@@ -1162,16 +1162,97 @@ $(document).on('click', '.loginbtn', function() {
             console.log("Article successfully published as private.");
         });
         } else {
-          $(".error").css("display", "block");
-          $(".error").css('animation', "shake 0.5s")
-          $(".error").css('animation-iteration-count', "1")
+          $(".login-error").css("display", "block");
+          $(".login-error").css('animation', "shake 0.5s")
+          $(".login-error").css('animation-iteration-count', "1")
           console.log("Login Failed");
         }
     });
     } catch (error) {
-      $(".error").css("display", "block");
-      $(".error").css('animation', "shake 0.5s")
-      $(".error").css('animation-iteration-count', "1")
+      $(".login-error").css("display", "block");
+      $(".login-error").css('animation', "shake 0.5s")
+      $(".login-error").css('animation-iteration-count', "1")
+      console.log("Login Failed: "+error);
+    }
+});
+
+$(document).on('click', '.loginBulk', function() {
+  var status;
+  $(".loginBulk").text("Publishing Articles");
+  $(".loginBulk").css("background-color", "#c3db63");
+  $(".loginBulk").css("pointer-events", "none");
+  $(".loginBulk").css("cursor", "not-allowed");
+  $(".loginBulk").css("border-color", "#c3db63");
+  $("#bulkLogin .icon-button").css("display", "none");
+  const articlenum = document.getElementsByClassName("panel");
+  try {
+    fetch('https://www.shoreagents.com/wp-json/jwt-auth/v1/token',{
+    method: "POST",
+    headers:{
+        'Content-Type': 'application/json',
+        'accept': 'application/json',
+    },
+
+    body:JSON.stringify({
+        username: $("#bulkUsername").val(),
+        password: $("#bulkPassword").val()
+    })
+    }).then(function(response){
+      status = response.status;
+      console.log("Status: "+response.status);
+      if (response.ok) {
+        return response.json();
+      }
+    }).then(function(user){
+        if (status == 200) {
+          for (let i = 0; i < articlenum.length; i++) {
+            var num = i+1;
+            var panelarticle = "panel-article"+num;
+            fetch('https://www.shoreagents.com/wp-json/wp/v2/posts',{
+              method: "POST",
+              headers: {
+                  'Content-Type': 'application/json',
+                  'accept': 'application/json',
+                  'Authorization': `Bearer ${user.token}`
+              },
+              body:JSON.stringify({
+                  title: $("."+panelarticle+" iframe").contents().find("h1").html(),
+                  content: $("."+panelarticle+" iframe").contents().find("body").clone().find("h1").remove().end().html(),
+                  author: 1,
+                  status: 'private'
+              })
+            }).then(function(response){
+                return response.json()
+            }).then(function(post){
+                $(".publish").css("display", "none");
+                $("#bulkLogin").css("display", "none");
+                postID = post.id;
+                console.log("Articles successfully published as private.");
+            });
+          }
+        } else {
+          $(".loginBulk").text("Login");
+          $(".loginBulk").css("background-color", "transparent");
+          $(".loginBulk").css("pointer-events", "all");
+          $(".loginBulk").css("cursor", "pointer");
+          $(".loginBulk").css("border-color", "#7eac0b");
+          $("#bulkLogin .icon-button").css("display", "block");
+          $(".login-error").css("display", "block");
+          $(".login-error").css('animation', "shake 0.5s")
+          $(".login-error").css('animation-iteration-count', "1")
+          console.log("Login Failed");
+        }
+    });
+    } catch (error) {
+      $(".loginBulk").text("Login");
+      $(".loginBulk").css("background-color", "transparent");
+      $(".loginBulk").css("pointer-events", "all");
+      $(".loginBulk").css("cursor", "pointer");
+      $(".loginBulk").css("border-color", "#7eac0b");
+      $("#bulkLogin .icon-button").css("display", "block");
+      $(".login-error").css("display", "block");
+      $(".login-error").css('animation', "shake 0.5s")
+      $(".login-error").css('animation-iteration-count', "1")
       console.log("Login Failed: "+error);
     }
 });
@@ -1206,6 +1287,6 @@ $(document).on('click', '.updatepost', function() {
       $(".updatepost").css("pointer-events", "all");
       $(".updatepost").css("cursor", "pointer");
       console.log("Article successfully updated.");
-      console.log({post})
+      console.log({post});
   });
 });
