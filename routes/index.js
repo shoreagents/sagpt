@@ -390,7 +390,7 @@ export const titleGenerator = async (focuskeyword, perspectiveOutput, toneOutput
     await vectorStore.save(VECTOR_STORE_PATH);
   }
 
-  const userprompt = `Create a good article title using the keyword '${focuskeyword}'. Make sure to make it SEO optimized. ${perspectiveOutput} ${toneOutput} ${targetOutput} ${customerObjectiveOutput}`
+  const userprompt = `Create a good article title using the keyword '${focuskeyword}'. Make sure to make it SEO optimized. ${perspectiveOutput} ${toneOutput} ${targetOutput} ${customerObjectiveOutput} Make sure to keep it a title only, and do not include any introductions or short descriptions.`
 
   console.log(userprompt);
 
