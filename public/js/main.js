@@ -463,6 +463,57 @@ function bulkArticleResponse() {
   }
 }
 
+/* Generate Keywords Script */
+
+$('.generate-keywords').on('click', function() {
+  $(".generate-keywords").addClass("generating-keywords").removeClass("generate-keywords");
+  try {
+    const API_URL = "/";
+    const requestOptions = {
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            userAction: "GenerateKeywords"
+        })
+    }
+    fetch(API_URL, requestOptions).then(res => res.json()).then(data => {
+      if (data.keywords == "There is an error on our server. Sorry for inconvenience. Please try again later.") {
+        $(".generating-keywords").addClass("generate-keywords").removeClass("generating-keywords");
+        $("#server-notice").addClass("error").removeClass("success");
+        $("#server-notice span").text("There is an error on our server. Sorry for inconvenience. Please try again later.");
+        document.getElementById("server-notice").style.display = "flex";
+      } else {
+        $(".generating-keywords").addClass("generate-keywords").removeClass("generating-keywords");
+        $("#server-notice").addClass("success").removeClass("error");
+        $("#server-notice span").text("Keywords Generated Successfully.");
+        $("#nextBtnBulk").removeClass('btn-disabled');
+        document.getElementById("server-notice").style.display = "flex";
+        for (let i = 0; i < 10; i++) {
+          var num = i+1;
+          var keywordID = "#focuskeyword" + num;
+          $(keywordID).val(data.keywords[i]);
+        }
+        setTimeout(function(){ document.getElementById("server-notice").style.display = "none"; }, 6000);
+      }
+    }).catch((error) => {
+      $("#server-notice").addClass("error").removeClass("success");
+      $("#server-notice span").text("Oops! Something went wrong. Please try again.");
+      $(".generating-keywords").addClass("generate-keywords").removeClass("generating-keywords");
+      document.getElementById("server-notice").style.display = "flex";
+      console.log(error);
+    }).finally(() => chatbox.scrollTo(0, chatbox.scrollHeight));
+  } catch (error) {
+    $(".generating-keywords").addClass("generate-keywords").removeClass("generating-keywords");
+    $("#server-notice").addClass("error").removeClass("success");
+    $("#server-notice span").text("Oops! Something went wrong. Please try again.");
+    document.getElementById("server-notice").style.display = "flex";
+    console.log(error);
+  }
+});
+
 /* Step Script */
 
 document.querySelectorAll('.heading-list input[type="checkbox"]').forEach(function(checkbox) {

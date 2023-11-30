@@ -283,6 +283,23 @@ router.post('/', async (req,res) =>{
       res.send({bulkdata});
     }
 
+  } else if (userAction == "GenerateKeywords"){
+    var keywords = [];
+    try {
+      for (let i = 0; i < 10; i++) {
+        var stringKeywords = keywords.toString();
+        var generatedKeyword = await generateKeywords(stringKeywords);
+        console.log(generatedKeyword);
+        keywords.push(generatedKeyword);
+      }
+      console.log(keywords);
+      res.send({keywords});
+    } catch (error) {
+      keywords = "There is an error on our server. Sorry for inconvenience. Please try again later.";
+      console.log(error);
+      res.send({keywords});
+    }
+    
   }
 })
 
@@ -432,6 +449,40 @@ export const bulkArticleGenerator = async (generalQuery, title, keyword, perspec
   const res = await chain.call({ query: userprompt });
   const output = res.text;
   console.log(output);
+  return output;
+};
+
+export const generateKeywords = async (keywords) => {
+  
+  const model = new OpenAI({temperature:0.7, modelName:"gpt-4-1106-preview"});
+
+  let vectorStore;
+  if (fs.existsSync(VECTOR_STORE_PATH)) {
+    vectorStore = await HNSWLib.load(VECTOR_STORE_PATH, new OpenAIEmbeddings());
+  } else {
+    const text = fs.readFileSync(txtPath, 'utf8');
+    const textSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 1000 });
+    const docs = await textSplitter.createDocuments([text]);
+    vectorStore = await HNSWLib.fromDocuments(docs, new OpenAIEmbeddings());
+    await vectorStore.save(VECTOR_STORE_PATH);
+  }
+
+  var currentKeywords;
+  if (keywords) {
+    currentKeywords = `Also, it is important to make it different from these given keywords ${keywords}`;
+  } else { 
+    currentKeywords = " ";
+  }
+
+  const userprompt = `Create good and top ranking focus keyword for an article. Make sure to create a keyword only and you should not include any comments or short descriptions. It should be a keyword, not a slug and remove the quotations. It should also relate into real estate ${currentKeywords}`;
+
+  console.log(userprompt);
+
+  const chain = RetrievalQAChain.fromLLM(model, vectorStore.asRetriever());
+
+  const res = await chain.call({ query: userprompt });
+  const output = res.text;
+  // console.log(output);
   return output;
 };
 

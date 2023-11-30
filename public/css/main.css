@@ -967,7 +967,7 @@ textarea{
   text-align: center;
   height: 45px;
   display: flex;
-  width: 100%;
+  width: 48%;
   margin-bottom: 15px;
   align-items: center;
   justify-content: center;
@@ -982,6 +982,56 @@ textarea{
 
 #regForm .back:after, #bulkGenerator .back:after{
   content: "Back to Generator Options";
+  font-family: 'Montserrat';
+  font-size: 16px;
+  font-weight: 600;
+  padding: 10px;
+}
+
+#bulkGenerator .generate-keywords{
+  background-color: #7eac0b;
+  text-align: center;
+  height: 45px;
+  display: flex;
+  width: 48%;
+  margin-bottom: 15px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  color: #fff;
+  cursor: pointer;
+}
+
+#bulkGenerator .generating-keywords{
+  background-color: #c3db63;
+  text-align: center;
+  height: 45px;
+  display: flex;
+  width: 48%;
+  margin-bottom: 15px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  border-color: #c3db63;
+  color: #fff;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+#regForm .generate-keywords:hover, #bulkGenerator .generate-keywords:hover{
+  background-color: #97BC34;
+}
+
+#bulkGenerator .generate-keywords:after{
+  content: "Generate Keywords";
+  font-family: 'Montserrat';
+  font-size: 16px;
+  font-weight: 600;
+  padding: 10px;
+}
+
+#bulkGenerator .generating-keywords:after{
+  content: "Generating Keywords";
   font-family: 'Montserrat';
   font-size: 16px;
   font-weight: 600;
@@ -1032,8 +1082,9 @@ textarea{
   width: 100%;
 }
 
+
 .focuskeyword{
-  width: 90%;
+  width: 100%;
   height: 50px;
   padding: 0 20px;
   border: none;
@@ -1428,6 +1479,16 @@ input[type=checkbox]:checked+.list {
   line-height: 15px;
 }
 
+@media screen and (max-width: 1500px) {
+  .back, .generate-keywords{
+    font-size: 20px;
+  }
+
+  #bulkGenerator .back:after, #bulkGenerator .generate-keywords:after{
+    font-size: 12px;
+  }
+}
+
 @media screen and (max-width: 1222px) {
   .float{
     height: 49px;
@@ -1547,6 +1608,12 @@ input[type=checkbox]:checked+.list {
   margin-bottom: 30px;
 }
 
+.bulk-options{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
 #bulkGenerator h3{
   font-size: 32px;
   text-align: center;
@@ -1653,6 +1720,12 @@ select{
 /* Responsive style */
 
 @media (max-width: 600px) {
+  .bulk-options{
+    flex-direction: column;
+  }
+  .back, .generate-keywords{
+    width: 100% !important;
+  }
   .chatbot{
     margin: 0 !important;
   }
