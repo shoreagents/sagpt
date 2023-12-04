@@ -313,7 +313,7 @@ export const updateData = async () => {
 
 export const runWithEmbeddings = async (question, perspectiveOutput, toneOutput, targetOutput, authorOutput,customerObjectiveOutput) => {
   
-  const model = new ChatOpenAI({temperature:0.7, modelName:"gpt-4"});
+  const model = new ChatOpenAI({temperature:0.7, modelName:"gpt-4-1106-preview"});
 
   let vectorStore;
   if (fs.existsSync(VECTOR_STORE_PATH)) {
@@ -330,7 +330,7 @@ export const runWithEmbeddings = async (question, perspectiveOutput, toneOutput,
 
   const fasterModel = new ChatOpenAI({
     temperature:0.7,
-    modelName: "gpt-4",
+    modelName: "gpt-4-1106-preview",
   });
 
   // const chain = RetrievalQAChain.fromLLM(model, vectorStore.asRetriever());
