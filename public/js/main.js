@@ -83,17 +83,17 @@ const inputInitHeight = chatInput.scrollHeight;
 const createChatLi = (message, className) => {
     const chatLi = document.createElement("li");
     chatLi.classList.add("chat", `${className}`);
-    let chatContent = className === "outgoing" ? `<p></p>` : `<span class="material-symbols-outlined">smart_toy</span><p class="gpt-answer" id="gptAnswer"></p><button class="copy-button" onclick="copyContent()"><span class="material-symbols-outlined copy-to-clipboard" id="copyClipboard">
+    let chatContent = className === "outgoing" ? `<div></div>` : `<span class="material-symbols-outlined">smart_toy</span><div class="gpt-answer" id="gptAnswer"></div><button class="copy-button" onclick="copyContent()"><span class="material-symbols-outlined copy-to-clipboard" id="copyClipboard">
     content_copy</span></button>`;
     chatLi.innerHTML = chatContent;
-    chatLi.querySelector("p").textContent = message;
+    chatLi.querySelector("div").textContent = message;
     return chatLi; 
 }
 
 const generateResponse = (chatElement) => {
 
     const outputTarget = $("#targetOptions").val();
-    const messageElement = chatElement.querySelector("p");
+    const messageElement = chatElement.querySelector("div");
     try {
       const API_URL = "/";
       
@@ -115,9 +115,9 @@ const generateResponse = (chatElement) => {
       }
 
       fetch(API_URL, requestOptions).then(res => res.json()).then(data => {
-          messageElement.textContent = data.output;
+          messageElement.innerHTML = data.output;
       }).catch((error) => {
-          messageElement.textContent = "Oops! Something went wrong. Please try again.";
+          messageElement.innerHTML = "Oops! Something went wrong. Please try again.";
           messageElement.classList.add("error");
           console.log(error);
       }).finally(() => chatbox.scrollTo(0, chatbox.scrollHeight));
@@ -224,15 +224,22 @@ tinymce.init({
 });
 
 /* Article Generator Options Button Script */
+
+$('.back').on('click', function() {
+  $('#regForm').css('display', 'none');
+  $('#queriedGenerator').css('display', 'none');
+  $('#bulkGenerator').css('display', 'none');
+  $('.generator-options').css('display', 'flex');
+});
+
 $('.manual-generator').on('click', function() {
   $('#regForm').css('display', 'block');
   $('.generator-options').css('display', 'none');
 });
 
-$('.back').on('click', function() {
-  $('#regForm').css('display', 'none');
-  $('#bulkGenerator').css('display', 'none');
-  $('.generator-options').css('display', 'flex');
+$('.queried-generator').on('click', function() {
+  $('#queriedGenerator').css('display', 'flex');
+  $('.generator-options').css('display', 'none');
 });
 
 $('.bulk-generator').on('click', function() {
@@ -328,6 +335,103 @@ function articleResponse() {
         });
         $(".user-section").removeClass("hide");
         $(".user-accordion").css("display", "none");
+        $("#server-notice").addClass("success").removeClass("error");
+        $("#server-notice span").text("Article Generated Successfully.");
+        document.getElementById("myNav").style.display = "none";
+        document.getElementById("server-notice").style.display = "flex";
+        setTimeout(function(){ document.getElementById("server-notice").style.display = "none"; }, 6000);
+      }
+    }).catch((error) => {
+      $("#server-notice").addClass("error").removeClass("success");
+      $("#server-notice span").text("Oops! Something went wrong. Please try again.");
+      document.getElementById("myNav").style.display = "none";
+      document.getElementById("server-notice").style.display = "flex";
+      console.log(error);
+    }).finally(() => chatbox.scrollTo(0, chatbox.scrollHeight));
+  } catch (error) {
+    $("#server-notice").addClass("error").removeClass("success");
+    $("#server-notice span").text("Oops! Something went wrong. Please try again.");
+    document.getElementById("myNav").style.display = "none";
+    document.getElementById("server-notice").style.display = "flex";
+    console.log(error);
+  }
+}
+
+/* Query Article Generate Response Script */
+
+function queryArticleResponse() {
+  const articletitle = document.getElementById('queryarticletitle').value;
+  const keyword = document.getElementById('queriedKeyword').value;
+  const slug = document.getElementById('slug').value;
+  const articleOverview = document.getElementById('articleOverview').value;
+  const seoTitle = document.getElementById('seoTitle').value;
+  const metaDescription = document.getElementById('metaDescription').value;
+
+  var tone = document.getElementById('queryArticleTone');
+  var outputTone = document.getElementById('queryOutputTone');
+  tone.onchange = function() {
+    outputTone.innerHTML = this.options[this.selectedIndex].getAttribute('value');
+  };
+  tone.onchange();
+
+  var author = document.getElementById('queryArticleAuthor');
+  var outputAuthor = document.getElementById('queryOutputAuthor');
+  author.onchange = function() {
+    outputAuthor.innerHTML = this.options[this.selectedIndex].getAttribute('value');
+  };
+  author.onchange();
+
+  var perspective = document.getElementById('queryArticlePerspective');
+  var outputPerspective = document.getElementById('queryOutputPerspective');
+  perspective.onchange = function() {
+    outputPerspective.innerHTML = this.options[this.selectedIndex].getAttribute('value');
+  };
+  perspective.onchange();
+
+  var customerObjective = document.getElementById('queryCO');
+  var outputCustomerObjective = document.getElementById('queryOutputCO');
+  customerObjective.onchange = function() {
+    outputCustomerObjective.innerHTML = this.options[this.selectedIndex].getAttribute('value');
+  };
+  customerObjective.onchange();
+  
+  try {
+    const API_URL = "/";
+    const outputTarget = $("#queryArticleTO").val();
+    const requestOptions = {
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          articletitle: articletitle,
+          keyword: keyword,
+          slug: slug,
+          articleOverview: articleOverview,
+          seoTitle: seoTitle,
+          metaDescription: metaDescription,
+          tone: outputTone.textContent,
+          author: outputAuthor.textContent,
+          target: outputTarget,
+          perspective: outputPerspective.textContent,
+          customerObjective: outputCustomerObjective.textContent,
+          userAction: "QueryArticleGenerator"
+        })
+    }
+    fetch(API_URL, requestOptions).then(res => res.json()).then(data => {
+      if (data.output == "There is an error on our server. Sorry for inconvenience. Please try again later.") {
+        $("#server-notice").addClass("error").removeClass("success");
+        $("#server-notice span").text("There is an error on our server. Sorry for inconvenience. Please try again later.");
+        document.getElementById("myNav").style.display = "none";
+        document.getElementById("server-notice").style.display = "flex";
+      } else {
+        var $iframe = $('#default_ifr');
+        $iframe.ready(function() {
+            $iframe.contents().find("body").append(data.output);
+        });
+        $(".user-section").addClass("hide");
+        $(".user-accordion").css("display", "flex");
         $("#server-notice").addClass("success").removeClass("error");
         $("#server-notice span").text("Article Generated Successfully.");
         document.getElementById("myNav").style.display = "none";
@@ -603,10 +707,84 @@ $('#regForm .drawer ul').on('click', function() {
   }
 });
 
+/* Queried Generator Step Script */
+
+var currentTabQuery = 0; 
+showTabQuery(currentTabQuery);
+
+function showTabQuery(n) {
+  var x = document.getElementsByClassName("query-tab");
+  x[n].style.display = "flex";
+  if (n == 0) {
+    document.getElementById("prevBtnQuery").style.display = "none";
+  } else {
+    document.getElementById("prevBtnQuery").style.display = "inline";
+  }
+  if (n == (x.length - 1)) {
+    document.getElementById("nextBtnQuery").innerHTML = "Generate";
+  } else {
+    document.getElementById("nextBtnQuery").innerHTML = "Next";
+  }
+  fixStepIndicatorQuery(n)
+}
+
+function nextPrevQuery(n) {
+  var x = document.getElementsByClassName("query-tab");
+  if (n == 1 && !validateFormQuery()) return false;
+  x[currentTabQuery].style.display = "none";
+  currentTabQuery = currentTabQuery + n;
+  if (currentTabQuery >= x.length) {
+    document.getElementById("myNav").style.display = "block";
+    var values = Array.from(document.querySelectorAll("#queriedGenerator .item-label")).map(t => t.innerText)
+    $('#queryArticleTO').val(values);
+    values = [];
+    showTabQuery(currentTabQuery-1);
+    queryArticleResponse();
+    currentTabQuery = 1;
+  }
+  showTabQuery(currentTabQuery);
+}
+
+function validateFormQuery() {
+  var x, y, i, valid = true;
+  // x = document.getElementsByClassName("tab");
+  // y = x[currentTab].getElementsByTagName("input");
+  // for (i = 0; i < y.length; i++) {
+  //   if (y[i].value == "") {
+  //     y[i].className += " invalid";
+  //     valid = false;
+  //   }
+  // }
+  // if (valid) {
+    document.getElementsByClassName("query-step")[currentTabQuery].className += " finish";
+  // }
+  return valid; 
+}
+
+function fixStepIndicatorQuery(n) {
+  var i, x = document.getElementsByClassName("query-step");
+  for (i = 0; i < x.length; i++) {
+    x[i].className = x[i].className.replace(" active", "");
+  }
+  x[n].className += " active";
+}
+
+$('#queriedGenerator .input-container').on('click', function() {
+  if ( $('#queriedGenerator .input-container').children().length == 0 ) {
+    $("#nextBtnQuery").addClass('btn-disabled');
+   }
+});
+
+$('#queriedGenerator .drawer ul').on('click', function() {
+  if ( $('#queriedGenerator .input-container').children().length > 0 ) {
+    $("#nextBtnQuery").removeClass('btn-disabled');
+  }
+});
+
 /* Bulk Generator Step Script */
 
 var currentTabBulk = 0; 
-showTabBulk(currentTabBulk); 
+showTabBulk(currentTabBulk);
 
 function showTabBulk(n) {
   var x = document.getElementsByClassName("bulk-tab");

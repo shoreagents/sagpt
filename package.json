@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@pinecone-database/pinecone": "^1.1.2",
     "@xenova/transformers": "^2.6.2",
     "body-parser": "^1.20.2",
     "cheerio": "^1.0.0-rc.12",
@@ -22,6 +23,7 @@
     "fs": "^0.0.1-security",
     "hnswlib-node": "^1.4.2",
     "langchain": "^0.0.145",
+    "marked": "^11.1.0",
     "method-override": "^3.0.0",
     "nodemon": "^3.0.1",
     "openai": "^4.19.1"
