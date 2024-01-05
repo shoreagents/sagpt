@@ -292,6 +292,7 @@ header h2 {
   align-items: center;
   width: 100%;
   height: 100%;
+  gap: 3%;
 }
 
 .blog-builder{
@@ -319,7 +320,7 @@ header h2 {
 }
 
 .user-section{
-  height: 100%;
+  height: 67%;
   border-radius: 15px;
   width: 90%;
 }
@@ -332,6 +333,16 @@ header h2 {
   height: 100%;
   border: none;
   padding: 0;
+}
+
+.meta-fields{
+  height: 40%;
+  border-radius: 15px;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 30px;
 }
 
 .user-input{
@@ -390,7 +401,6 @@ header h2 {
 .column{
   width: 100%;
   height: 100%;
-  margin: 0 5px;
   justify-content: center;
 }
 
@@ -399,6 +409,14 @@ header h2 {
   color: #303030 !important;
   font-weight: 700;
   font-size: 24px;
+}
+
+.query-tab label{
+  font-size: 16px;
+}
+
+.query-tab .drawer{
+  box-shadow: 0 0 128px 0 rgba(0,0,0,0.1), 0 32px 64px -48px rgba(0,0,0,0.5);
 }
 
 .column .button-container{
@@ -874,10 +892,6 @@ textarea{
 
 /* Floating button style */
 
-.tox .tox-statusbar__text-container.tox-statusbar__text-container-3-cols>.tox-statusbar__help-text, .tox .tox-statusbar__text-container.tox-statusbar__text-container-3-cols>.tox-statusbar__path, .tox .tox-statusbar__text-container.tox-statusbar__text-container-3-cols>.tox-statusbar__right-container{
-  flex: 0 0 calc(100% / 4) !important;
-}
-
 .login .modal-container-header{
   background-color: #7eac0b;
 }
@@ -914,10 +928,9 @@ textarea{
 
 .float{
 	position: absolute;
-  width: 230px;
+  width: 100%;
   height: 60px;
   bottom: 0px;
-  right: 0;
   background-color: #7eac0b;
   color: #FFF;
   text-align: center;
@@ -932,10 +945,9 @@ textarea{
 
 .updatepost{
 	position: absolute;
-  width: 230px;
+  width: 100%;
   height: 60px;
   bottom: 0px;
-  right: 0;
   background-color: #7eac0b;
   color: #FFF;
   text-align: center;
@@ -1266,6 +1278,7 @@ flex-direction: column;
   border-radius: 6px 0 0 6px;
   justify-content: center;
   align-items: center;
+  min-height: 50px;
 }
 
 .title-container input:focus{
@@ -1555,19 +1568,30 @@ input[type=checkbox]:checked+.list {
     flex-direction: column;
   }
 
+  .user-outer {
+    gap: 0% !important;
+    height: 95%;
+  }
+
   .generator-outer{
     width: 100%;
-    height: 3000;
+    flex: none;
+    margin-top: 95vh;
   }
 
   .blog-builder{
     width: 100%;
     height: 100%;
+    flex: none;
   }
 
   .chatbot{
     margin-top: 50px;
     width: 90% !important;
+  }
+
+  .meta-fields{
+    margin-top: 10px !important;
   }
 
   .pcss3t > ul, .pcss3t > ul > li{
@@ -1683,10 +1707,16 @@ input[type=checkbox]:checked+.list {
   margin-bottom: 15px;
 }
 
-.tab , .query-tab, .bulk-tab{
+.tab , .bulk-tab{
   display: none;
   flex-direction: column;
   gap: 10px;
+}
+
+.query-tab{
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .bulk-tab{
@@ -1701,12 +1731,11 @@ input[type=checkbox]:checked+.list {
   margin: 0;
 }
 
-#queriedGenerator .details-inner {
-  margin-top: 0 !important;
-}
-
 .query-tab select{
-  margin-bottom: 25px;
+  margin: 0 !important;
+  border: none;
+  font-size: 14px;
+  color: #303030;
 }
 
 .bulk-tab select{
@@ -1759,8 +1788,13 @@ select{
   --border-color: #caced1 !important;
 }
 
+.query-tab .mult-select-tag{
+  margin: 0px !important;
+  --border-color: none !important;
+}
+
 .tab-content-3 .mult-select-tag{
-  margin-bottom: 15px !important;
+  margin-bottom: 15px;
 }
 
 .btn-container{
@@ -1794,6 +1828,9 @@ select{
   .bulk-options{
     flex-direction: column;
   }
+  .float{
+    height: 70px !important;
+  }
   .options{
     flex-direction: column;
   }
@@ -1805,7 +1842,11 @@ select{
   }
   .container-gpt{
     margin-top: 0;
-    height: 200vh !important;
+    height: 105vh !important;
+  }
+  .meta-fields{
+    height: 47% !important;
+    top: 10px;
   }
   .chatbot-toggler {
     right: 20px;

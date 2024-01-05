@@ -331,8 +331,11 @@ function articleResponse() {
       } else {
         var $iframe = $('#default_ifr');
         $iframe.ready(function() {
-            $iframe.contents().find("body").append(data.output);
+            $iframe.contents().find("body").append(data.output.content);
         });
+        $("#seoTitle").val(data.output.seoTitle);
+        $("#metaDescription").val(data.output.metaDescription);
+        $("#slug").val(data.output.slug);
         $(".user-section").removeClass("hide");
         $(".user-accordion").css("display", "none");
         $("#server-notice").addClass("success").removeClass("error");
@@ -357,15 +360,11 @@ function articleResponse() {
   }
 }
 
-/* Query Article Generate Response Script */
+/* Queried Article Generate Response Script */
 
 function queryArticleResponse() {
-  const articletitle = document.getElementById('queryarticletitle').value;
   const keyword = document.getElementById('queriedKeyword').value;
-  const slug = document.getElementById('slug').value;
   const articleOverview = document.getElementById('articleOverview').value;
-  const seoTitle = document.getElementById('seoTitle').value;
-  const metaDescription = document.getElementById('metaDescription').value;
 
   var tone = document.getElementById('queryArticleTone');
   var outputTone = document.getElementById('queryOutputTone');
@@ -405,12 +404,8 @@ function queryArticleResponse() {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          articletitle: articletitle,
           keyword: keyword,
-          slug: slug,
           articleOverview: articleOverview,
-          seoTitle: seoTitle,
-          metaDescription: metaDescription,
           tone: outputTone.textContent,
           author: outputAuthor.textContent,
           target: outputTarget,
@@ -427,11 +422,15 @@ function queryArticleResponse() {
         document.getElementById("server-notice").style.display = "flex";
       } else {
         var $iframe = $('#default_ifr');
+        console.log(data.output);
         $iframe.ready(function() {
-            $iframe.contents().find("body").append(data.output);
+            $iframe.contents().find("body").append(data.output.content);
         });
-        $(".user-section").addClass("hide");
-        $(".user-accordion").css("display", "flex");
+        $("#seoTitle").val(data.output.seoTitle);
+        $("#metaDescription").val(data.output.metaDescription);
+        $("#slug").val(data.output.slug);
+        $(".user-section").removeClass("hide");
+        $(".user-accordion").css("display", "none");
         $("#server-notice").addClass("success").removeClass("error");
         $("#server-notice span").text("Article Generated Successfully.");
         document.getElementById("myNav").style.display = "none";
@@ -709,64 +708,12 @@ $('#regForm .drawer ul').on('click', function() {
 
 /* Queried Generator Step Script */
 
-var currentTabQuery = 0; 
-showTabQuery(currentTabQuery);
-
-function showTabQuery(n) {
-  var x = document.getElementsByClassName("query-tab");
-  x[n].style.display = "flex";
-  if (n == 0) {
-    document.getElementById("prevBtnQuery").style.display = "none";
-  } else {
-    document.getElementById("prevBtnQuery").style.display = "inline";
-  }
-  if (n == (x.length - 1)) {
-    document.getElementById("nextBtnQuery").innerHTML = "Generate";
-  } else {
-    document.getElementById("nextBtnQuery").innerHTML = "Next";
-  }
-  fixStepIndicatorQuery(n)
-}
-
 function nextPrevQuery(n) {
-  var x = document.getElementsByClassName("query-tab");
-  if (n == 1 && !validateFormQuery()) return false;
-  x[currentTabQuery].style.display = "none";
-  currentTabQuery = currentTabQuery + n;
-  if (currentTabQuery >= x.length) {
-    document.getElementById("myNav").style.display = "block";
-    var values = Array.from(document.querySelectorAll("#queriedGenerator .item-label")).map(t => t.innerText)
-    $('#queryArticleTO').val(values);
-    values = [];
-    showTabQuery(currentTabQuery-1);
-    queryArticleResponse();
-    currentTabQuery = 1;
-  }
-  showTabQuery(currentTabQuery);
-}
-
-function validateFormQuery() {
-  var x, y, i, valid = true;
-  // x = document.getElementsByClassName("tab");
-  // y = x[currentTab].getElementsByTagName("input");
-  // for (i = 0; i < y.length; i++) {
-  //   if (y[i].value == "") {
-  //     y[i].className += " invalid";
-  //     valid = false;
-  //   }
-  // }
-  // if (valid) {
-    document.getElementsByClassName("query-step")[currentTabQuery].className += " finish";
-  // }
-  return valid; 
-}
-
-function fixStepIndicatorQuery(n) {
-  var i, x = document.getElementsByClassName("query-step");
-  for (i = 0; i < x.length; i++) {
-    x[i].className = x[i].className.replace(" active", "");
-  }
-  x[n].className += " active";
+  document.getElementById("myNav").style.display = "block";
+  var values = Array.from(document.querySelectorAll("#queriedGenerator .item-label")).map(t => t.innerText)
+  $('#queryArticleTO').val(values);
+  values = [];
+  queryArticleResponse();
 }
 
 $('#queriedGenerator .input-container').on('click', function() {
@@ -775,11 +722,6 @@ $('#queriedGenerator .input-container').on('click', function() {
    }
 });
 
-$('#queriedGenerator .drawer ul').on('click', function() {
-  if ( $('#queriedGenerator .input-container').children().length > 0 ) {
-    $("#nextBtnQuery").removeClass('btn-disabled');
-  }
-});
 
 /* Bulk Generator Step Script */
 
@@ -1301,6 +1243,14 @@ $('#regForm .generator-input').keyup(function() {
   }
 });
 
+$('#queriedGenerator .generator-input').keyup(function() {
+  if($('#queriedKeyword').val().length >1 && $('#articleOverview').val().length >1) {
+    $('.button').removeClass('btn-disabled');
+  } else {
+    $('.button').addClass('btn-disabled');
+  }
+});
+
 $('#bulkGenerator .focuskeyword').keyup(function() {
   var validate = isEveryInputEmpty();
   if (validate == true) {
@@ -1338,6 +1288,9 @@ $(document).on('click', '.float', function() {
 
 $(document).on('click', '.loginbtn', function() {
   var status;
+  const seoTitle = document.getElementById('seoTitle').value;
+  const metaDescription = document.getElementById('metaDescription').value;
+  const slug = document.getElementById('slug').value;
   try {
     fetch('https://www.shoreagents.com/wp-json/jwt-auth/v1/token',{
     method: "POST",
@@ -1376,6 +1329,11 @@ $(document).on('click', '.loginbtn', function() {
                 title: $("#default_ifr").contents().find("h1").html(),
                 content: $("#default_ifr").contents().find("body").clone().find("h1").remove().end().html(),
                 author: 1,
+                yoast_head_json:{
+                  title: seoTitle,
+                  description: metaDescription
+                },
+                slug,
                 status: 'private'
             })
         }).then(function(response){
@@ -1383,6 +1341,10 @@ $(document).on('click', '.loginbtn', function() {
         }).then(function(post){
             $(".my-float").text("update");
             $(".float-content").text("Update");
+            $("#server-notice").addClass("success").removeClass("error");
+            $("#server-notice span").text("Article Successfully Published as Private.");
+            document.getElementById("server-notice").style.display = "flex";
+            setTimeout(function(){ document.getElementById("server-notice").style.display = "none"; }, 6000);
             $(".float").css("background-color", "#7eac0b");
             $(".float").css("pointer-events", "all");
             $(".float").css("cursor", "pointer");
@@ -1448,7 +1410,6 @@ $(document).on('click', '.loginBulk', function() {
                   title: $("."+panelarticle+" iframe").contents().find("h1").html(),
                   content: $("."+panelarticle+" iframe").contents().find("body").clone().find("h1").remove().end().html(),
                   author: 1,
-                  status: 'private'
               })
             }).then(function(response){
                 return response.json()
@@ -1487,35 +1448,54 @@ $(document).on('click', '.loginBulk', function() {
 });
 
 $(document).on('click', '.updatepost', function() {
-
+  const slug = document.getElementById('slug').value;
   $(".my-float").text("autorenew");
   $(".float-content").text("Updating");
   $(".updatepost").css("background-color", "#c3db63");
   $(".updatepost").css("pointer-events", "none");
   $(".updatepost").css("cursor", "not-allowed");
-  
-  fetch('https://www.shoreagents.com/wp-json/wp/v2/posts/'+postID,{
-      method: "PUT",
-      headers: {
-          'Content-Type': 'application/json',
-          'accept': 'application/json',
-          'Authorization': `Bearer ${jwtToken}`
-      },
-      body:JSON.stringify({
-          title: $("#default_ifr").contents().find(".article-title").html(),
-          content: $("#default_ifr").contents().find("body").clone().find("h1").remove().end().html(),
-          author: 1,
-          status: 'private'
-      })
-  }).then(function(response){
-      return response.json()
-  }).then(function(post){
-      $(".my-float").text("update");
-      $(".float-content").text("Update");
-      $(".updatepost").css("background-color", "#7eac0b");
-      $(".updatepost").css("pointer-events", "all");
-      $(".updatepost").css("cursor", "pointer");
-      console.log("Article successfully updated.");
-      console.log({post});
-  });
+
+  fetch('https://www.shoreagents.com/wp-json/jwt-auth/v1/token',{
+    method: "POST",
+    headers:{
+        'Content-Type': 'application/json',
+        'accept': 'application/json',
+    },
+
+    body:JSON.stringify({
+        username: $("#username").val(),
+        password: $("#password").val()
+    })
+    }).then(function(response){
+      status = response.status;
+      console.log("Status: "+response.status);
+      if (response.ok) {
+        return response.json();
+      }
+    }).then(function(user){
+      fetch('https://www.shoreagents.com/wp-json/wp/v2/posts/'+postID,{
+        method: "PUT",
+        headers: {
+            'Content-Type': 'application/json',
+            'accept': 'application/json',
+            'Authorization': `Bearer ${user.token}`
+        },
+        body:JSON.stringify({
+            title: $("#default_ifr").contents().find("h1").html(),
+            content: $("#default_ifr").contents().find("body").clone().find("h1").remove().end().html(),
+            author: 1,
+            slug,
+            status: 'private',
+        })
+    }).then(function(response){
+        return response.json()
+    }).then(function(post){
+        $(".my-float").text("update");
+        $(".float-content").text("Update");
+        $(".updatepost").css("background-color", "#7eac0b");
+        $(".updatepost").css("pointer-events", "all");
+        $(".updatepost").css("cursor", "pointer");
+        console.log("Article successfully updated.");
+    });
+    });
 });
