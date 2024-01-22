@@ -264,6 +264,7 @@ router.post('/', async (req,res) =>{
           break;
         }
       }
+
       const content = "<h1>"+title+"</h1>"+"\n"+createArticle
       const seoTitle = await seoTitleGenerator(keyword);
       const metaDescription = await metaDescriptionGenerator(keyword, content);
@@ -417,8 +418,6 @@ router.post('/', async (req,res) =>{
     
   }
 })
-
-
 
 // export const runWithEmbeddings = async (question, perspectiveOutput, toneOutput, targetOutput, authorOutput,customerObjectiveOutput) => {
   
@@ -937,7 +936,7 @@ export const addHeadingContent = async (wordCount, articleContent, generalQuery,
       Do not add the word 'Subheading:' in the subheading titles.
       Strictly, do not add any H2 or H3 Conclusions.
       Strictly, you will not give any comments on the generated content, it must be content article body only.
-      Do not add the comments "html" in the output.
+      Do not add any comments "html" at the start and end of the output.
       Do not add the '${title}' itself.
       Make sure not to repeat previous H2 heading contents, it should be different and not related to each other.
       You will only add new H2 heading contents, and DO NOT REPEAT PREVIOUS ARTICLE HEADINGS AND ITS CONTENTS.
@@ -978,9 +977,10 @@ export const addHeadingContent = async (wordCount, articleContent, generalQuery,
         question: userprompt
       });
 
-      output = result.text;
+      const temp = result.text;
+      output = addInternalLinks(temp);
       console.log("User Prompt:", userprompt);
-      console.log("Chain Result:", result.text);
+      console.log("Chain Result:", output);
     } catch (error) {
       console.error("Error in processing chain:", error);
       output = "An error occurred while processing your request.";
@@ -1043,6 +1043,73 @@ export const generateConclusion = async (articleContent, generalQuery, title, ke
         question: userprompt
       });
 
+      const temp = result.text;
+      output = addInternalLinks(temp);
+      console.log("User Prompt:", userprompt);
+      console.log("Chain Result:", output);
+    } catch (error) {
+      console.error("Error in processing chain:", error);
+      output = "An error occurred while processing your request.";
+    }
+  } else {
+    console.log("I'm sorry, there are no matches that are related to the question in our data.");
+    output = "I'm sorry, there are no matches that are related to the question in our data.";
+  }
+  console.log("/////////////////////////////////////////////////////////////////////////////////");
+  console.log(output);
+  console.log("/////////////////////////////////////////////////////////////////////////////////");
+  return output;
+};
+
+export const addInternalLinks = async (articleContent) => {
+
+  var output;
+  const userprompt = `You are a content writer and will draft HTML formatted article heading where at the start of every paragraph you will just add '<p>' and must end with '</p>', it will be the same with Headings using '<h2>' and '</h2>', as well as Subheadings but with '<h3>' and '</h3>'. Your responsibility is to add an <a> internal links in this article heading that may relate to sectors / services, main pages, roles, directory and blog links provided "${articleContent}"
+  
+  Make sure to provide the 'href' with the links provided in Sectors / Services, Main Pages, Directory, Roles, and Blog Links that are related to that <a> link.
+  
+  Do not add additional contents or any comments from you. Just rewrite everything with <a> links added.
+
+  Stricly, SO NOT ADD LINKS OR CREATE LINKS THAT IS NOT FOUND ON THE DATA. Only use the links that you can only be found in sectors / services, main pages, roles, directory and blog links.
+
+  Do not repeat the same internal links, there must only one with the same internal link.
+  
+  Don't include homepage as internal link.`;
+
+  console.log(userprompt);
+
+  const pinecone = new Pinecone({
+    apiKey: process.env.PINECONE_API_KEY,
+    environment: process.env.PINECONE_ENVIRONMENT
+  });
+  const index = pinecone.index('sagpt');
+  const queryEmbedding = await new OpenAIEmbeddings().embedQuery(userprompt);
+  const queryResponse = await index.query({
+    topK: 5,
+    vector: queryEmbedding,
+    includeMetadata: true,
+    includeValues: true
+  });
+
+  // console.log("Pinecone Query Response:", queryResponse);
+
+  if (queryResponse.matches.length) {
+    const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4-1106-preview" });
+    const chain = loadQAStuffChain(llm);
+
+    const concatenatedPageContent = queryResponse.matches
+      .map((match) => match.metadata.text)
+      .join("\n\n");
+
+    // console.log("Concatenated Page Content:", concatenatedPageContent);
+    console.log('---------------------------------------------------------------');
+
+    try {
+      const result = await chain.call({
+        input_documents: [new Document({ pageContent: concatenatedPageContent })],
+        question: userprompt
+      });
+
       output = result.text;
       console.log("User Prompt:", userprompt);
       console.log("Chain Result:", result.text);
@@ -1051,7 +1118,7 @@ export const generateConclusion = async (articleContent, generalQuery, title, ke
       output = "An error occurred while processing your request.";
     }
   } else {
-    console.log("Since there are no matches, GPT-3 will not be queried.");
+    console.log("I'm sorry, there are no matches that are related to the question in our data.");
     output = "I'm sorry, there are no matches that are related to the question in our data.";
   }
   console.log("/////////////////////////////////////////////////////////////////////////////////");
