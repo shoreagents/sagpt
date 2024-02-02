@@ -10,7 +10,7 @@ var acc = document.getElementsByClassName("accordion");
 var i;
 
 for (i = 0; i < acc.length; i++) {
-  acc[i].addEventListener("click", function() {
+  acc[i].addEventListener("click", function () {
     this.classList.toggle("active");
     var panel = this.nextElementSibling;
     if (panel.style.maxHeight) {
@@ -19,7 +19,7 @@ for (i = 0; i < acc.length; i++) {
     } else {
       panel.style.maxHeight = "100%";
       $('.user-accordion h3').css('display', 'none');
-    } 
+    }
   });
 }
 
@@ -27,28 +27,28 @@ for (i = 0; i < acc.length; i++) {
 
 var tone = document.getElementById('tone');
 var outputTone = document.getElementById('outputTone');
-tone.onchange = function() {
+tone.onchange = function () {
   outputTone.innerHTML = this.options[this.selectedIndex].getAttribute('value');
 };
 tone.onchange();
 
 var author = document.getElementById('author');
 var outputAuthor = document.getElementById('outputAuthor');
-author.onchange = function() {
+author.onchange = function () {
   outputAuthor.innerHTML = this.options[this.selectedIndex].getAttribute('value');
 };
 author.onchange();
 
 var perspective = document.getElementById('perspective');
 var outputPerspective = document.getElementById('outputPerspective');
-perspective.onchange = function() {
+perspective.onchange = function () {
   outputPerspective.innerHTML = this.options[this.selectedIndex].getAttribute('value');
 };
 perspective.onchange();
 
 var customerObjective = document.getElementById('customerObjective');
 var outputCustomerObjective = document.getElementById('outputCustomerObjective');
-customerObjective.onchange = function() {
+customerObjective.onchange = function () {
   outputCustomerObjective.innerHTML = this.options[this.selectedIndex].getAttribute('value');
 };
 customerObjective.onchange();
@@ -66,9 +66,9 @@ function copyContent() {
   document.execCommand("copy");
   setTimeout(function () {
     document.getElementById("copyClipboard").innerHTML = "content_copy";
-	}, 2500);
+  }, 2500);
   document.body.removeChild(elem);
-  
+
 }
 
 /* GPT Script */
@@ -77,103 +77,103 @@ const chatbox = document.querySelector(".chatbox");
 const chatInput = document.querySelector(".chat-input textarea");
 const sendChatBtn = document.querySelector(".chat-input span");
 
-let userMessage = null; 
+let userMessage = null;
 const inputInitHeight = chatInput.scrollHeight;
 
 const createChatLi = (message, className) => {
-    const chatLi = document.createElement("li");
-    chatLi.classList.add("chat", `${className}`);
-    let chatContent = className === "outgoing" ? `<div></div>` : `<span class="material-symbols-outlined">smart_toy</span><div class="gpt-answer" id="gptAnswer"></div><button class="copy-button" onclick="copyContent()"><span class="material-symbols-outlined copy-to-clipboard" id="copyClipboard">
+  const chatLi = document.createElement("li");
+  chatLi.classList.add("chat", `${className}`);
+  let chatContent = className === "outgoing" ? `<div></div>` : `<span class="material-symbols-outlined">smart_toy</span><div class="gpt-answer" id="gptAnswer"></div><button class="copy-button" onclick="copyContent()"><span class="material-symbols-outlined copy-to-clipboard" id="copyClipboard">
     content_copy</span></button>`;
-    chatLi.innerHTML = chatContent;
-    chatLi.querySelector("div").textContent = message;
-    return chatLi; 
+  chatLi.innerHTML = chatContent;
+  chatLi.querySelector("div").textContent = message;
+  return chatLi;
 }
 
 const generateResponse = (chatElement) => {
 
-    const outputTarget = $("#targetOptions").val();
-    const messageElement = chatElement.querySelector("div");
-    try {
-      const API_URL = "/";
-      
-      const requestOptions = {
-          method: "POST",
+  const outputTarget = $("#targetOptions").val();
+  const messageElement = chatElement.querySelector("div");
+  try {
+    const API_URL = "/";
 
-          headers: {
-              "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-              userinput: userMessage,
-              tone: outputTone.textContent,
-              author: outputAuthor.textContent,
-              target: outputTarget,
-              perspective: outputPerspective.textContent,
-              customerObjective: outputCustomerObjective.textContent,
-              userAction: "ChatAI"
-          })
-      }
+    const requestOptions = {
+      method: "POST",
 
-      fetch(API_URL, requestOptions).then(res => res.json()).then(data => {
-          messageElement.innerHTML = data.output;
-      }).catch((error) => {
-          messageElement.innerHTML = "Oops! Something went wrong. Please try again.";
-          messageElement.classList.add("error");
-          console.log(error);
-      }).finally(() => chatbox.scrollTo(0, chatbox.scrollHeight));
-    } catch (error) {
-      messageElement.textContent = "Oops! Something went wrong. Please try again.";
-      messageElement.classList.add("error");
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        userinput: userMessage,
+        tone: outputTone.textContent,
+        author: outputAuthor.textContent,
+        target: outputTarget,
+        perspective: outputPerspective.textContent,
+        customerObjective: outputCustomerObjective.textContent,
+        userAction: "ChatAI"
+      })
     }
+
+    fetch(API_URL, requestOptions).then(res => res.json()).then(data => {
+      messageElement.innerHTML = data.output;
+    }).catch((error) => {
+      messageElement.innerHTML = "Oops! Something went wrong. Please try again.";
+      messageElement.classList.add("error");
+      console.log(error);
+    }).finally(() => chatbox.scrollTo(0, chatbox.scrollHeight));
+  } catch (error) {
+    messageElement.textContent = "Oops! Something went wrong. Please try again.";
+    messageElement.classList.add("error");
+  }
 }
 
 const handleChat = () => {
-    var values = Array.from(document.querySelectorAll(".tab-content-2 .item-label")).map(t => t.innerText)
-    $('#targetOptions').val(values);
-    values = [];
-    userMessage = chatInput.value.trim(); 
-    if(!userMessage) return;
+  var values = Array.from(document.querySelectorAll(".tab-content-2 .item-label")).map(t => t.innerText)
+  $('#targetOptions').val(values);
+  values = [];
+  userMessage = chatInput.value.trim();
+  if (!userMessage) return;
 
-    chatInput.value = "";
-    chatInput.style.height = `${inputInitHeight}px`;
+  chatInput.value = "";
+  chatInput.style.height = `${inputInitHeight}px`;
 
-    chatbox.appendChild(createChatLi(userMessage, "outgoing"));
+  chatbox.appendChild(createChatLi(userMessage, "outgoing"));
+  chatbox.scrollTo(0, chatbox.scrollHeight);
+
+  setTimeout(() => {
+    const incomingChatLi = createChatLi("Please wait, this may take a while...", "incoming");
+    chatbox.appendChild(incomingChatLi);
     chatbox.scrollTo(0, chatbox.scrollHeight);
-    
-    setTimeout(() => {
-        const incomingChatLi = createChatLi("Please wait, this may take a while...", "incoming");
-        chatbox.appendChild(incomingChatLi);
-        chatbox.scrollTo(0, chatbox.scrollHeight);
-        generateResponse(incomingChatLi);
-    }, 600);
-    if (document.querySelector('.gpt-answer')) {
-      document.querySelector('.gpt-answer').removeAttribute('class');
-    }
-    if (document.querySelector('.copy-to-clipboard')) {
-      document.querySelector('.copy-to-clipboard').removeAttribute('class');
-    }
-    if (document.querySelector('#copyClipboard')) {
-      document.querySelector('#copyClipboard').removeAttribute('id');
-    }
-    if (document.querySelector('.copy-button')) {
-      document.querySelector('.copy-button').style.display = "none";
-      document.querySelector('.copy-button').removeAttribute('class');
-    }
-    if (document.getElementById("gptAnswer")) {
-      document.getElementById("gptAnswer").removeAttribute('id');
-    }
+    generateResponse(incomingChatLi);
+  }, 600);
+  if (document.querySelector('.gpt-answer')) {
+    document.querySelector('.gpt-answer').removeAttribute('class');
+  }
+  if (document.querySelector('.copy-to-clipboard')) {
+    document.querySelector('.copy-to-clipboard').removeAttribute('class');
+  }
+  if (document.querySelector('#copyClipboard')) {
+    document.querySelector('#copyClipboard').removeAttribute('id');
+  }
+  if (document.querySelector('.copy-button')) {
+    document.querySelector('.copy-button').style.display = "none";
+    document.querySelector('.copy-button').removeAttribute('class');
+  }
+  if (document.getElementById("gptAnswer")) {
+    document.getElementById("gptAnswer").removeAttribute('id');
+  }
 }
 
 chatInput.addEventListener("input", () => {
-    chatInput.style.height = `${inputInitHeight}px`;
-    chatInput.style.height = `${chatInput.scrollHeight}px`;
+  chatInput.style.height = `${inputInitHeight}px`;
+  chatInput.style.height = `${chatInput.scrollHeight}px`;
 });
 
 chatInput.addEventListener("keydown", (e) => {
-    if(e.key === "Enter" && !e.shiftKey && window.innerWidth > 800) {
-        e.preventDefault();
-        handleChat();
-    }
+  if (e.key === "Enter" && !e.shiftKey && window.innerWidth > 800) {
+    e.preventDefault();
+    handleChat();
+  }
 });
 sendChatBtn.addEventListener("click", handleChat);
 
@@ -182,15 +182,15 @@ sendChatBtn.addEventListener("click", handleChat);
 tinymce.init({
   selector: 'textarea#default',
   height: "100%",
-  plugins:[
-      'advlist', 'autolink', 'link', 'image', 'lists', 'charmap', 'preview', 'anchor', 'pagebreak',
-      'searchreplace', 'wordcount', 'visualblocks', 'code', 'fullscreen', 'insertdatetime', 'media', 
-      'table', 'emoticons', 'codesample', 'autosave', 'help', 'image', 'quickbars'
+  plugins: [
+    'advlist', 'autolink', 'link', 'image', 'lists', 'charmap', 'preview', 'anchor', 'pagebreak',
+    'searchreplace', 'wordcount', 'visualblocks', 'code', 'fullscreen', 'insertdatetime', 'media',
+    'table', 'emoticons', 'codesample', 'autosave', 'help', 'image', 'quickbars'
   ],
   editimage_toolbar: 'rotateleft rotateright | flipv fliph | editimage imageoptions',
-  toolbar: 'undo redo | styles | bold italic underline | alignleft aligncenter alignright alignjustify |' + 
-  'bullist numlist outdent indent | link image | print preview media fullscreen | ' +
-  'forecolor backcolor emoticons' + 'restoredraft' + 'link image',
+  toolbar: 'undo redo | styles | bold italic underline | alignleft aligncenter alignright alignjustify |' +
+    'bullist numlist outdent indent | link image | print preview media fullscreen | ' +
+    'forecolor backcolor emoticons' + 'restoredraft' + 'link image',
   image_title: true,
   automatic_uploads: true,
   file_picker_types: 'image',
@@ -205,7 +205,7 @@ tinymce.init({
       const reader = new FileReader();
       reader.addEventListener('load', () => {
         const id = 'blobid' + (new Date()).getTime();
-        const blobCache =  tinymce.activeEditor.editorUpload.blobCache;
+        const blobCache = tinymce.activeEditor.editorUpload.blobCache;
         const base64 = reader.result.split(',')[1];
         const blobInfo = blobCache.create(id, file, base64);
         blobCache.add(blobInfo);
@@ -217,7 +217,7 @@ tinymce.init({
     input.click();
   },
   menu: {
-      favs: {title: '☰', items: 'code visualaid | searchreplace | emoticons | help'}
+    favs: { title: '☰', items: 'code visualaid | searchreplace | emoticons | help' }
   },
   menubar: 'favs file edit view insert format tools table',
   content_style: 'body{ font-family:Montserrat,sans-serif; font-size:16px}'
@@ -225,26 +225,44 @@ tinymce.init({
 
 /* Article Generator Options Button Script */
 
-$('.back').on('click', function() {
+$('.back').on('click', function () {
   $('#regForm').css('display', 'none');
   $('#queriedGenerator').css('display', 'none');
   $('#bulkGenerator').css('display', 'none');
   $('.generator-options').css('display', 'flex');
 });
 
-$('.manual-generator').on('click', function() {
+$('.manual-generator').on('click', function () {
   $('#regForm').css('display', 'block');
   $('.generator-options').css('display', 'none');
 });
 
-$('.queried-generator').on('click', function() {
+$('.queried-generator').on('click', function () {
   $('#queriedGenerator').css('display', 'flex');
   $('.generator-options').css('display', 'none');
 });
 
-$('.bulk-generator').on('click', function() {
+$('.bulk-generator').on('click', function () {
   $('#bulkGenerator').css('display', 'flex');
   $('.generator-options').css('display', 'none');
+});
+
+$('.shoreagents-site').on('click', function () {
+  $('.login-wordpress').css('display', 'block');
+  $('.choose-site').css('display', 'none');
+  $(".publish-website").val("www.shoreagents.com");
+});
+
+$('.careers-site').on('click', function () {
+  $('.login-wordpress').css('display', 'block');
+  $('.choose-site').css('display', 'none');
+  $(".publish-website").val("careers.shoreagents.com");
+});
+
+$('.publish-back').on('click', function () {
+  $('.login-wordpress').css('display', 'none');
+  $('.choose-site').css('display', 'flex');
+  $(".publish-website").val("");
 });
 
 /* Article Generate Response Script */
@@ -254,29 +272,32 @@ function articleResponse() {
   const heading = document.getElementsByClassName('heading');
   const subheading = document.getElementsByClassName('subheadings');
   var tone = document.getElementById('articleTone');
-  var outputTone = document.getElementById('outputTone');
-  tone.onchange = function() {
+  var outputTone = document.getElementById('articleTonePersonality');
+  $(".updatepost").addClass("float").removeClass("updatepost");
+  $(".my-float").text("publish");
+  $(".float-content").text("Publish Article");
+  tone.onchange = function () {
     outputTone.innerHTML = this.options[this.selectedIndex].getAttribute('value');
   };
   tone.onchange();
 
   var author = document.getElementById('articleAuthor');
-  var outputAuthor = document.getElementById('outputAuthor');
-  author.onchange = function() {
+  var outputAuthor = document.getElementById('articleOutputAuthor');
+  author.onchange = function () {
     outputAuthor.innerHTML = this.options[this.selectedIndex].getAttribute('value');
   };
   author.onchange();
 
   var perspective = document.getElementById('articlePerspective');
-  var outputPerspective = document.getElementById('outputPerspective');
-  perspective.onchange = function() {
+  var outputPerspective = document.getElementById('articleOutputPerspective');
+  perspective.onchange = function () {
     outputPerspective.innerHTML = this.options[this.selectedIndex].getAttribute('value');
   };
   perspective.onchange();
 
   var customerObjective = document.getElementById('articleCO');
-  var outputCustomerObjective = document.getElementById('outputCustomerObjective');
-  customerObjective.onchange = function() {
+  var outputCustomerObjective = document.getElementById('articleCustomerObjective');
+  customerObjective.onchange = function () {
     outputCustomerObjective.innerHTML = this.options[this.selectedIndex].getAttribute('value');
   };
   customerObjective.onchange();
@@ -302,25 +323,25 @@ function articleResponse() {
     const outputTarget = $("#articleTargetOptions").val();
     const generalQ = document.getElementById('generalquery').value;
     const requestOptions = {
-        method: "POST",
+      method: "POST",
 
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            articletitle: articletitle,
-            heading: headingArr,
-            subheading: subheadingArr,
-            tone: outputTone.textContent,
-            author: outputAuthor.textContent,
-            target: outputTarget,
-            perspective: outputPerspective.textContent,
-            customerObjective: outputCustomerObjective.textContent,
-            keyword: keyword,
-            generalQuery: generalQ,
-            listquery: listqueryArr,
-            userAction: "ArticleGenerator"
-        })
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        articletitle: articletitle,
+        heading: headingArr,
+        subheading: subheadingArr,
+        tone: outputTone.textContent,
+        author: outputAuthor.textContent,
+        target: outputTarget,
+        perspective: outputPerspective.textContent,
+        customerObjective: outputCustomerObjective.textContent,
+        keyword: keyword,
+        generalQuery: generalQ,
+        listquery: listqueryArr,
+        userAction: "ArticleGenerator"
+      })
     }
     fetch(API_URL, requestOptions).then(res => res.json()).then(data => {
       if (data.output == "There is an error on our server. Sorry for inconvenience. Please try again later.") {
@@ -330,8 +351,8 @@ function articleResponse() {
         document.getElementById("server-notice").style.display = "flex";
       } else {
         var $iframe = $('#default_ifr');
-        $iframe.ready(function() {
-            $iframe.contents().find("body").append(data.output.content);
+        $iframe.ready(function () {
+          $iframe.contents().find("body").append(data.output.content);
         });
         $("#seoTitle").val(data.output.seoTitle);
         $("#metaDescription").val(data.output.metaDescription);
@@ -342,7 +363,7 @@ function articleResponse() {
         $("#server-notice span").text("Article Generated Successfully.");
         document.getElementById("myNav").style.display = "none";
         document.getElementById("server-notice").style.display = "flex";
-        setTimeout(function(){ document.getElementById("server-notice").style.display = "none"; }, 6000);
+        setTimeout(function () { document.getElementById("server-notice").style.display = "none"; }, 6000);
       }
     }).catch((error) => {
       $("#server-notice").addClass("error").removeClass("success");
@@ -368,51 +389,51 @@ function queryArticleResponse() {
 
   var tone = document.getElementById('queryArticleTone');
   var outputTone = document.getElementById('queryOutputTone');
-  tone.onchange = function() {
+  tone.onchange = function () {
     outputTone.innerHTML = this.options[this.selectedIndex].getAttribute('value');
   };
   tone.onchange();
 
   var author = document.getElementById('queryArticleAuthor');
   var outputAuthor = document.getElementById('queryOutputAuthor');
-  author.onchange = function() {
+  author.onchange = function () {
     outputAuthor.innerHTML = this.options[this.selectedIndex].getAttribute('value');
   };
   author.onchange();
 
   var perspective = document.getElementById('queryArticlePerspective');
   var outputPerspective = document.getElementById('queryOutputPerspective');
-  perspective.onchange = function() {
+  perspective.onchange = function () {
     outputPerspective.innerHTML = this.options[this.selectedIndex].getAttribute('value');
   };
   perspective.onchange();
 
   var customerObjective = document.getElementById('queryCO');
   var outputCustomerObjective = document.getElementById('queryOutputCO');
-  customerObjective.onchange = function() {
+  customerObjective.onchange = function () {
     outputCustomerObjective.innerHTML = this.options[this.selectedIndex].getAttribute('value');
   };
   customerObjective.onchange();
-  
+
   try {
     const API_URL = "/";
     const outputTarget = $("#queryArticleTO").val();
     const requestOptions = {
-        method: "POST",
+      method: "POST",
 
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          keyword: keyword,
-          articleOverview: articleOverview,
-          tone: outputTone.textContent,
-          author: outputAuthor.textContent,
-          target: outputTarget,
-          perspective: outputPerspective.textContent,
-          customerObjective: outputCustomerObjective.textContent,
-          userAction: "QueryArticleGenerator"
-        })
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        keyword: keyword,
+        articleOverview: articleOverview,
+        tone: outputTone.textContent,
+        author: outputAuthor.textContent,
+        target: outputTarget,
+        perspective: outputPerspective.textContent,
+        customerObjective: outputCustomerObjective.textContent,
+        userAction: "QueryArticleGenerator"
+      })
     }
     fetch(API_URL, requestOptions).then(res => res.json()).then(data => {
       if (data.output == "There is an error on our server. Sorry for inconvenience. Please try again later.") {
@@ -423,8 +444,8 @@ function queryArticleResponse() {
       } else {
         var $iframe = $('#default_ifr');
         console.log(data.output);
-        $iframe.ready(function() {
-            $iframe.contents().find("body").append(data.output.content);
+        $iframe.ready(function () {
+          $iframe.contents().find("body").append(data.output.content);
         });
         $("#seoTitle").val(data.output.seoTitle);
         $("#metaDescription").val(data.output.metaDescription);
@@ -435,7 +456,7 @@ function queryArticleResponse() {
         $("#server-notice span").text("Article Generated Successfully.");
         document.getElementById("myNav").style.display = "none";
         document.getElementById("server-notice").style.display = "flex";
-        setTimeout(function(){ document.getElementById("server-notice").style.display = "none"; }, 6000);
+        setTimeout(function () { document.getElementById("server-notice").style.display = "none"; }, 6000);
       }
     }).catch((error) => {
       $("#server-notice").addClass("error").removeClass("success");
@@ -470,61 +491,61 @@ function bulkArticleResponse() {
 
   var tone = document.getElementById('bulkArticleTone');
   var outputTone = document.getElementById('bulkOutputTone');
-  tone.onchange = function() {
+  tone.onchange = function () {
     outputTone.innerHTML = this.options[this.selectedIndex].getAttribute('value');
   };
   tone.onchange();
 
   var author = document.getElementById('bulkArticleAuthor');
   var outputAuthor = document.getElementById('bulkOutputAuthor');
-  author.onchange = function() {
+  author.onchange = function () {
     outputAuthor.innerHTML = this.options[this.selectedIndex].getAttribute('value');
   };
   author.onchange();
 
   var perspective = document.getElementById('bulkArticlePerspective');
   var outputPerspective = document.getElementById('bulkOutputPerspective');
-  perspective.onchange = function() {
+  perspective.onchange = function () {
     outputPerspective.innerHTML = this.options[this.selectedIndex].getAttribute('value');
   };
   perspective.onchange();
 
   var customerObjective = document.getElementById('bulkCO');
   var outputCustomerObjective = document.getElementById('bulkOutputCO');
-  customerObjective.onchange = function() {
+  customerObjective.onchange = function () {
     outputCustomerObjective.innerHTML = this.options[this.selectedIndex].getAttribute('value');
   };
   customerObjective.onchange();
-  
+
   try {
     const API_URL = "/";
     const outputTarget = $("#bulkArticleTO").val();
     const generalQ = document.getElementById('bulkGeneralQuery').value;
     const requestOptions = {
-        method: "POST",
+      method: "POST",
 
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            focuskeyword1: focuskeyword1,
-            focuskeyword2: focuskeyword2,
-            focuskeyword3: focuskeyword3,
-            focuskeyword4: focuskeyword4,
-            focuskeyword5: focuskeyword5,
-            focuskeyword6: focuskeyword6,
-            focuskeyword7: focuskeyword7,
-            focuskeyword8: focuskeyword8,
-            focuskeyword9: focuskeyword9,
-            focuskeyword10: focuskeyword10,
-            tone: outputTone.textContent,
-            author: outputAuthor.textContent,
-            target: outputTarget,
-            perspective: outputPerspective.textContent,
-            customerObjective: outputCustomerObjective.textContent,
-            generalQuery: generalQ,
-            userAction: "BulkArticleGenerator"
-        })
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        focuskeyword1: focuskeyword1,
+        focuskeyword2: focuskeyword2,
+        focuskeyword3: focuskeyword3,
+        focuskeyword4: focuskeyword4,
+        focuskeyword5: focuskeyword5,
+        focuskeyword6: focuskeyword6,
+        focuskeyword7: focuskeyword7,
+        focuskeyword8: focuskeyword8,
+        focuskeyword9: focuskeyword9,
+        focuskeyword10: focuskeyword10,
+        tone: outputTone.textContent,
+        author: outputAuthor.textContent,
+        target: outputTarget,
+        perspective: outputPerspective.textContent,
+        customerObjective: outputCustomerObjective.textContent,
+        generalQuery: generalQ,
+        userAction: "BulkArticleGenerator"
+      })
     }
     fetch(API_URL, requestOptions).then(res => res.json()).then(data => {
       if (data.output == "There is an error on our server. Sorry for inconvenience. Please try again later.") {
@@ -534,11 +555,11 @@ function bulkArticleResponse() {
         document.getElementById("server-notice").style.display = "flex";
       } else {
         for (let i = 0; i < data.bulkdata.length; i++) {
-          var num = i+1;
-          const iframe = ".panel-article"+num;
-          const titleSpan = ".article"+num;
+          var num = i + 1;
+          const iframe = ".panel-article" + num;
+          const titleSpan = ".article" + num;
           var iframeOutput = $(`${iframe} iframe`);
-          iframeOutput.contents().find("body").append("<h1>"+data.bulkdata[i][1]+"</h1>");
+          iframeOutput.contents().find("body").append("<h1>" + data.bulkdata[i][1] + "</h1>");
           iframeOutput.contents().find("body").append(data.bulkdata[i][2]);
           $(`${titleSpan} span`).text(data.bulkdata[i][1]);
         }
@@ -548,7 +569,7 @@ function bulkArticleResponse() {
         $("#server-notice span").text("Article Generated Successfully.");
         document.getElementById("myNav").style.display = "none";
         document.getElementById("server-notice").style.display = "flex";
-        setTimeout(function(){ document.getElementById("server-notice").style.display = "none"; }, 6000);
+        setTimeout(function () { document.getElementById("server-notice").style.display = "none"; }, 6000);
       }
     }).catch((error) => {
       $("#server-notice").addClass("error").removeClass("success");
@@ -568,19 +589,19 @@ function bulkArticleResponse() {
 
 /* Generate Keywords Script */
 
-$('.generate-keywords').on('click', function() {
+$('.generate-keywords').on('click', function () {
   $(".generate-keywords").addClass("generating-keywords").removeClass("generate-keywords");
   try {
     const API_URL = "/";
     const requestOptions = {
-        method: "POST",
+      method: "POST",
 
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            userAction: "GenerateKeywords"
-        })
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        userAction: "GenerateKeywords"
+      })
     }
     fetch(API_URL, requestOptions).then(res => res.json()).then(data => {
       if (data.keywords == "There is an error on our server. Sorry for inconvenience. Please try again later.") {
@@ -595,11 +616,11 @@ $('.generate-keywords').on('click', function() {
         $("#nextBtnBulk").removeClass('btn-disabled');
         document.getElementById("server-notice").style.display = "flex";
         for (let i = 0; i < 10; i++) {
-          var num = i+1;
+          var num = i + 1;
           var keywordID = "#focuskeyword" + num;
           $(keywordID).val(data.keywords[i]);
         }
-        setTimeout(function(){ document.getElementById("server-notice").style.display = "none"; }, 6000);
+        setTimeout(function () { document.getElementById("server-notice").style.display = "none"; }, 6000);
       }
     }).catch((error) => {
       $("#server-notice").addClass("error").removeClass("success");
@@ -619,7 +640,7 @@ $('.generate-keywords').on('click', function() {
 
 /* Step Script */
 
-document.querySelectorAll('.heading-list input[type="checkbox"]').forEach(function(checkbox) {
+document.querySelectorAll('.heading-list input[type="checkbox"]').forEach(function (checkbox) {
 
   let checkboxLabel = document.querySelector('label[for="' + checkbox.id + '"]');
   const span = document.createElement("span");
@@ -631,8 +652,8 @@ document.querySelectorAll('.heading-list input[type="checkbox"]').forEach(functi
 
 });
 
-var currentTab = 0; 
-showTab(currentTab); 
+var currentTab = 0;
+showTab(currentTab);
 
 function showTab(n) {
   var x = document.getElementsByClassName("tab");
@@ -660,7 +681,7 @@ function nextPrev(n) {
     var values = Array.from(document.querySelectorAll("#regForm .item-label")).map(t => t.innerText)
     $('#articleTargetOptions').val(values);
     values = [];
-    showTab(currentTab-1);
+    showTab(currentTab - 1);
     articleResponse();
     currentTab = 1;
     return false;
@@ -679,9 +700,9 @@ function validateForm() {
   //   }
   // }
   // if (valid) {
-    document.getElementsByClassName("step")[currentTab].className += " finish";
+  document.getElementsByClassName("step")[currentTab].className += " finish";
   // }
-  return valid; 
+  return valid;
 }
 
 function fixStepIndicator(n) {
@@ -694,14 +715,14 @@ function fixStepIndicator(n) {
 
 $("#nextBtn").hide();
 
-$('#regForm .input-container').on('click', function() {
-  if ( $('#regForm .input-container').children().length == 0 ) {
+$('#regForm .input-container').on('click', function () {
+  if ($('#regForm .input-container').children().length == 0) {
     $("#nextBtn").addClass('btn-disabled');
-   }
+  }
 });
 
-$('#regForm .drawer ul').on('click', function() {
-  if ( $('#regForm .input-container').children().length > 0 ) {
+$('#regForm .drawer ul').on('click', function () {
+  if ($('#regForm .input-container').children().length > 0) {
     $("#nextBtn").removeClass('btn-disabled');
   }
 });
@@ -716,16 +737,16 @@ function nextPrevQuery(n) {
   queryArticleResponse();
 }
 
-$('#queriedGenerator .input-container').on('click', function() {
-  if ( $('#queriedGenerator .input-container').children().length == 0 ) {
+$('#queriedGenerator .input-container').on('click', function () {
+  if ($('#queriedGenerator .input-container').children().length == 0) {
     $("#nextBtnQuery").addClass('btn-disabled');
-   }
+  }
 });
 
 
 /* Bulk Generator Step Script */
 
-var currentTabBulk = 0; 
+var currentTabBulk = 0;
 showTabBulk(currentTabBulk);
 
 function showTabBulk(n) {
@@ -754,7 +775,7 @@ function nextPrevBulk(n) {
     var values = Array.from(document.querySelectorAll("#bulkGenerator .item-label")).map(t => t.innerText)
     $('#bulkArticleTO').val(values);
     values = [];
-    showTabBulk(currentTabBulk-1);
+    showTabBulk(currentTabBulk - 1);
     bulkArticleResponse();
     currentTabBulk = 1;
   }
@@ -772,9 +793,9 @@ function validateFormBulk() {
   //   }
   // }
   // if (valid) {
-    document.getElementsByClassName("bulk-step")[currentTabBulk].className += " finish";
+  document.getElementsByClassName("bulk-step")[currentTabBulk].className += " finish";
   // }
-  return valid; 
+  return valid;
 }
 
 function fixStepIndicatorBulk(n) {
@@ -785,14 +806,14 @@ function fixStepIndicatorBulk(n) {
   x[n].className += " active";
 }
 
-$('#bulkGenerator .input-container').on('click', function() {
-  if ( $('#bulkGenerator .input-container').children().length == 0 ) {
+$('#bulkGenerator .input-container').on('click', function () {
+  if ($('#bulkGenerator .input-container').children().length == 0) {
     $("#nextBtnBulk").addClass('btn-disabled');
-   }
+  }
 });
 
-$('#bulkGenerator .drawer ul').on('click', function() {
-  if ( $('#bulkGenerator .input-container').children().length > 0 ) {
+$('#bulkGenerator .drawer ul').on('click', function () {
+  if ($('#bulkGenerator .input-container').children().length > 0) {
     $("#nextBtnBulk").removeClass('btn-disabled');
   }
 });
@@ -801,21 +822,21 @@ $('#bulkGenerator .drawer ul').on('click', function() {
 
 var checkboxes = [];
 
-$('.add-list-container').on('click', function() {
+$('.add-list-container').on('click', function () {
 
   var listlength = $(".inner-list").length;
   if (listlength == 1) {
     $("#nextBtn").show();
   }
 
-  document.querySelectorAll('.heading').forEach(function(checkbox) {
+  document.querySelectorAll('.heading').forEach(function (checkbox) {
     var regex = /\d+/g;
     var string = checkbox.id;
     var matches = string.match(regex);
     var end = parseInt(matches);
     checkboxes.push(end);
   });
-  checkboxes.sort(function(a, b) {
+  checkboxes.sort(function (a, b) {
     return a - b
   });
   var headings = document.getElementsByClassName("heading");
@@ -880,7 +901,7 @@ $('.add-list-container').on('click', function() {
 
   $('input[type=checkbox]').trigger('create');
   checkboxes = [];
-  $('.list :checkbox').change(function() {
+  $('.list :checkbox').change(function () {
     if (this.checked) {
       $(this).parents('.disabled-list').attr('draggable', true);
       $(this).parents('.disabled-list').css('opacity', '1');
@@ -892,17 +913,17 @@ $('.add-list-container').on('click', function() {
     }
   });
 
-  $('.editheading').on('click', function() {
+  $('.editheading').on('click', function () {
     $(".button").addClass('btn-disabled');
-    $(this).closest('div').find("#" + newHeadingText).change(function() {
+    $(this).closest('div').find("#" + newHeadingText).change(function () {
       $("#" + newId).val($("#" + newHeadingText).val());
     });
   });
-  $('.checkheading').on('click', function() {
+  $('.checkheading').on('click', function () {
     var inputValue = $(this).parent().find(".heading").val();
     $(this).parent().find(".heading-value").text(inputValue);
     $(this).parent().find(".heading-text").attr("value", inputValue);
-    if($('#articletitle').val().length >1 && $('#keyword').val().length >1) {
+    if ($('#articletitle').val().length > 1 && $('#keyword').val().length > 1) {
       $('.button').removeClass('btn-disabled');
     } else {
       $('.button').addClass('btn-disabled');
@@ -915,19 +936,19 @@ $('.add-list-container').on('click', function() {
 
 var subcheckboxes = [];
 
-$(document).ready(function() {
-  $(document).on('click', '.addsubheadings', function() {
+$(document).ready(function () {
+  $(document).on('click', '.addsubheadings', function () {
     var parentID = $(this).parents('.list').attr('id');
     let listnum = parentID.charAt(parentID.length - 1);
     var query = ".subheading" + listnum;
     var query2 = "subheading" + listnum;
-    document.querySelectorAll(query).forEach(function(checkbox) {
+    document.querySelectorAll(query).forEach(function (checkbox) {
       var idcheckbox = checkbox.id;
       var lastChar = idcheckbox.substr(idcheckbox.length - 1);
       var end = parseInt(lastChar);
       subcheckboxes.push(end);
     });
-    subcheckboxes.sort(function(a, b) {
+    subcheckboxes.sort(function (a, b) {
       return a - b
     });
     var headings = document.getElementsByClassName(query2);
@@ -960,7 +981,7 @@ $(document).ready(function() {
     </div>`);
     $('input[type=checkbox]').trigger('create');
     subcheckboxes = [];
-    $('.sub-list :checkbox').change(function() {
+    $('.sub-list :checkbox').change(function () {
       if (this.checked) {
         $(this).parents('.inner-list').attr('draggable', true);
         $(this).parents('.disabled-sublist').css('opacity', '1');
@@ -974,18 +995,18 @@ $(document).ready(function() {
 
     });
 
-    $('.editheading').on('click', function() {
+    $('.editheading').on('click', function () {
       $(".button").addClass('btn-disabled');
-      $(this).closest('div').find("#" + newSubheadingText).change(function() {
-        $("#" + newId).val(listnum+$("#" + newSubheadingText).val());
+      $(this).closest('div').find("#" + newSubheadingText).change(function () {
+        $("#" + newId).val(listnum + $("#" + newSubheadingText).val());
       });
     });
-    $('.checkheading').on('click', function() {
+    $('.checkheading').on('click', function () {
       var temp = $(this).parent().find(".subheadings").val();
       var inputValue = temp.substring(1, temp.length);
       $(this).parent().find(".heading-value").text(inputValue);
       $(this).parent().find(".subheading-text").attr("value", inputValue);
-      if($('#articletitle').val().length >1 && $('#keyword').val().length >1) {
+      if ($('#articletitle').val().length > 1 && $('#keyword').val().length > 1) {
         $('.button').removeClass('btn-disabled');
       } else {
         $('.button').addClass('btn-disabled');
@@ -995,20 +1016,20 @@ $(document).ready(function() {
   })
 });
 
-$(document).on('click', '.up', function() {
+$(document).on('click', '.up', function () {
   if ($(this).parent().prev().attr('class') != "list") {
     jQuery($(this).parent().prev()).before(jQuery($(this).parent()));
   }
 });
 
-$(document).on('click', '.down', function() {
+$(document).on('click', '.down', function () {
   jQuery($(this).parent().next()).after(jQuery($(this).parent()));
-});  
+});
 
 /* Delete Heading Script */
 
-$(document).ready(function() {
-  $(document).on('click', '.deleteheading', function() {
+$(document).ready(function () {
+  $(document).on('click', '.deleteheading', function () {
     var listlength = $(".inner-list").length;
     if (listlength < 3) {
       $("#nextBtn").hide();
@@ -1017,8 +1038,8 @@ $(document).ready(function() {
   });
 });
 
-$(document).ready(function() {
-  $(document).on('click', '.deletesub', function() {
+$(document).ready(function () {
+  $(document).on('click', '.deletesub', function () {
     $(this).parent().remove();
   });
 });
@@ -1037,7 +1058,7 @@ function handleDragStart(e) {
 function handleDragEnd(e) {
   this.style.opacity = '1';
 
-  items.forEach(function(item) {
+  items.forEach(function (item) {
     item.classList.remove('over');
   });
 }
@@ -1056,7 +1077,7 @@ function handleDragLeave(e) {
 }
 
 let items = document.querySelectorAll('#topics .inner-list');
-items.forEach(function(item) {
+items.forEach(function (item) {
   item.addEventListener('dragstart', handleDragStart);
   item.addEventListener('dragover', handleDragOver);
   item.addEventListener('dragenter', handleDragEnter);
@@ -1065,7 +1086,7 @@ items.forEach(function(item) {
   item.addEventListener('drop', handleDrop);
 });
 
-$('.add-list-container').on('click', function() {
+$('.add-list-container').on('click', function () {
   function handleDragStart(e) {
     this.style.opacity = '0.4';
 
@@ -1078,7 +1099,7 @@ $('.add-list-container').on('click', function() {
   function handleDragEnd(e) {
     this.style.opacity = '1';
 
-    items.forEach(function(item) {
+    items.forEach(function (item) {
       item.classList.remove('over');
     });
   }
@@ -1097,7 +1118,7 @@ $('.add-list-container').on('click', function() {
   }
 
   let items = document.querySelectorAll('#topics .inner-list');
-  items.forEach(function(item) {
+  items.forEach(function (item) {
     item.addEventListener('dragstart', handleDragStart);
     item.addEventListener('dragover', handleDragOver);
     item.addEventListener('dragenter', handleDragEnter);
@@ -1124,7 +1145,7 @@ function handleDrop(e) {
       this.innerHTML = e.dataTransfer.getData('text/html');
     }
   }
-  $('.list :checkbox').change(function() {
+  $('.list :checkbox').change(function () {
     if (this.checked) {
       $(this).parents('.disabled-list').attr('draggable', true);
       $(this).parents('.disabled-list').css('opacity', '1');
@@ -1135,7 +1156,7 @@ function handleDrop(e) {
       $(this).parents('.inner-list').removeClass('inner-list').addClass('disabled-list');
     }
   });
-  $('.sub-list :checkbox').change(function() {
+  $('.sub-list :checkbox').change(function () {
     if (this.checked) {
       $(this).parents('.inner-list').attr('draggable', true);
       $(this).parents('.disabled-sublist').css('opacity', '1');
@@ -1146,47 +1167,47 @@ function handleDrop(e) {
       $(this).parents('.sub-list').removeClass('sub-list').addClass('disabled-sublist');
     }
   });
-  $('.editheading').on('click', function() {
+  $('.editheading').on('click', function () {
     $(".button").addClass('btn-disabled');
-    $(this).parent().find(".heading-text").keyup(function() {
+    $(this).parent().find(".heading-text").keyup(function () {
       $(this).parent().find(".heading").val($(this).parent().find(".heading-text").val());
     });
   });
-  $('.checkheading').on('click', function() {
+  $('.checkheading').on('click', function () {
     var inputValue = $(this).parent().find(".heading").val();
     $(this).parent().find(".heading-value").text(inputValue);
     $(this).parent().find(".heading-text").attr("value", inputValue);
-    if($('#articletitle').val().length >1 && $('#keyword').val().length >1) {
+    if ($('#articletitle').val().length > 1 && $('#keyword').val().length > 1) {
       $('.button').removeClass('btn-disabled');
     } else {
       $('.button').addClass('btn-disabled');
     }
   });
-  $('.editheading').on('click', function() {
+  $('.editheading').on('click', function () {
     $(".button").addClass('btn-disabled');
-      $(this).parent().find(".subheading-text").change(function() {
-        var parentID = $(this).parents('.list').attr('id');
-        let listnum = parentID.charAt(parentID.length - 1);
-        $(this).parent().find(".subheadings").val(listnum+$(this).parent().find(".subheading-text").val());
-      });
+    $(this).parent().find(".subheading-text").change(function () {
+      var parentID = $(this).parents('.list').attr('id');
+      let listnum = parentID.charAt(parentID.length - 1);
+      $(this).parent().find(".subheadings").val(listnum + $(this).parent().find(".subheading-text").val());
     });
-    $('.checkheading').on('click', function() {
-      var temp = $(this).parent().find(".subheadings").val();
-      var inputValue = temp.substring(1, temp.length);
-      $(this).parent().find(".heading-value").text(inputValue);
-      $(this).parent().find(".subheading-text").attr("value", inputValue);
-      if($('#articletitle').val().length >1 && $('#keyword').val().length >1) {
-        $('.button').removeClass('btn-disabled');
-      } else {
-        $('.button').addClass('btn-disabled');
-      }
-    });
+  });
+  $('.checkheading').on('click', function () {
+    var temp = $(this).parent().find(".subheadings").val();
+    var inputValue = temp.substring(1, temp.length);
+    $(this).parent().find(".heading-value").text(inputValue);
+    $(this).parent().find(".subheading-text").attr("value", inputValue);
+    if ($('#articletitle').val().length > 1 && $('#keyword').val().length > 1) {
+      $('.button').removeClass('btn-disabled');
+    } else {
+      $('.button').addClass('btn-disabled');
+    }
+  });
   return false;
 }
 
 /* Heading Checker Script */
 
-$('.list :checkbox').change(function() {
+$('.list :checkbox').change(function () {
   if (this.checked) {
     $(this).parents('.disabled-list').attr('draggable', true);
     $(this).parents('.disabled-list').css('opacity', '1');
@@ -1200,33 +1221,33 @@ $('.list :checkbox').change(function() {
 
 /* Heading Edit Hide Script */
 
-$(document).ready(function() {
+$(document).ready(function () {
 
-  $('.editheading').on('click', function() {
-    $(".button").addClass('btn-disabled');
-    $(this).parent().find(".heading-text").keyup(function() {
+  $('.editheading').on('click', function () {
+    $("#nextBtn").addClass('btn-disabled');
+    $(this).parent().find(".heading-text").keyup(function () {
       $(this).parent().find(".heading").val($(this).parent().find(".heading-text").val());
     });
   });
-  $('.checkheading').on('click', function() {
+  $('.checkheading').on('click', function () {
     var inputValue = $(this).parent().find(".heading").val();
     $(this).parent().find(".heading-value").text(inputValue);
     $(this).parent().find(".heading-text").attr("value", inputValue);
-    if($('#articletitle').val().length >1 && $('#keyword').val().length >1) {
-      $('.button').removeClass('btn-disabled');
+    if ($('#articletitle').val().length > 1 && $('#keyword').val().length > 1) {
+      $('#nextBtn').removeClass('btn-disabled');
     } else {
-      $('.button').addClass('btn-disabled');
+      $('#nextBtn').addClass('btn-disabled');
     }
   });
 
-  $(document).on('click', '.editheading', function() {
+  $(document).on('click', '.editheading', function () {
     $(this).closest('div').find("label").hide()
     $(this).closest('div').find(".editheading").hide()
     $(this).closest('div').find(".checkheading").css("display", "block");
     $(this).closest('div').find("input").css("display", "block");
     $('.heading-text').addClass('edit-active');
   });
-  $(document).on('click', '.checkheading', function() {
+  $(document).on('click', '.checkheading', function () {
     $(this).closest('div').find("label").show()
     $(this).closest('div').find(".editheading").show()
     $(this).closest('div').find(".checkheading").css("display", "none");
@@ -1235,23 +1256,23 @@ $(document).ready(function() {
   });
 });
 
-$('#regForm .generator-input').keyup(function() {
-  if($('#articletitle').val().length >1 && $('#keyword').val().length >1 && !$('.heading-text').hasClass('edit-active')) {
-    $('.button').removeClass('btn-disabled');
+$('#regForm .generator-input').keyup(function () {
+  if ($('#articletitle').val().length > 1 && $('#keyword').val().length > 1 && !$('.heading-text').hasClass('edit-active')) {
+    $('#nextBtn').removeClass('btn-disabled');
   } else {
-    $('.button').addClass('btn-disabled');
+    $('#nextBtn').addClass('btn-disabled');
   }
 });
 
-$('#queriedGenerator .generator-input').keyup(function() {
-  if($('#queriedKeyword').val().length >1 && $('#articleOverview').val().length >1) {
-    $('.button').removeClass('btn-disabled');
+$('#queriedGenerator .generator-input').keyup(function () {
+  if ($('#queriedKeyword').val().length > 1 && $('#articleOverview').val().length > 1) {
+    $('#nextBtnQuery').removeClass('btn-disabled');
   } else {
-    $('.button').addClass('btn-disabled');
+    $('#nextBtnQuery').addClass('btn-disabled');
   }
 });
 
-$('#bulkGenerator .focuskeyword').keyup(function() {
+$('#bulkGenerator .focuskeyword').keyup(function () {
   var validate = isEveryInputEmpty();
   if (validate == true) {
     $('#nextBtnBulk').removeClass('btn-disabled');
@@ -1268,106 +1289,135 @@ $('#bulkGenerator .focuskeyword').keyup(function() {
 function isEveryInputEmpty() {
   var validation = true;
 
-  $('.focuskeyword').each(function() {
-      if ($(this).val().length == 0) {
-          validation = false;
-          return false; 
-      }
+  $('.focuskeyword').each(function () {
+    if ($(this).val().length == 0) {
+      validation = false;
+      return false;
+    }
   });
   return validation;
 }
-
 
 /* Publish and Update Private Article Script */
 
 var postID;
 
-$(document).on('click', '.float', function() {
+$(document).on('click', '.float', function () {
   $("#login").css("display", "flex");
+  $("body").css("overflow", "hidden");
 });
 
-$(document).on('click', '.loginbtn', function() {
+$(document).on('click', '.back', function () {
+  $(".settings-item").css("display", "flex");
+  $(".tab-content-settings").css("display", "grid");
+  $(".settings-inner").css("display", "none");
+});
+
+$(document).on('click', '.ai-assistant-settings', function () {
+  $(".details-inner").css("display", "flex");
+  $(".tab-content-settings").css("display", "flex");
+  $(".settings-item").css("display", "none");
+});
+
+$(document).on('click', '.profile-settings', function () {
+  $(".profile-inner").css("display", "flex");
+  $(".tab-content-settings").css("display", "flex");
+  $(".settings-item").css("display", "none");
+});
+
+$(document).on('click', '.change-password', function () {
+  $(".change-password-inner").css("display", "flex");
+  $(".tab-content-settings").css("display", "flex");
+  $(".settings-item").css("display", "none");
+});
+
+$(document).on('click', '.login-modal .icon-button', function () {
+  $("body").css("overflow", "auto");
+});
+
+$(document).on('click', '.loginbtn', function () {
   var status;
   const seoTitle = document.getElementById('seoTitle').value;
   const metaDescription = document.getElementById('metaDescription').value;
   const slug = document.getElementById('slug').value;
+  const domain = $(".publish-website").val();
   try {
-    fetch('https://www.shoreagents.com/wp-json/jwt-auth/v1/token',{
-    method: "POST",
-    headers:{
+    fetch(`https://${domain}/wp-json/jwt-auth/v1/token`, {
+      method: "POST",
+      headers: {
         'Content-Type': 'application/json',
         'accept': 'application/json',
-    },
+      },
 
-    body:JSON.stringify({
-        username: $("#username").val(),
-        password: $("#password").val()
-    })
-    }).then(function(response){
+      body: JSON.stringify({
+        username: $("#loginusername").val(),
+        password: $("#loginpassword").val()
+      })
+    }).then(function (response) {
       status = response.status;
-      console.log("Status: "+response.status);
+      console.log("Status: " + response.status);
       if (response.ok) {
         return response.json();
       }
-    }).then(function(user){
-        if (status == 200) {
-          $("#login").css("display", "none");
-          console.log("Login Success");
-          $(".my-float").text("autorenew");
-          $(".float-content").text("Updating");
-          $(".float").css("background-color", "#c3db63");
-          $(".float").css("pointer-events", "none");
-          $(".float").css("cursor", "not-allowed");
-          fetch('https://www.shoreagents.com/wp-json/wp/v2/posts',{
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json',
-                'accept': 'application/json',
-                'Authorization': `Bearer ${user.token}`
+    }).then(function (user) {
+      if (status == 200) {
+        $("#login").css("display", "none");
+        console.log("Login Success");
+        $(".my-float").text("autorenew");
+        $(".float-content").text("Updating");
+        $(".float").css("background-color", "#c3db63");
+        $(".float").css("pointer-events", "none");
+        $(".float").css("cursor", "not-allowed");
+        fetch(`https://${domain}/wp-json/wp/v2/posts`, {
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json',
+            'accept': 'application/json',
+            'Authorization': `Bearer ${user.token}`
+          },
+          body: JSON.stringify({
+            title: $("#default_ifr").contents().find("h1").html(),
+            content: $("#default_ifr").contents().find("body").clone().find("h1").remove().end().html(),
+            author: 1,
+            yoast_head_json: {
+              title: seoTitle,
+              description: metaDescription
             },
-            body:JSON.stringify({
-                title: $("#default_ifr").contents().find("h1").html(),
-                content: $("#default_ifr").contents().find("body").clone().find("h1").remove().end().html(),
-                author: 1,
-                yoast_head_json:{
-                  title: seoTitle,
-                  description: metaDescription
-                },
-                slug,
-                status: 'private'
-            })
-        }).then(function(response){
-            return response.json()
-        }).then(function(post){
-            $(".my-float").text("update");
-            $(".float-content").text("Update");
-            $("#server-notice").addClass("success").removeClass("error");
-            $("#server-notice span").text("Article Successfully Published as Private.");
-            document.getElementById("server-notice").style.display = "flex";
-            setTimeout(function(){ document.getElementById("server-notice").style.display = "none"; }, 6000);
-            $(".float").css("background-color", "#7eac0b");
-            $(".float").css("pointer-events", "all");
-            $(".float").css("cursor", "pointer");
-            $(".float").removeClass('float').addClass('updatepost');
-            postID = post.id;
-            console.log("Article successfully published as private.");
+            slug,
+            status: 'private'
+          })
+        }).then(function (response) {
+          return response.json()
+        }).then(function (post) {
+          $(".my-float").text("update");
+          $(".float-content").text("Update");
+          $("#server-notice").addClass("success").removeClass("error");
+          $("#server-notice span").text("Article Successfully Published as Private.");
+          document.getElementById("server-notice").style.display = "flex";
+          setTimeout(function () { document.getElementById("server-notice").style.display = "none"; }, 6000);
+          $(".float").css("background-color", "#7eac0b");
+          $(".float").css("pointer-events", "all");
+          $(".float").css("cursor", "pointer");
+          $(".float").removeClass('float').addClass('updatepost');
+          postID = post.id;
+          console.log("Article successfully published as private.");
         });
-        } else {
-          $(".login-error").css("display", "block");
-          $(".login-error").css('animation', "shake 0.5s")
-          $(".login-error").css('animation-iteration-count', "1")
-          console.log("Login Failed");
-        }
+      } else {
+        $(".login-error").css("display", "block");
+        $(".login-error").css('animation', "shake 0.5s")
+        $(".login-error").css('animation-iteration-count', "1")
+        console.log("Login Failed");
+      }
     });
-    } catch (error) {
-      $(".login-error").css("display", "block");
-      $(".login-error").css('animation', "shake 0.5s")
-      $(".login-error").css('animation-iteration-count', "1")
-      console.log("Login Failed: "+error);
-    }
+  } catch (error) {
+    $(".login-error").css("display", "block");
+    $(".login-error").css('animation', "shake 0.5s")
+    $(".login-error").css('animation-iteration-count', "1")
+    console.log("Login Failed: " + error);
+  }
 });
 
-$(document).on('click', '.loginBulk', function() {
+$(document).on('click', '.loginBulk', function () {
   var status;
   $(".loginBulk").text("Publishing Articles");
   $(".loginBulk").css("background-color", "#c3db63");
@@ -1377,77 +1427,77 @@ $(document).on('click', '.loginBulk', function() {
   $("#bulkLogin .icon-button").css("display", "none");
   const articlenum = document.getElementsByClassName("panel");
   try {
-    fetch('https://www.shoreagents.com/wp-json/jwt-auth/v1/token',{
-    method: "POST",
-    headers:{
+    fetch('https://www.shoreagents.com/wp-json/jwt-auth/v1/token', {
+      method: "POST",
+      headers: {
         'Content-Type': 'application/json',
         'accept': 'application/json',
-    },
+      },
 
-    body:JSON.stringify({
+      body: JSON.stringify({
         username: $("#bulkUsername").val(),
         password: $("#bulkPassword").val()
-    })
-    }).then(function(response){
+      })
+    }).then(function (response) {
       status = response.status;
-      console.log("Status: "+response.status);
+      console.log("Status: " + response.status);
       if (response.ok) {
         return response.json();
       }
-    }).then(function(user){
-        if (status == 200) {
-          for (let i = 0; i < articlenum.length; i++) {
-            var num = i+1;
-            var panelarticle = "panel-article"+num;
-            fetch('https://www.shoreagents.com/wp-json/wp/v2/posts',{
-              method: "POST",
-              headers: {
-                  'Content-Type': 'application/json',
-                  'accept': 'application/json',
-                  'Authorization': `Bearer ${user.token}`
-              },
-              body:JSON.stringify({
-                  title: $("."+panelarticle+" iframe").contents().find("h1").html(),
-                  content: $("."+panelarticle+" iframe").contents().find("body").clone().find("h1").remove().end().html(),
-                  author: 1,
-              })
-            }).then(function(response){
-                return response.json()
-            }).then(function(post){
-                $(".publish").css("display", "none");
-                $("#bulkLogin").css("display", "none");
-                postID = post.id;
-                console.log("Articles successfully published as private.");
-            });
-          }
-        } else {
-          $(".loginBulk").text("Login");
-          $(".loginBulk").css("background-color", "transparent");
-          $(".loginBulk").css("pointer-events", "all");
-          $(".loginBulk").css("cursor", "pointer");
-          $(".loginBulk").css("border-color", "#7eac0b");
-          $("#bulkLogin .icon-button").css("display", "block");
-          $(".login-error").css("display", "block");
-          $(".login-error").css('animation', "shake 0.5s")
-          $(".login-error").css('animation-iteration-count', "1")
-          console.log("Login Failed");
+    }).then(function (user) {
+      if (status == 200) {
+        for (let i = 0; i < articlenum.length; i++) {
+          var num = i + 1;
+          var panelarticle = "panel-article" + num;
+          fetch('https://www.shoreagents.com/wp-json/wp/v2/posts', {
+            method: "POST",
+            headers: {
+              'Content-Type': 'application/json',
+              'accept': 'application/json',
+              'Authorization': `Bearer ${user.token}`
+            },
+            body: JSON.stringify({
+              title: $("." + panelarticle + " iframe").contents().find("h1").html(),
+              content: $("." + panelarticle + " iframe").contents().find("body").clone().find("h1").remove().end().html(),
+              author: 1,
+            })
+          }).then(function (response) {
+            return response.json()
+          }).then(function (post) {
+            $(".publish").css("display", "none");
+            $("#bulkLogin").css("display", "none");
+            postID = post.id;
+            console.log("Articles successfully published as private.");
+          });
         }
+      } else {
+        $(".loginBulk").text("Login");
+        $(".loginBulk").css("background-color", "transparent");
+        $(".loginBulk").css("pointer-events", "all");
+        $(".loginBulk").css("cursor", "pointer");
+        $(".loginBulk").css("border-color", "#7eac0b");
+        $("#bulkLogin .icon-button").css("display", "block");
+        $(".login-error").css("display", "block");
+        $(".login-error").css('animation', "shake 0.5s")
+        $(".login-error").css('animation-iteration-count', "1")
+        console.log("Login Failed");
+      }
     });
-    } catch (error) {
-      $(".loginBulk").text("Login");
-      $(".loginBulk").css("background-color", "transparent");
-      $(".loginBulk").css("pointer-events", "all");
-      $(".loginBulk").css("cursor", "pointer");
-      $(".loginBulk").css("border-color", "#7eac0b");
-      $("#bulkLogin .icon-button").css("display", "block");
-      $(".login-error").css("display", "block");
-      $(".login-error").css('animation', "shake 0.5s")
-      $(".login-error").css('animation-iteration-count', "1")
-      console.log("Login Failed: "+error);
-    }
+  } catch (error) {
+    $(".loginBulk").text("Login");
+    $(".loginBulk").css("background-color", "transparent");
+    $(".loginBulk").css("pointer-events", "all");
+    $(".loginBulk").css("cursor", "pointer");
+    $(".loginBulk").css("border-color", "#7eac0b");
+    $("#bulkLogin .icon-button").css("display", "block");
+    $(".login-error").css("display", "block");
+    $(".login-error").css('animation', "shake 0.5s")
+    $(".login-error").css('animation-iteration-count', "1")
+    console.log("Login Failed: " + error);
+  }
 });
 
-$(document).on('click', '.updatepost', function() {
+$(document).on('click', '.updatepost', function () {
   const slug = document.getElementById('slug').value;
   $(".my-float").text("autorenew");
   $(".float-content").text("Updating");
@@ -1455,47 +1505,47 @@ $(document).on('click', '.updatepost', function() {
   $(".updatepost").css("pointer-events", "none");
   $(".updatepost").css("cursor", "not-allowed");
 
-  fetch('https://www.shoreagents.com/wp-json/jwt-auth/v1/token',{
+  fetch('https://www.shoreagents.com/wp-json/jwt-auth/v1/token', {
     method: "POST",
-    headers:{
-        'Content-Type': 'application/json',
-        'accept': 'application/json',
+    headers: {
+      'Content-Type': 'application/json',
+      'accept': 'application/json',
     },
 
-    body:JSON.stringify({
-        username: $("#username").val(),
-        password: $("#password").val()
+    body: JSON.stringify({
+      username: $("#username").val(),
+      password: $("#password").val()
     })
-    }).then(function(response){
-      status = response.status;
-      console.log("Status: "+response.status);
-      if (response.ok) {
-        return response.json();
-      }
-    }).then(function(user){
-      fetch('https://www.shoreagents.com/wp-json/wp/v2/posts/'+postID,{
-        method: "PUT",
-        headers: {
-            'Content-Type': 'application/json',
-            'accept': 'application/json',
-            'Authorization': `Bearer ${user.token}`
-        },
-        body:JSON.stringify({
-            title: $("#default_ifr").contents().find("h1").html(),
-            content: $("#default_ifr").contents().find("body").clone().find("h1").remove().end().html(),
-            author: 1,
-            slug,
-            status: 'private',
-        })
-    }).then(function(response){
-        return response.json()
-    }).then(function(post){
-        $(".my-float").text("update");
-        $(".float-content").text("Update");
-        $(".updatepost").css("background-color", "#7eac0b");
-        $(".updatepost").css("pointer-events", "all");
-        $(".updatepost").css("cursor", "pointer");
-        console.log("Article successfully updated.");
+  }).then(function (response) {
+    status = response.status;
+    console.log("Status: " + response.status);
+    if (response.ok) {
+      return response.json();
+    }
+  }).then(function (user) {
+    fetch('https://www.shoreagents.com/wp-json/wp/v2/posts/' + postID, {
+      method: "PUT",
+      headers: {
+        'Content-Type': 'application/json',
+        'accept': 'application/json',
+        'Authorization': `Bearer ${user.token}`
+      },
+      body: JSON.stringify({
+        title: $("#default_ifr").contents().find("h1").html(),
+        content: $("#default_ifr").contents().find("body").clone().find("h1").remove().end().html(),
+        author: 1,
+        slug,
+        status: 'private',
+      })
+    }).then(function (response) {
+      return response.json()
+    }).then(function (post) {
+      $(".my-float").text("update");
+      $(".float-content").text("Update");
+      $(".updatepost").css("background-color", "#7eac0b");
+      $(".updatepost").css("pointer-events", "all");
+      $(".updatepost").css("cursor", "pointer");
+      console.log("Article successfully updated.");
     });
-    });
+  });
 });

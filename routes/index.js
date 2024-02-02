@@ -1,36 +1,205 @@
 import { OpenAI } from 'langchain/llms/openai';
 import { Pinecone } from '@pinecone-database/pinecone';
 import { marked } from 'marked';
-import { RetrievalQAChain, loadQAStuffChain } from 'langchain/chains';
+import { loadQAStuffChain } from 'langchain/chains';
 import { Document } from "langchain/document";
-import { HNSWLib } from 'langchain/vectorstores/hnswlib';
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
-import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
-import * as fs from 'fs';
 import * as dotenv from 'dotenv';
-
 import express from "express";
+import cookieParser from 'cookie-parser';
+import jwt from 'jsonwebtoken';
+import fs from 'fs';
+import { Parser } from 'json2csv';
 const router = express.Router()
+
+import MethodOverrideOptions from 'method-override';
+router.use(MethodOverrideOptions('_method'))
+
+router.use(cookieParser())
 
 dotenv.config();
 
-const txtFilename = "gptdata";
-const txtPath = `./${txtFilename}.txt`;
-const VECTOR_STORE_PATH = `${txtFilename}.index`;
+var tokenJWT;
+var users = [];
 
-const sadata = fileName => {
-  let data = fs.readFileSync(fileName);
-  return data.toString()
+function authenticateToken(req, res, next) {
+
+  try {
+    const jwtToken = tokenJWT;
+    if (jwtToken === undefined) res.redirect('/');
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1]
+    if (token == null) return res.sendStatus(401)
+    jwt.verify(token, jwtToken, (err, user) => {
+      if (err) return res.sendStatus(403)
+      req.user = user;
+      next();
+    })
+  } catch (error) {
+    console.log(error);
+    res.redirect('/')
+  }
 }
 
+function checkNotAuthenticated(req, res, next) {
+  try {
+    const identifier = users[0].username;
+    const password = users[0].password;
+    const API_URL = "https://sagpt-data.onrender.com/api/auth/local";
+    const requestOptions = {
+      method: "POST",
 
-router.get('/', async (req,res) =>{
-  res.render('index', {data: sadata(txtPath)});
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        "identifier": identifier,
+        "password": password
+      })
+    }
+    fetch(API_URL, requestOptions).then(res => res.json()).then(data => {
+      if (data.error) {
+        next();
+      } else {
+        res.redirect('/')
+      }
+    })
+  } catch (error) {
+    next();
+  }
+}
+
+async function getData(name) {
+  const response = await fetch(`https://sagpt-data.onrender.com/api/${name}`, {
+    method: "GET",
+    headers: {
+      'Authorization': `Bearer ${tokenJWT}`
+    }
+  }).catch((error) => {
+    console.log(error);
+  });
+  const data = await response.json();
+  var output;
+  if (name == "users") {
+    output = data;
+  } else {
+    output = data.data;
+  }
+  return output;
+}
+
+function logAction(logaction) {
+  fetch(`https://sagpt-data.onrender.com/api/logs`, {
+    method: "POST",
+    headers: {
+      'Content-Type': 'application/json',
+      'accept': 'application/json',
+      'Authorization': `Bearer ${tokenJWT}`
+    },
+    body: JSON.stringify({
+      data: {
+        logname: logaction,
+        authorname: users[0].username
+      }
+    })
+  }).then(res => res.json()).then(async (data) => {
+    if (data.error) {
+      console.log(data.error.message);
+      const perspectives = await getData("perspectives");
+      const tones = await getData("tones");
+      const customerObjectives = await getData("customer-objectives");
+      const targetMarkets = await getData("target-markets");
+      const authors = await getData("users");
+      res.render('index', { authors: authors, targetMarkets: targetMarkets, customerObjectives: customerObjectives, tones: tones, perspectives: perspectives, role: users[0].role, firstname: users[0].firstname, lastname: users[0].lastname, username: users[0].username, email: users[0].email, bio: users[0].bio, notice: "error", noticemsg: data.error.message });
+    }
+  }).catch((error) => {
+    users = [];
+    console.log(error)
+    res.redirect('/login');
+  })
+}
+
+function checkAuthenticated(req, res, next) {
+  try {
+    const identifier = users[0].username;
+    const password = users[0].password;
+    const API_URL = "https://sagpt-data.onrender.com/api/auth/local";
+    const requestOptions = {
+      method: "POST",
+
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        "identifier": identifier,
+        "password": password
+      })
+    }
+    fetch(API_URL, requestOptions).then(res => res.json()).then(data => {
+      if (data.error) {
+        console.log(data.error.message);
+        res.render('login', { notice: "none", noticemsg: "none", errormsg: data.error.message });
+      } else {
+        const user = data.user;
+        const accessToken = jwt.sign(user, data.jwt);
+        tokenJWT = data.jwt;
+        // res.cookie('jwtToken', data.jwt, { maxAge: 900000, httpOnly: true });
+        fetch("https://sagpt.onrender.com/users", {
+          method: "GET",
+          headers: {
+            'Authorization': `Bearer ${accessToken}`
+          }
+        }).then(res => res.json()).then(data => {
+          if (data.error) {
+            console.log(data.error.message);
+            users = [];
+            res.render('login', { notice: "none", noticemsg: "none", errormsg: data.error.message });
+          } else {
+            req.user = data;
+            next();
+          }
+        })
+      }
+    })
+  } catch (error) {
+    users = [];
+    res.redirect('/login');
+  }
+}
+
+router.get('/users', authenticateToken, async (req, res) => {
+  const output = req.user;
+  return res.json(output);
 })
 
-router.post('/', async (req,res) =>{
-  const userAction = req.body.userAction;
+router.get('/login', checkNotAuthenticated, async (req, res) => {
+  res.render('login', { notice: "none", noticemsg: "none", errormsg: "none" });
+})
 
+router.get('/', checkAuthenticated, async (req, res) => {
+  const perspectives = await getData("perspectives");
+  const tones = await getData("tones");
+  const customerObjectives = await getData("customer-objectives");
+  const targetMarkets = await getData("target-markets");
+  const authors = await getData("users");
+  res.render('index', { authors: authors, targetMarkets: targetMarkets, customerObjectives: customerObjectives, tones: tones, perspectives: perspectives, role: users[0].role, firstname: req.user.firstname, lastname: req.user.lastname, username: req.user.username, email: req.user.email, bio: req.user.bio, notice: "none", noticemsg: "none" });
+})
+
+router.get('*', function (req, res) {
+  res.status(404).render('404');
+});
+
+
+router.delete('/logout', (req, res) => {
+  const username = req.body.username;
+  console.log(username + " logging out");
+  logAction("User has logged out.");
+  users = [];
+  res.redirect('/');
+})
+
+router.post('/', async (req, res) => {
+  const userAction = req.body.userAction;
   if (userAction == "ChatAI") {
     const question = req.body.userinput;
     const tone = req.body.tone;
@@ -38,34 +207,34 @@ router.post('/', async (req,res) =>{
     const target = req.body.target;
     const perspective = req.body.perspective;
     const customerObjective = req.body.customerObjective;
-    
+
     var toneOutput = "";
     var authorOutput = "";
     var targetOutput = "";
     var perspectiveOutput = "";
     var customerObjectiveOutput = "";
 
-    if (tone == "Select Tone/Personality"){
+    if (tone == "Select Tone/Personality") {
       var toneOutput = "";
     } else if (tone != "None") {
       toneOutput = `You are in ${tone} personality, so you will answer with the given subtones of that personality.`;
-    } 
-    if (author == "Select Author"){
+    }
+    if (author == "Select Author") {
       var authorOutput = "";
     } else if (author != "None") {
       authorOutput = `The author is ${author}.`;
-    } 
-    if (target ==  "Select Target Market"){
+    }
+    if (target == "Select Target Market") {
       var targetOutput = "";
     } else if (target != "None") {
       targetOutput = `Your Target Market/s will be ${target}.`;
     }
-    if (perspective == "Select Perspective"){
+    if (perspective == "Select Perspective") {
       var perspectiveOutput = "";
     } else if (perspective != "None") {
       perspectiveOutput = `You will write in ${perspective} writing perspective.`;
     }
-    if (customerObjective == "Select Customer Objective"){
+    if (customerObjective == "Select Customer Objective") {
       var customerObjectiveOutput = "";
     } else if (customerObjective != "None") {
       customerObjectiveOutput = `The selected Customer Objective is ${customerObjective}.`;
@@ -73,17 +242,19 @@ router.post('/', async (req,res) =>{
 
     let output;
     try {
-      var temp = await runWithEmbeddings(question, perspectiveOutput, toneOutput, targetOutput, authorOutput,customerObjectiveOutput);
+      var temp = await runWithEmbeddings(question, perspectiveOutput, toneOutput, targetOutput, authorOutput, customerObjectiveOutput);
       output = marked.parse(temp);
+      logAction("User used AI Assistant.");
     } catch (error) {
+      logAction("User attempted to use AI Assistant but failed.");
       output = "There is an error on our server. Sorry for inconvenience. Please try again later."
       console.log(error);
       console.log(output);
     }
-    
-    res.send({output});
-    
-  } else if (userAction == "ArticleGenerator"){
+
+    res.send({ output });
+
+  } else if (userAction == "ArticleGenerator") {
     const title = req.body.articletitle;
     const heading = req.body.heading;
     const subheading = req.body.subheading;
@@ -93,22 +264,22 @@ router.post('/', async (req,res) =>{
     const perspective = req.body.perspective;
     const customerObjective = req.body.customerObjective;
     var articlearray = {};
-    articlearray.title = title; 
+    articlearray.title = title;
     for (let i = 0; i < heading.length; i++) {
-      var num = i+1;
+      var num = i + 1;
       var obj = new Object();
       obj.title = heading[i];
       if (subheading) {
-        for(var j=0;j<subheading.length;j++){
-          var num2 = j+1;
-          if (num == subheading[j].substring(0, 1)){
-            for(var k=0;k<subheading.length;k++){
-                obj["subheadings"+num2] = subheading[j];
+        for (var j = 0; j < subheading.length; j++) {
+          var num2 = j + 1;
+          if (num == subheading[j].substring(0, 1)) {
+            for (var k = 0; k < subheading.length; k++) {
+              obj["subheadings" + num2] = subheading[j];
             }
           }
         }
       }
-      articlearray["heading"+num] = obj;
+      articlearray["heading" + num] = obj;
     }
 
     var toneOutput = "";
@@ -117,27 +288,27 @@ router.post('/', async (req,res) =>{
     var perspectiveOutput = "";
     var customerObjectiveOutput = "";
 
-    if (tone == "Select Tone/Personality"){
+    if (tone == "Select Tone/Personality") {
       var toneOutput = "";
     } else if (tone != "None") {
       toneOutput = `You are in ${tone} personality, so you will answer with the given subtones of that personality.`;
-    } 
-    if (author == "Select Author"){
+    }
+    if (author == "Select Author") {
       var authorOutput = "";
     } else if (author != "None") {
       authorOutput = `The author is ${author}.`;
-    } 
-    if (target ==  "Select Target Market"){
+    }
+    if (target == "Select Target Market") {
       var targetOutput = "";
     } else if (target != "None") {
       targetOutput = `Your Target Market/s will be ${target}.`;
     }
-    if (perspective == "Select Perspective"){
+    if (perspective == "Select Perspective") {
       var perspectiveOutput = "";
     } else if (perspective != "None") {
       perspectiveOutput = `You will write in ${perspective} writing perspective.`;
     }
-    if (customerObjective == "Select Customer Objective"){
+    if (customerObjective == "Select Customer Objective") {
       var customerObjectiveOutput = "";
     } else if (customerObjective != "None") {
       customerObjectiveOutput = `The selected Customer Objective is ${customerObjective}.`;
@@ -161,17 +332,17 @@ router.post('/', async (req,res) =>{
     try {
       for (let i = 0; i < data.length; i++) {
         var articleHeading = data[i][1].title;
-        var articleTopic = "Article Heading: "+articleHeading+"\n\nSubheadings:\n";
+        var articleTopic = "Article Heading: " + articleHeading + "\n\nSubheadings:\n";
         var query = listquery[i];
         for (var key in data[i][1]) {
           data[i][1]['title'] && delete data[i][1]['title'];
           if (data[i][1].hasOwnProperty(key)) {
             var valuetemp = data[i][1][key];
             let value = valuetemp.substring(1);
-            articleTopic += "\n"+value;
+            articleTopic += "\n" + value;
           }
         }
-        const createArticle = await articleGenerator(generalQuery, articleTopic, query, articleTitle, articleKeyword, perspectiveOutput, toneOutput, targetOutput, authorOutput,customerObjectiveOutput);
+        const createArticle = await articleGenerator(generalQuery, articleTopic, query, articleTitle, articleKeyword, perspectiveOutput, toneOutput, targetOutput, authorOutput, customerObjectiveOutput);
         contentBody += `\n\n<h2>${articleHeading}</h2>\n${createArticle}`;
       }
       const content = contentBody;
@@ -187,13 +358,15 @@ router.post('/', async (req,res) =>{
       console.log(output);
       var wordCount = output.content.match(/(\w+)/g).length;
       console.log(wordCount);
-      res.send({output});
+      logAction("User successfully generated an article using Manual Article Generator.");
+      res.send({ output });
     } catch (error) {
+      logAction("User attempted to generate an article using Manual Article Generator but failed.");
       output = "There is an error on our server. Sorry for inconvenience. Please try again later.";
-      console.log(output+" | "+error);
-      res.send({output});
+      console.log(output + " | " + error);
+      res.send({ output });
     }
-  } else if (userAction == "QueryArticleGenerator"){ 
+  } else if (userAction == "QueryArticleGenerator") {
     const keyword = req.body.keyword;
     const articleOverview = req.body.articleOverview;
     const tone = req.body.tone;
@@ -208,27 +381,27 @@ router.post('/', async (req,res) =>{
     var perspectiveOutput = "";
     var customerObjectiveOutput = "";
 
-    if (tone == "Select Tone/Personality"){
+    if (tone == "Select Tone/Personality") {
       var toneOutput = "";
     } else if (tone != "None") {
       toneOutput = `You are in ${tone} personality, so you will answer with the given subtones of that personality.`;
-    } 
-    if (author == "Select Author"){
+    }
+    if (author == "Select Author") {
       var authorOutput = "";
     } else if (author != "None") {
       authorOutput = `The author is ${author}.`;
-    } 
-    if (target ==  "Select Target Market"){
+    }
+    if (target == "Select Target Market") {
       var targetOutput = "";
     } else if (target != "None") {
       targetOutput = `Your Target Market/s will be ${target}.`;
     }
-    if (perspective == "Select Perspective"){
+    if (perspective == "Select Perspective") {
       var perspectiveOutput = "";
     } else if (perspective != "None") {
       perspectiveOutput = `You will write in ${perspective} writing perspective.`;
     }
-    if (customerObjective == "Select Customer Objective"){
+    if (customerObjective == "Select Customer Objective") {
       var customerObjectiveOutput = "";
     } else if (customerObjective != "None") {
       customerObjectiveOutput = `The selected Customer Objective is ${customerObjective}.`;
@@ -240,14 +413,14 @@ router.post('/', async (req,res) =>{
       const createTitle = await titleGenerator(keyword, perspectiveOutput, toneOutput, targetOutput, customerObjectiveOutput);
       var titleTemp = createTitle.replace(/['"]+/g, '')
       title = titleTemp;
-      console.log("Article Title: "+title);
+      console.log("Article Title: " + title);
       var createArticle;
       var wordCount;
       var num = wordCount - 500;
       console.log(wordCount);
-      
+
       for (let i = 0; i < 20; i++) {
-        if (createArticle == null){
+        if (createArticle == null) {
           wordCount = 0;
         } else {
           wordCount = createArticle.match(/(\w+)/g).length;
@@ -255,17 +428,17 @@ router.post('/', async (req,res) =>{
         var num = wordCount - 500;
         console.log(wordCount);
         if (num < 1500) {
-          if(typeof createArticle === 'undefined') {
+          if (typeof createArticle === 'undefined') {
             createArticle = "\n";
           }
-          createArticle += "\n\n" + await addHeadingContent(wordCount, createArticle, articleOverview, title, keyword, perspectiveOutput, toneOutput, targetOutput, authorOutput,customerObjectiveOutput);
+          createArticle += "\n\n" + await addHeadingContent(wordCount, createArticle, articleOverview, title, keyword, perspectiveOutput, toneOutput, targetOutput, authorOutput, customerObjectiveOutput);
         } else {
-          createArticle += "\n\n" + await generateConclusion(createArticle, articleOverview, title, keyword, perspectiveOutput, toneOutput, targetOutput, authorOutput,customerObjectiveOutput);
+          createArticle += "\n\n" + await generateConclusion(createArticle, articleOverview, title, keyword, perspectiveOutput, toneOutput, targetOutput, authorOutput, customerObjectiveOutput);
           break;
         }
       }
 
-      const content = "<h1>"+title+"</h1>"+"\n"+createArticle
+      const content = "<h1>" + title + "</h1>" + "\n" + createArticle
       const seoTitle = await seoTitleGenerator(keyword);
       const metaDescription = await metaDescriptionGenerator(keyword, content);
       const slug = keyword.replace(/\s+/g, '-').toLowerCase();
@@ -282,13 +455,15 @@ router.post('/', async (req,res) =>{
       console.log(output);
       // var wordCount = output.match(/(\w+)/g).length;
       // console.log(wordCount);
-      res.send({output});
+      logAction("User successfully generated an article using Instructive Article Generator.");
+      res.send({ output });
     } catch (error) {
+      logAction("User attempted to generate an article using Instructive Article Generator but failed.");
       output = "There is an error on our server. Sorry for inconvenience. Please try again later.";
-      console.log(bulkdata+" | "+error);
-      res.send({output});
+      console.log(bulkdata + " | " + error);
+      res.send({ output });
     }
-  } else if (userAction == "BulkArticleGenerator"){
+  } else if (userAction == "BulkArticleGenerator") {
     const focuskeyword1 = req.body.focuskeyword1;
     const focuskeyword2 = req.body.focuskeyword2;
     const focuskeyword3 = req.body.focuskeyword3;
@@ -328,27 +503,27 @@ router.post('/', async (req,res) =>{
     var perspectiveOutput = "";
     var customerObjectiveOutput = "";
 
-    if (tone == "Select Tone/Personality"){
+    if (tone == "Select Tone/Personality") {
       var toneOutput = "";
     } else if (tone != "None") {
       toneOutput = `You are in ${tone} personality, so you will answer with the given subtones of that personality.`;
-    } 
-    if (author == "Select Author"){
+    }
+    if (author == "Select Author") {
       var authorOutput = "";
     } else if (author != "None") {
       authorOutput = `The author is ${author}.`;
-    } 
-    if (target ==  "Select Target Market"){
+    }
+    if (target == "Select Target Market") {
       var targetOutput = "";
     } else if (target != "None") {
       targetOutput = `Your Target Market/s will be ${target}.`;
     }
-    if (perspective == "Select Perspective"){
+    if (perspective == "Select Perspective") {
       var perspectiveOutput = "";
     } else if (perspective != "None") {
       perspectiveOutput = `You will write in ${perspective} writing perspective.`;
     }
-    if (customerObjective == "Select Customer Objective"){
+    if (customerObjective == "Select Customer Objective") {
       var customerObjectiveOutput = "";
     } else if (customerObjective != "None") {
       customerObjectiveOutput = `The selected Customer Objective is ${customerObjective}.`;
@@ -372,7 +547,7 @@ router.post('/', async (req,res) =>{
         var createArticle;
         var wordCount;
         for (let j = 0; j < 20; j++) {
-          if (createArticle == null){
+          if (createArticle == null) {
             wordCount = 0;
           } else {
             wordCount = createArticle.match(/(\w+)/g).length;
@@ -380,9 +555,9 @@ router.post('/', async (req,res) =>{
           var num = wordCount - 500;
           console.log(wordCount);
           if (num < 1500) {
-            createArticle += "\n\n" + await addHeadingContent(generalQuery, articleTitle, articleKeyword, perspectiveOutput, toneOutput, targetOutput, authorOutput,customerObjectiveOutput);
+            createArticle += "\n\n" + await addHeadingContent(generalQuery, articleTitle, articleKeyword, perspectiveOutput, toneOutput, targetOutput, authorOutput, customerObjectiveOutput);
           } else {
-            createArticle += "\n\n" + await generateConclusion(generalQuery, articleTitle, articleKeyword, perspectiveOutput, toneOutput, targetOutput, authorOutput,customerObjectiveOutput);
+            createArticle += "\n\n" + await generateConclusion(generalQuery, articleTitle, articleKeyword, perspectiveOutput, toneOutput, targetOutput, authorOutput, customerObjectiveOutput);
             break;
           }
         }
@@ -392,14 +567,14 @@ router.post('/', async (req,res) =>{
       console.log(bulkdata);
       // var wordCount = output.match(/(\w+)/g).length;
       // console.log(wordCount);
-      res.send({bulkdata});
+      res.send({ bulkdata });
     } catch (error) {
       output = "There is an error on our server. Sorry for inconvenience. Please try again later.";
-      console.log(bulkdata+" | "+error);
-      res.send({bulkdata});
+      console.log(bulkdata + " | " + error);
+      res.send({ bulkdata });
     }
 
-  } else if (userAction == "GenerateKeywords"){
+  } else if (userAction == "GenerateKeywords") {
     var keywords = [];
     try {
       for (let i = 0; i < 10; i++) {
@@ -409,128 +584,276 @@ router.post('/', async (req,res) =>{
         keywords.push(generatedKeyword);
       }
       console.log(keywords);
-      res.send({keywords});
+      res.send({ keywords });
     } catch (error) {
       keywords = "There is an error on our server. Sorry for inconvenience. Please try again later.";
       console.log(error);
-      res.send({keywords});
+      res.send({ keywords });
     }
-    
+
+  } else if (userAction == "LoginGPT") {
+    const identifier = req.body.identifier;
+    const password = req.body.password;
+    try {
+      const API_URL = "https://sagpt-data.onrender.com/api/auth/local";
+      const requestOptions = {
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          "identifier": identifier,
+          "password": password
+        })
+      }
+      fetch(API_URL, requestOptions).then(res => res.json()).then(data => {
+        if (data.error) {
+          console.log(data.error.message);
+          res.render('login', { notice: "none", noticemsg: "none", errormsg: data.error.message });
+        } else {
+          var user = data.user;
+          user.password = password;
+          const accessToken = jwt.sign(user, data.jwt);
+          tokenJWT = data.jwt;
+          fetch("https://sagpt-data.onrender.com/api/users/me?populate=role", {
+            method: "GET",
+            headers: {
+              'Authorization': `Bearer ${data.jwt}`
+            }
+          }).then(res => res.json()).then(data => {
+            if (data.error) {
+              console.log(data.error.message);
+            } else {
+              const role = data.role.name;
+              user.role = role;
+              users.push(user);
+              // res.cookie('jwtToken', data.jwt, { maxAge: 900000, httpOnly: true });
+              fetch("https://sagpt.onrender.com/users", {
+                method: "GET",
+                headers: {
+                  'Authorization': `Bearer ${accessToken}`
+                }
+              }).then(res => res.json()).then(async (data) => {
+                if (data.error) {
+                  console.log(data.error.message);
+                  res.render('login', { notice: "none", noticemsg: "none", errormsg: data.error.message });
+                } else {
+                  console.log(data.username + " logged in");
+                  logAction("User has logged in.");
+                  const perspectives = await getData("perspectives");
+                  const tones = await getData("tones");
+                  const customerObjectives = await getData("customer-objectives");
+                  const targetMarkets = await getData("target-markets");
+                  const authors = await getData("users");
+                  res.render('index', { authors: authors, targetMarkets: targetMarkets, customerObjectives: customerObjectives, tones: tones, perspectives: perspectives, role: role, firstname: data.firstname, lastname: data.lastname, username: data.username, email: data.email, bio: data.bio, notice: "none", noticemsg: "none" });
+                }
+              }).catch((error) => {
+                console.log(error);
+              })
+            }
+          })
+        }
+      }).catch((error) => {
+        console.log(error);
+      })
+    } catch (error) {
+      console.log(error);
+    }
+  } else if (userAction == "ChangePassword") {
+    try {
+      const identifier = users[0].username;
+      const password = users[0].password;
+      const currentPassword = req.body.password;
+      const newPassword = req.body.newpassword;
+      const confirmPassword = req.body.confirmpassword;
+      const API_URL = "https://sagpt-data.onrender.com/api/auth/local";
+      const requestOptions = {
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          "identifier": identifier,
+          "password": password
+        })
+      }
+      fetch(API_URL, requestOptions).then(res => res.json()).then(data => {
+        if (data.error) {
+          console.log(data.error.message);
+          res.render('login', { notice: "none", noticemsg: "none", errormsg: data.error.message });
+        } else {
+          const user = data.user;
+          tokenJWT = data.jwt;
+          // res.cookie('jwtToken', data.jwt, { maxAge: 900000, httpOnly: true });
+          fetch("https://sagpt-data.onrender.com/api/auth/change-password", {
+            method: "POST",
+            headers: {
+              'Content-Type': 'application/json',
+              'accept': 'application/json',
+              'Authorization': `Bearer ${data.jwt}`
+            },
+            body: JSON.stringify({
+              currentPassword: currentPassword,
+              password: newPassword,
+              passwordConfirmation: confirmPassword
+            })
+          }).then(res => res.json()).then(async (data) => {
+            if (data.error) {
+              console.log(data.error.message);
+              const perspectives = await getData("perspectives");
+              const tones = await getData("tones");
+              const customerObjectives = await getData("customer-objectives");
+              const targetMarkets = await getData("target-markets");
+              const authors = await getData("users");
+              res.render('index', { authors: authors, targetMarkets: targetMarkets, customerObjectives: customerObjectives, tones: tones, perspectives: perspectives, role: users[0].role, firstname: user.firstname, lastname: user.lastname, username: user.username, email: user.email, bio: user.bio, notice: "error", noticemsg: data.error.message });
+            } else {
+              console.log("Password successfully changed.");
+              logAction("User has changed their password.");
+              users = [];
+              res.render('login', { notice: "success", noticemsg: "Password successfully changed. Please login again", errormsg: "none" });
+            }
+          })
+        }
+      })
+    } catch (error) {
+      console.log(error);
+      res.redirect('/')
+    }
+  } else if (userAction == "UpdateProfile") {
+    try {
+      const identifier = users[0].username;
+      const password = users[0].password;
+      const firstname = req.body.firstname;
+      const lastname = req.body.lastname;
+      const bio = req.body.bio;
+      const API_URL = "https://sagpt-data.onrender.com/api/auth/local";
+      const requestOptions = {
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          "identifier": identifier,
+          "password": password
+        })
+      }
+      fetch(API_URL, requestOptions).then(res => res.json()).then(data => {
+        if (data.error) {
+          console.log(data.error.message);
+          res.render('login', { notice: "none", noticemsg: "none", errormsg: data.error.message });
+        } else {
+          const user = data.user;
+          tokenJWT = data.jwt;
+          // res.cookie('jwtToken', data.jwt, { maxAge: 900000, httpOnly: true });
+          fetch(`https://sagpt-data.onrender.com/api/users/${user.id}`, {
+            method: "PUT",
+            headers: {
+              'Content-Type': 'application/json',
+              'accept': 'application/json',
+              'Authorization': `Bearer ${data.jwt}`
+            },
+            body: JSON.stringify({
+              firstname: firstname,
+              lastname: lastname,
+              bio: bio
+            })
+          }).then(res => res.json()).then(async (data) => {
+            if (data.error) {
+              console.log(data.error.message);
+              const perspectives = await getData("perspectives");
+              const tones = await getData("tones");
+              const customerObjectives = await getData("customer-objectives");
+              const targetMarkets = await getData("target-markets");
+              const authors = await getData("users");
+              res.render('index', { authors: authors, targetMarkets: targetMarkets, customerObjectives: customerObjectives, tones: tones, perspectives: perspectives, role: users[0].role, firstname: user.firstname, lastname: user.lastname, username: user.username, email: user.email, bio: user.bio, notice: "error", noticemsg: data.error.message });
+            } else {
+              console.log("User Profile successfully updated.");
+              logAction("User has updated their profile.");
+              res.redirect('/');
+            }
+          })
+        }
+      })
+    } catch (error) {
+      console.log(error);
+      res.redirect('/')
+    }
+  } else if (userAction == "DownloadLogs") {
+    try {
+      const identifier = users[0].username;
+      const password = req.body.password;
+      console.log(password);
+      const API_URL = "https://sagpt-data.onrender.com/api/auth/local";
+      const requestOptions = {
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          "identifier": identifier,
+          "password": password
+        })
+      }
+      fetch(API_URL, requestOptions).then(res => res.json()).then(async (data) => {
+        if (data.error) {
+          console.log(data.error.message);
+          const perspectives = await getData("perspectives");
+          const tones = await getData("tones");
+          const customerObjectives = await getData("customer-objectives");
+          const targetMarkets = await getData("target-markets");
+          const authors = await getData("users");
+          res.render('index', { authors: authors, targetMarkets: targetMarkets, customerObjectives: customerObjectives, tones: tones, perspectives: perspectives, role: users[0].role, firstname: users[0].firstname, lastname: users[0].lastname, username: users[0].username, email: users[0].email, bio: users[0].bio, notice: "error", noticemsg: data.error.message });
+        } else {
+          const user = data.user;
+          tokenJWT = data.jwt;
+          fetch(`https://sagpt-data.onrender.com/api/logs`, {
+            method: "GET",
+            headers: {
+              'Authorization': `Bearer ${tokenJWT}`
+            }
+          }).then(res => res.json()).then(async (response) => {
+            if (response.error) {
+              console.log(response.error.message);
+              const perspectives = await getData("perspectives");
+              const tones = await getData("tones");
+              const customerObjectives = await getData("customer-objectives");
+              const targetMarkets = await getData("target-markets");
+              const authors = await getData("users");
+              res.render('index', { authors: authors, targetMarkets: targetMarkets, customerObjectives: customerObjectives, tones: tones, perspectives: perspectives, role: users[0].role, firstname: user.firstname, lastname: user.lastname, username: user.username, email: user.email, bio: user.bio, notice: "error", noticemsg: data.error.message });
+            } else {
+              const parser = new Parser();
+              const data = response.data;
+              var newdata = []
+              for (let i = 0; i < data.length; i++) {
+                var obj = new Object();
+                obj.id = data[i].id;
+                obj.logname = data[i].attributes.logname;
+                obj.authorname = data[i].attributes.authorname;
+                obj.createdAt = data[i].attributes.createdAt;
+                obj.updatedAt = data[i].attributes.updatedAt;
+                obj.publishedAt = data[i].attributes.publishedAt;
+                newdata.push(obj);
+              }
+              const csv = parser.parse(newdata);
+              console.log("Data successfully exported");
+              logAction("User exported the logs data.");
+              fs.writeFileSync('SAGPT-Logs.csv', csv);
+              res.download('./SAGPT-Logs.csv');
+            }
+          })
+        }
+      })
+      setTimeout(function () { fs.unlinkSync('./SAGPT-Logs.csv'); }, 1000);
+    } catch (error) {
+      console.log(error);
+      res.redirect('/');
+    }
   }
 })
-
-// export const runWithEmbeddings = async (question, perspectiveOutput, toneOutput, targetOutput, authorOutput,customerObjectiveOutput) => {
-  
-//   const model = new ChatOpenAI({temperature:0.7, modelName:"gpt-4-1106-preview"});
-
-//   // let vectorStore;
-//   // if (fs.existsSync(VECTOR_STORE_PATH)) {
-//   //   vectorStore = await HNSWLib.load(VECTOR_STORE_PATH, new OpenAIEmbeddings());
-//   // } else {
-//   //   const text = fs.readFileSync(txtPath, 'utf8');
-//   //   const textSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 1000 });
-//   //   const docs = await textSplitter.createDocuments([text]);
-//   //   vectorStore = await HNSWLib.fromDocuments(docs, new OpenAIEmbeddings());
-//   //   await vectorStore.save(VECTOR_STORE_PATH);
-//   // }
-
-//   var output;
-//   const userprompt = `You are a helpful assistant. ${perspectiveOutput} ${toneOutput} ${authorOutput} ${targetOutput} ${customerObjectiveOutput}` + `Question: ${question}`
-
-//   // const fasterModel = new ChatOpenAI({
-//   //   temperature:0.7,
-//   //   modelName: "gpt-4-1106-preview",
-//   // });
-
-//   // const chain = RetrievalQAChain.fromLLM(model, vectorStore.asRetriever());
-
-//   // const chain = ConversationalRetrievalQAChain.fromLLM(
-//   //   model,
-//   //   vectorStore.asRetriever(),
-//   //   {
-//   //     returnSourceDocuments: true,
-//   //     memory: new BufferMemory({
-//   //       memoryKey: "chat_history",
-//   //       inputKey: "question",
-//   //       outputKey: "text",
-//   //       returnMessages: true,
-//   //     }),
-//   //     questionGeneratorChainOptions: {
-//   //       llm: fasterModel,
-//   //     },
-//   //   }
-//   // );
-
-//   // const res = await chain.call({ question: userprompt });
-
-//   const pinecone = new Pinecone({
-//     apiKey: process.env.PINECONE_API_KEY,
-//     environment: process.env.PINECONE_ENVIRONMENT
-//   });
-//   const index = pinecone.index('sagpt');
-//   const queryEmbedding = await new OpenAIEmbeddings().embedQuery(question);
-//   const queryResponse = await index.query({
-//     topK: 10,
-//     vector: queryEmbedding,
-//     includeMetadata: true,
-//     includeValues: true
-//   });
-
-//   console.log(queryResponse);
-
-//   if (queryResponse.matches.length) {
-//     // // 9. Create an OpenAI instance and load the QAStuffChain
-//     //     const llm = new OpenAI({});
-//     //     const chain = loadQAStuffChain(llm);
-//     // // 10. Extract and concatenate page content from matched documents
-//     //     const concatenatedPageContent = queryResponse.matches
-//     //       .map((match) => match.metadata.text)
-//     //       .join(" ");
-//     // // 11. Execute the chain with input documents and question
-//     //     const result = await chain.call({
-//     //       input_documents: [new Document({ text: concatenatedPageContent })],
-//     //       question: userprompt,
-//     //       model: model
-//     //     });
-//     // // 12. Log the answer
-//         const chain = ConversationalRetrievalQAChain.fromLLM(
-//           model,
-//           index.asRetriever(), // Assuming index can be used as a retriever
-//           {
-//             returnSourceDocuments: true,
-//             memory: new BufferMemory({
-//               memoryKey: "chat_history",
-//               inputKey: "question",
-//               outputKey: "text",
-//               returnMessages: true,
-//             }),
-//             questionGeneratorChainOptions: {
-//               llm: fasterModel,
-//             },
-//           }
-//         );
-
-//         // Extract and concatenate page content from matched documents
-//         const concatenatedPageContent = queryResponse.matches
-//           .map((match) => match.metadata.text)
-//           .join(" ");
-
-//         // Execute the chain with input documents and question
-//         const result = await chain.call({
-//           input_documents: [new Document({ text: concatenatedPageContent })],
-//           question: userprompt,
-//           model: model
-//         });
-//         output = result.text;
-//         console.log(userprompt);
-//         console.log(`Answer: ${result.text}`);
-//       } else {
-//     // 13. Log that there are no matches, so GPT-3 will not be queried
-//         console.log("Since there are no matches, GPT-3 will not be queried.");
-//         output = "I'm sorry, there are no matches that is related to the question on our data.";
-//       }
-//   return output;
-// };
 
 export const runWithEmbeddings = async (question, perspectiveOutput, toneOutput, targetOutput, authorOutput, customerObjectiveOutput) => {
 
@@ -584,20 +907,7 @@ export const runWithEmbeddings = async (question, perspectiveOutput, toneOutput,
   return output;
 };
 
-export const articleGenerator = async (generalQuery, question, query, title, keyword, perspectiveOutput, toneOutput, targetOutput, authorOutput,customerObjectiveOutput) => {
-  
-  // const model = new OpenAI({temperature:0.7, modelName:"gpt-4"});
-
-  // let vectorStore;
-  // if (fs.existsSync(VECTOR_STORE_PATH)) {
-  //   vectorStore = await HNSWLib.load(VECTOR_STORE_PATH, new OpenAIEmbeddings());
-  // } else {
-  //   const text = fs.readFileSync(txtPath, 'utf8');
-  //   const textSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 1000 });
-  //   const docs = await textSplitter.createDocuments([text]);
-  //   vectorStore = await HNSWLib.fromDocuments(docs, new OpenAIEmbeddings());
-  //   await vectorStore.save(VECTOR_STORE_PATH);
-  // }
+export const articleGenerator = async (generalQuery, question, query, title, keyword, perspectiveOutput, toneOutput, targetOutput, authorOutput, customerObjectiveOutput) => {
 
   var output;
   const userprompt = `You are a content writer and will draft HTML formatted articles where at the start of every paragraph you will add '<p>' and must end with '</p>', it will be the same with Subheadings but with '<h3>' and '</h3>', and your responsibility is to elaborate on the provided heading title. "PLEASE DO NOT CREATE AN ENTIRE ARTICLE." ${perspectiveOutput} ${toneOutput} ${authorOutput} ${targetOutput} ${customerObjectiveOutput}` + ` Expand this outline using the article title "${title}", and the focus keyword "${keyword}". The article outline: ${question}.
@@ -610,6 +920,7 @@ export const articleGenerator = async (generalQuery, question, query, title, key
   You can add h4 subheadings inside h3 if possible.
   You can also add <ul> <li> tags.
   Do not add the word 'Subheading:' in the subheading titles.
+  Strictly, you will not give any comments on the generated content, it must be content article body only.
   Do not include 'In conclusion' unless the Heading title is Conclusion itself.
   Do not add the '${title}' itself.`
 
@@ -773,17 +1084,6 @@ export const metaDescriptionGenerator = async (focuskeyword, articleContent) => 
 };
 
 export const titleGenerator = async (focuskeyword, perspectiveOutput, toneOutput, targetOutput, customerObjectiveOutput) => {
-  // const model = new OpenAI({temperature:0.7, modelName:"gpt-4-1106-preview"});
-  // let vectorStore;
-  // if (fs.existsSync(VECTOR_STORE_PATH)) {
-  //   vectorStore = await HNSWLib.load(VECTOR_STORE_PATH, new OpenAIEmbeddings());
-  // } else {
-  //   const text = fs.readFileSync(txtPath, 'utf8');
-  //   const textSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 1000 });
-  //   const docs = await textSplitter.createDocuments([text]);
-  //   vectorStore = await HNSWLib.fromDocuments(docs, new OpenAIEmbeddings());
-  //   await vectorStore.save(VECTOR_STORE_PATH);
-  // }
 
   var output;
   const userprompt = `Create a good article title using the keyword '${focuskeyword}'. Make sure to make it SEO optimized. ${perspectiveOutput} ${toneOutput} ${targetOutput} ${customerObjectiveOutput} Make sure to keep it a title only, and do not include any introductions or short descriptions.`
@@ -841,71 +1141,71 @@ export const titleGenerator = async (focuskeyword, perspectiveOutput, toneOutput
   return output;
 };
 
-export const bulkArticleGenerator = async (generalQuery, title, keyword, perspectiveOutput, toneOutput, targetOutput, authorOutput, customerObjectiveOutput) => {
-  
-  const model = new OpenAI({temperature:0.7, modelName:"gpt-4-1106-preview"});
+// export const bulkArticleGenerator = async (generalQuery, title, keyword, perspectiveOutput, toneOutput, targetOutput, authorOutput, customerObjectiveOutput) => {
 
-  let vectorStore;
-  if (fs.existsSync(VECTOR_STORE_PATH)) {
-    vectorStore = await HNSWLib.load(VECTOR_STORE_PATH, new OpenAIEmbeddings());
-  } else {
-    const text = fs.readFileSync(txtPath, 'utf8');
-    const textSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 1000 });
-    const docs = await textSplitter.createDocuments([text]);
-    vectorStore = await HNSWLib.fromDocuments(docs, new OpenAIEmbeddings());
-    await vectorStore.save(VECTOR_STORE_PATH);
-  }
+//   const model = new OpenAI({temperature:0.7, modelName:"gpt-4-1106-preview"});
 
-  const userprompt = `You are a content writer and will draft HTML formatted articles where at the start of every paragraph you will just add '<p>' and must end with '</p>', it will be the same with Headings using '<h2>' and '</h2>', as well as Subheadings but with '<h3>' and '</h3>'. Your responsibility is to generate a good article that is SEO optimized, using the article title "${title}", and the focus keyword "${keyword}". ${perspectiveOutput} ${toneOutput} ${authorOutput} ${targetOutput} ${customerObjectiveOutput}
+//   let vectorStore;
+//   if (fs.existsSync(VECTOR_STORE_PATH)) {
+//     vectorStore = await HNSWLib.load(VECTOR_STORE_PATH, new OpenAIEmbeddings());
+//   } else {
+//     const text = fs.readFileSync(txtPath, 'utf8');
+//     const textSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 1000 });
+//     const docs = await textSplitter.createDocuments([text]);
+//     vectorStore = await HNSWLib.fromDocuments(docs, new OpenAIEmbeddings());
+//     await vectorStore.save(VECTOR_STORE_PATH);
+//   }
 
-  Instructions:
-  ${generalQuery}
-  You can be creative such as adding <ul> <li> and <h4> subheadings.
-  Do not add the word 'Subheading:' in the subheading titles.
-  Strictly, you will not give any comments on the generated content, it must be content article body only.
-  Do not add the '${title}' itself.`
+//   const userprompt = `You are a content writer and will draft HTML formatted articles where at the start of every paragraph you will just add '<p>' and must end with '</p>', it will be the same with Headings using '<h2>' and '</h2>', as well as Subheadings but with '<h3>' and '</h3>'. Your responsibility is to generate a good article that is SEO optimized, using the article title "${title}", and the focus keyword "${keyword}". ${perspectiveOutput} ${toneOutput} ${authorOutput} ${targetOutput} ${customerObjectiveOutput}
 
-  console.log(userprompt);
+//   Instructions:
+//   ${generalQuery}
+//   You can be creative such as adding <ul> <li> and <h4> subheadings.
+//   Do not add the word 'Subheading:' in the subheading titles.
+//   Strictly, you will not give any comments on the generated content, it must be content article body only.
+//   Do not add the '${title}' itself.`
 
-  const chain = RetrievalQAChain.fromLLM(model, vectorStore.asRetriever());
+//   console.log(userprompt);
 
-  const res = await chain.call({ query: userprompt });
-  const output = res.text;
-  console.log(output);
-  return output;
-};
+//   const chain = RetrievalQAChain.fromLLM(model, vectorStore.asRetriever());
 
-export const generateKeywords = async (keywords) => {
-  const model = new OpenAI({temperature:0.7, modelName:"gpt-4-1106-preview"});
-  let vectorStore;
-  if (fs.existsSync(VECTOR_STORE_PATH)) {
-    vectorStore = await HNSWLib.load(VECTOR_STORE_PATH, new OpenAIEmbeddings());
-  } else {
-    const text = fs.readFileSync(txtPath, 'utf8');
-    const textSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 1000 });
-    const docs = await textSplitter.createDocuments([text]);
-    vectorStore = await HNSWLib.fromDocuments(docs, new OpenAIEmbeddings());
-    await vectorStore.save(VECTOR_STORE_PATH);
-  }
+//   const res = await chain.call({ query: userprompt });
+//   const output = res.text;
+//   console.log(output);
+//   return output;
+// };
 
-  var currentKeywords;
-  if (keywords) {
-    currentKeywords = `Also, it is important to make it different from these given keywords ${keywords}`;
-  } else { 
-    currentKeywords = " ";
-  }
+// export const generateKeywords = async (keywords) => {
+//   const model = new OpenAI({temperature:0.7, modelName:"gpt-4-1106-preview"});
+//   let vectorStore;
+//   if (fs.existsSync(VECTOR_STORE_PATH)) {
+//     vectorStore = await HNSWLib.load(VECTOR_STORE_PATH, new OpenAIEmbeddings());
+//   } else {
+//     const text = fs.readFileSync(txtPath, 'utf8');
+//     const textSplitter = new RecursiveCharacterTextSplitter({ chunkSize: 1000 });
+//     const docs = await textSplitter.createDocuments([text]);
+//     vectorStore = await HNSWLib.fromDocuments(docs, new OpenAIEmbeddings());
+//     await vectorStore.save(VECTOR_STORE_PATH);
+//   }
 
-  const userprompt = `Create good and top ranking focus keyword for an article. Make sure to create a keyword only and you should not include any comments or short descriptions. It should be a keyword, not a slug and remove the quotations. It should also relate into real estate. ${currentKeywords}`;
+//   var currentKeywords;
+//   if (keywords) {
+//     currentKeywords = `Also, it is important to make it different from these given keywords ${keywords}`;
+//   } else { 
+//     currentKeywords = " ";
+//   }
 
-  console.log(userprompt);
+//   const userprompt = `Create good and top ranking focus keyword for an article. Make sure to create a keyword only and you should not include any comments or short descriptions. It should be a keyword, not a slug and remove the quotations. It should also relate into real estate. ${currentKeywords}`;
 
-  const chain = RetrievalQAChain.fromLLM(model, vectorStore.asRetriever());
+//   console.log(userprompt);
 
-  const res = await chain.call({ query: userprompt });
-  const output = res.text;
-  // console.log(output);
-  return output;
-};
+//   const chain = RetrievalQAChain.fromLLM(model, vectorStore.asRetriever());
+
+//   const res = await chain.call({ query: userprompt });
+//   const output = res.text;
+//   // console.log(output);
+//   return output;
+// };
 
 export const addHeadingContent = async (wordCount, articleContent, generalQuery, title, keyword, perspectiveOutput, toneOutput, targetOutput, authorOutput, customerObjectiveOutput) => {
 
@@ -936,7 +1236,7 @@ export const addHeadingContent = async (wordCount, articleContent, generalQuery,
       Do not add the word 'Subheading:' in the subheading titles.
       Strictly, do not add any H2 or H3 Conclusions.
       Strictly, you will not give any comments on the generated content, it must be content article body only.
-      Do not add any comments "html" at the start and end of the output.
+      Do not add any comments "html" or tags at the start and end of the output.
       Do not add the '${title}' itself.
       Make sure not to repeat previous H2 heading contents, it should be different and not related to each other.
       You will only add new H2 heading contents, and DO NOT REPEAT PREVIOUS ARTICLE HEADINGS AND ITS CONTENTS.

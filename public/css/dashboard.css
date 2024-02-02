@@ -1,0 +1,560 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
+
+* {
+    margin: 0;
+    box-sizing: border-box;
+    font-family: "Montserrat", sans-serif;
+    -webkit-transition: all .2s;
+    -moz-transition: all .2s;
+    -ms-transition: all .2s;
+    -o-transition: all .2s;
+    transition: all .2s;
+}
+
+a {
+    text-decoration: none;
+    color: #97BC34;
+}
+
+i {
+    font-size: 24px;
+}
+
+.settings-inner .textarea-title {
+    width: 100%;
+    border-radius: 6px 6px 0 0px;
+    height: 40px;
+}
+
+.bio-container .title-input {
+    width: 100%;
+}
+
+.settings-inner .bio-container {
+    flex-direction: column;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: 1fr 2fr 3fr;
+    height: 100vh;
+}
+
+.container .left-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 40px;
+}
+
+.container .left-section .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.container .left-section .logo img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+}
+
+.container .left-section .logo a {
+    font-weight: 800;
+    font-size: 20px;
+    color: #7eac0b;
+}
+
+.main-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.menu-btn {
+    width: 32px;
+    height: 32px;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background-color: #7eac0b;
+    border-radius: 6px;
+    cursor: pointer;
+    display: none;
+}
+
+.menu-btn .material-symbols-outlined {
+    font-size: 18px;
+    color: #fff;
+    width: 100%;
+}
+
+.container .left-section .sidebar {
+    display: flex;
+    flex-direction: column;
+    padding: 0 30px;
+    gap: 20px;
+}
+
+.sidebar .material-symbols-outlined {
+    color: #BDBDBD;
+}
+
+.container .left-section .sidebar .item {
+    display: flex;
+    gap: 20px;
+    cursor: pointer;
+}
+
+.container .left-section .sidebar .material-symbols-rounded {
+    color: #BDBDBD;
+    transition: all 0.3s ease;
+}
+
+.container .left-section .sidebar a {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    font-size: 14px;
+    color: #BDBDBD;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.container .left-section .sidebar .item#active a,
+.container .left-section .sidebar .item#active span {
+    color: #97BC34;
+}
+
+.container .left-section .sidebar .item a::after {
+    position: absolute;
+    content: "";
+    width: 0px;
+    height: 0px;
+    background-color: #97BC34;
+    right: -30px;
+    border-radius: 50%;
+    top: 0;
+    transform: translateY(116%);
+    transition: all 0.3s ease;
+}
+
+.container .left-section .sidebar .item#active a::after {
+    width: 8px;
+    height: 8px;
+}
+
+.container .left-section .pic img {
+    width: 160px;
+}
+
+.sidebar2{
+    height: 200px;
+}
+
+main {
+    border-right: 2px solid #F0F0F0;
+    border-left: 2px solid #F0F0F0;
+    padding: 40px;
+    overflow: auto;
+}
+
+main header {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+main header h5 {
+    font-size: 18px;
+    color: #97BC34;
+    font-weight: 400;
+}
+
+main .separator {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+main .separator .info {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+main .separator .info h3 {
+    font-size: 30px;
+}
+
+main .separator .info a {
+    margin-top: 6px;
+    font-size: 14px;
+}
+
+main .separator input {
+    border: none;
+    color: #97BC34;
+    font-weight: bold;
+    outline: none;
+    width: 100px;
+}
+
+.container .right-section {
+    padding: 40px 0;
+    display: flex;
+    align-items: center;
+}
+
+.container .right-section .top>.material-symbols-rounded {
+    color: #909090;
+    position: relative;
+    cursor: pointer;
+}
+
+.container .right-section .top>.material-symbols-rounded::after {
+    content: "";
+    width: 8px;
+    height: 8px;
+    position: absolute;
+    background: #EB5757;
+    border-radius: 50%;
+    right: 0;
+}
+
+.profile {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 60px;
+    border-top: 1px solid #F0F0F0;
+}
+
+.profile form {
+    display: flex;
+    justify-content: right;
+}
+
+.profile .material-symbols-rounded {
+    background-color: #fff;
+    border: none;
+    padding-right: 30px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.profile .left {
+    display: flex;
+    padding-left: 30px;
+}
+
+.profile .left img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    object-position: top;
+}
+
+.profile .left .user h5 {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.profile .left .user a {
+    font-size: 12px;
+}
+
+.container .right-section .separator#first {
+    margin-top: 8px;
+}
+
+.container .right-section .separator h4 {
+    font-weight: bold;
+    font-size: 24px;
+    margin-top: 20px;
+}
+
+.container .right-section .stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin-top: 20px;
+    gap: 20px;
+}
+
+.container .right-section .stats .item {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 190px;
+    padding: 25px;
+    background: #EBF6FF;
+    border-radius: 20px;
+}
+
+.container .right-section .stats .item .top {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+}
+
+.container .right-section .stats .top p {
+    font-size: 16px;
+    color: #8EA3B7;
+    font-weight: 500;
+}
+
+.container .right-section .stats .item .bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.container .right-section .stats .item .bottom .line {
+    width: 4px;
+    height: 30px;
+    background: #97BC34;
+    border-radius: 20px;
+}
+
+.container .right-section .stats .item .bottom h3 {
+    font-size: 40px;
+    color: #7eac0b;
+}
+
+.container .right-section .weekly {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 12px;
+    background: #F7F7F7;
+    border-radius: 16px;
+}
+
+.container .right-section .weekly .title {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.container .right-section .weekly .title .line {
+    width: 6px;
+    height: 50px;
+    background: #7eac0b;
+    border-radius: 20px;
+}
+
+.container .right-section .weekly h5 {
+    font-size: 16px;
+}
+
+.container .right-section .weekly .progress-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, #f7f7f7 79%, transparent 80% 100%),
+        conic-gradient(#CCC 25%, #7eac0b 0%);
+}
+
+.container .right-section .weekly .progress-bar::before {
+    content: "3/4";
+    font-size: 14px;
+    color: #000;
+}
+
+.meta-fields {
+    display: flex;
+    align-items: center;
+}
+
+.meta-fields .title-container {
+    width: 90%;
+}
+
+@media screen and (max-width: 1550px) {
+
+    .container {
+        grid-template-columns: 1fr 3fr 3fr;
+    }
+
+    .logo {
+        padding: 0 30px;
+    }
+
+}
+
+@media screen and (max-width: 1200px) {
+
+    .container {
+        grid-template-columns: 1fr 4fr 5fr;
+    }
+
+    .container .left-section .logo a,
+    .container .left-section .sidebar a,
+    .container .left-section .pic img {
+        display: none;
+    }
+
+    .profile {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .profile .left {
+        padding: 10px;
+    }
+
+    .profile form {
+        width: 100%;
+        border-top: 1px solid #F0F0F0;
+        justify-content: center;
+        padding: 10px;
+    }
+
+    .profile .material-symbols-rounded {
+        padding-right: 0;
+    }
+
+    main {
+        padding: 40px 20px;
+    }
+
+}
+
+@media screen and (max-width: 992px) {
+
+    .modal-container {
+        width: 80%;
+    }
+
+    .container {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .article-title,
+    .textarea-title, .login-title {
+        width: 100%;
+        border-radius: 6px 6px 0 0px;
+        height: 40px;
+    }
+
+    .sidebar2{
+        display: none;
+    }
+
+    .user-section,
+    .meta-fields {
+        height: 50%;
+    }
+
+    .title-input {
+        width: 100%;
+    }
+
+    .user-section form {
+        height: 86%;
+    }
+
+    .container .left-section {
+        position: fixed;
+        height: 60vh;
+        border-radius: 0 0 15px 15px;
+        background-color: #fff;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        top: -60vh;
+        z-index: 10;
+    }
+
+    .title-container, .login-container {
+        flex-direction: column;
+    }
+
+    .profile .left .user h5 {
+        display: none;
+    }
+
+    .container .left-section .logo {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .container .left-section .logo .menu-btn,
+    main header .menu-btn {
+        display: flex;
+    }
+
+    main h5 {
+        font-size: 16px;
+    }
+
+    main .separator .info {
+        gap: 15px;
+    }
+
+    main .separator .info h3,
+    .container .right-section .separator h4 {
+        font-size: 20px;
+    }
+
+}
+
+@media screen and (max-width: 768px) {
+
+    main {
+        padding: 40px;
+        height: 100%;
+        border: none;
+        overflow: visible;
+    }
+
+    main header {
+        height: auto;
+    }
+
+    .right-section {
+        height: 100vh;
+        padding: 40px 40px 40px 40px !important;
+        border-top: 1px solid #F0F0F0;
+    }
+
+    .chatbot .chatbox {
+        height: 70vh;
+    }
+
+    .user-section,
+    .meta-fields {
+        width: 100%;
+    }
+
+    #regForm .icon-button {
+        right: 12%;
+    }
+
+    .container {
+        grid-template-columns: 1fr;
+    }
+
+    .container .right-section>.top {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 100%;
+        padding: 20px;
+        z-index: -100;
+    }
+
+    .container .right-section .weekly {
+        margin-bottom: 20px;
+    }
+
+}

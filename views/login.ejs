@@ -1,0 +1,49 @@
+<% if (notice == "success") {%>
+    <p class="server-<%= notice %> notice" id="backend-notice">
+      <span><%= noticemsg %></span>
+      <button class="icon-button" onclick="document.getElementById('backend-notice').style.display='none'">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+          <path fill="none" d="M0 0h24v24H0z" />
+          <path fill="currentColor"
+            d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z" />
+        </svg>
+      </button>
+    </p>
+<% } %>
+<div class="sagpt-login-container">
+	<div class="screen">
+		<form class="screen__content" method="POST" action="/">
+			<input type="hidden" name="userAction" value="LoginGPT">
+            <img src="/images/sagpt-logo.png" alt="ShoreAgents Logo">
+            
+			<div class="sagpt-login">
+                <div class="pagetitle login__field">
+                    <h1>ShoreAgents GPT</h1>
+                </div>
+				<% if (errormsg != "none") { %>
+				<div class="errormsg login__field">
+                    <span><%= errormsg %></span>
+                </div>
+				<% } %>
+				<div class="login__field">
+					<span class="login__icon material-symbols-outlined">person</span>
+					<input type="text" name="identifier" class="login__input" id="loginUsername" placeholder="User name / Email" required>
+				</div>
+				<div class="login__field">
+					<span class="login__icon material-symbols-outlined">key</span>
+					<input type="password" name="password" class="login__input" id="loginPassword" placeholder="Password" required>
+				</div>
+				<button class="login__submit">
+					<span class="button__text">Log In Now</span>
+					<span class="button__icon material-symbols-outlined">login</span>
+				</button>				
+			</div>
+		</form>
+		<div class="screen__background">
+			<span class="screen__background__shape screen__background__shape4"></span>
+			<span class="screen__background__shape screen__background__shape3"></span>		
+			<span class="screen__background__shape screen__background__shape2"></span>
+			<span class="screen__background__shape screen__background__shape1"></span>
+		</div>		
+	</div>
+</div>

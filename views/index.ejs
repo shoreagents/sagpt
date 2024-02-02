@@ -1,4 +1,5 @@
 <div class="server-notice-container">
+
   <p class="error notice" id="server-notice">
     <span>There is an error on our server. Sorry for inconvenience. Please try again later.</span>
     <button class="icon-button" onclick="document.getElementById('server-notice').style.display='none'">
@@ -8,699 +9,833 @@
           d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z" />
       </svg>
     </button>
-  </p>  
+  </p>
+
+  <% if (notice !="none" ) {%>
+    <p class="server-<%= notice %> notice" id="backend-notice">
+      <span>
+        <%= noticemsg %>
+      </span>
+      <button class="icon-button" onclick="document.getElementById('backend-notice').style.display='none'">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+          <path fill="none" d="M0 0h24v24H0z" />
+          <path fill="currentColor"
+            d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z" />
+        </svg>
+      </button>
+    </p>
+    <% } %>
+
 </div>
-<div class="main-container">
-  <div class="container-gpt">
-    <div class="generator-outer">
-      <div class="chatbot tabs-section">
-        <div class="page">		
-          <div class="pcss3t pcss3t-effect-scale pcss3t-theme-1">
-            <input type="radio" name="pcss3t" checked  id="tab1"class="tab-content-first">
-            <label for="tab1"><span class="innertab">AI Assistant</span></label>
-            
-            <input type="radio" name="pcss3t" id="tab2" class="tab-content-2">
-            <label for="tab2"><span class="innertab">Settings</span></label>
-  
-            <input type="radio" name="pcss3t" id="tab3" class="tab-content-3">
-            <label for="tab3"><span class="innertab">Article Generator</span></label>
-            
-            <ul>
-              <li class="tab-content tab-content-first typography">
-                <ul class="chatbox">
-                  <li class="chat incoming">
-                    <span class="material-symbols-outlined">smart_toy</span>
-                    <div>Hey there! How can I help you?</div>
-                  </li>
-                </ul>
-                <div class="chat-input">
-                  <textarea placeholder="Ask questions here..." required></textarea>
-                  <span id="send-btn" class="material-symbols-rounded">send</span>
-                </div>
-              </li>
-              
-              <li class="tab-content tab-content-2 typography">
-                <ul class="details-inner">
-                  <div class="details-input">
-                    <div class="row">
-                      <div class="column">
-                        <div for="customerObjective" class="hide" id="outputCustomerObjective"></div>
-                        <label for="customerObjective">Customer Objectives</label>
-                        <select name="customerObjective" id="customerObjective">
-                          <option class="selected" value="Select Customer Objective" disabled selected>Select Customer Objective
-                          </option>
-                          <option value="None">None</option>
-                          <option value="Improve Efficiency">Improve Efficiency</option>
-                          <option value="Expand Service Hours">Expand Service Hours</option>
-                          <option value="Enhance Customer Support">Enhance Customer Support</option>
-                          <option value="Increase Focus on Core Activities">Increase Focus on Core Activities</option>
-                          <option value="Access Specialized Skills">Access Specialized Skills</option>
-                          <option value="Scalability">Scalability</option>
-                          <option value="Cost-Effective Growth">Cost-Effective Growth</option>
-                          <option value="Faster Turnaround Times">Faster Turnaround Times</option>
-                          <option value="Focus on Innovation">Focus on Innovation</option>
-                          <option value="Flexibility in Staffing">Flexibility in Staffing</option>
-                          <option value="Risk Mitigation">Risk Mitigation</option>
-                          <option value="Market Expansion">Market Expansion</option>
-                          <option value="Focus on Sales and Growth">Focus on Sales and Growth</option>
-                          <option value="Work-Life Balance">Work-Life Balance</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="column">
-                        <div for="tone" class="hide" id="outputTone"></div>
-                        <label for="tone" class="firstlabel">Tone/Personality</label>
-                        <select name="tone" id="tone">
-                          <option class="selected" value="Select Tone/Personality" disabled selected>Select Tone/Personality
-                          </option>
-                          <option value="None">Standard</option>
-                          <option value="Analytical">Analytical</option>
-                          <option value="Creative">Creative</option>
-                          <option value="Inspirational">Inspirational</option>
-                          <option value="Technical">Technical</option>
-                          <option value="Persuasive">Persuasive</option>
-                          <option value="Informal">Informal</option>
-                          <option value="Formal">Formal</option>
-                          <option value="Narrative">Narrative</option>
-                          <option value="Analyzing">Analyzing</option>
-                          <option value="Homorous">Homorous</option>
-                          <option value="Reflective">Reflective</option>
-                          <option value="Educational">Educational</option>
-                          <option value="Adventurous">Adventurous</option>
-                          <option value="Nurturing">Nurturing</option>
-                          <option value="Intellectual">Intellectual</option>
-                          <option value="Sentimental">Sentimental</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="column">
-                        <input type="hidden" name="targetOptions" id="targetOptions">
-                        <label for="target">Target Market</label>
-                        <select name="target" id="target" multiple>
-                          <option value="None" selected>None</option>
-                          <option value="Property Management" >Property Management</option>
-                          <option value="Real Estate Sales">Real Estate Sales</option>
-                          <option value="Property Development">Property Development</option>
-                          <option value="Construction Companies">Construction Companies</option>
-                          <option value="Home Builders">Home Builders</option>
-                          <option value="Conveyancing Companies">Conveyancing Companies</option>
-                          <option value="Mortgage Companies">Mortgage Companies</option>
-                          <option value="Real Estate Companies in the United States">Real Estate Companies in the United States
-                          </option>
-                        </select>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="column">
-                        <div for="author" class="hide" id="outputAuthor"></div>
-                        <label for="author">Author</label>
-                        <select name="author" id="author">
-                          <option class="selected" value="Select Author" disabled selected>Select Author</option>
-                          <option value="None">None</option>
-                          <option value="Stephen Atcheler">Stephen Atcheler</option>
-                          <option value="Kevin Macabanti">Kevin Macabanti</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="column">
-                        <div for="perspective" class="hide" id="outputPerspective"></div>
-                        <label for="perspective">Perspective</label>
-                        <select name="perspective" id="perspective">
-                          <option class="selected" value="Select Perspective" disabled selected>Select Perspective</option>
-                          <option value="None">None</option>
-                          <option value="First Person">First Person</option>
-                          <option value="Second Person">Second Person</option>
-                          <option value="Third Person Limited">Third Person Limited</option>
-                          <option value="Third Person Omniscient">Third Person Omniscient</option>
-                          <option value="Objective/Narrative">Objective/Narrative</option>
-                          <option value="Multiple Perspectives">Multiple Perspectives</option>
-                          <option value="Impersonal/Analytical">Impersonal/Analytical</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                </ul>
-              </li>
-  
-              <li class="tab-content tab-content-3 typography">
-                <div class="generator-options">
-                  <div class="manual-generator">Manual Article Generator</div>
-                  <div class="queried-generator">Instructive Article Generator</div>
-                  <div class="bulk-generator btn-disabled">Bulk Article Generator</div>
-                </div>
-  
-                <form id="regForm">
-                  <input type="hidden" name="userAction" id="userAction" value="ArticleGenerator">
-                  <div class="tab">
-                    <span class="material-symbols-outlined back">keyboard_return</span>
-                    <p class="instruction ins-1">* Article Title and Focus Keyword is required, make sure to add content.</p>
-                    <p class="instruction ins-2">* Make sure to click the check icon when editing a heading/subheading title.</p>
-                    <div class="title-container">
-                      <div class="article-title">Article Title</div>
-                      <div class="title-input"><input type="text" name="articletitle" class="generator-input" id="articletitle" placeholder="Enter your desired article title..." required></div>
-                    </div>
-                    <div class="focus-keyword">
-                      <span class="keyword-title">Focus Keyword: <input type="text" name="keyword" class="generator-input" id="keyword" placeholder="Enter your focus keyword..." required></span>
-                    </div>
-                    <div id="topics">
-                      <div class="inner-list" draggable="true">
-                        <div class="list" id="list1">
-                          <span class="list-title heading-list">
-                            <label for="heading1">
-                              <input type="checkbox" class="heading" id="heading1" name="heading" checked="checked" value="Article Heading 1">
-                              <span class="checkmark"></span>
-                            </label>
-                            <input type="text" class="heading-text" id="headingText1" value="Article Heading 1">
-                          </span>
-                          <span class="material-symbols-outlined topic-actions checkheading" style="display:none;">check</span>
-                          <span class="material-symbols-outlined topic-actions editheading">edit_square</span>
-                          <span class="material-symbols-outlined topic-actions addsubheadings">forms_add_on</span>
-                          <span class="material-symbols-outlined topic-actions addquery" onclick="document.getElementById('query1').style.display='flex'">page_info</span>
-                          <span class="material-symbols-outlined topic-actions deleteheading">delete</span>
-                          <span class="material-symbols-outlined">drag_indicator</span>
-                          <div class="query-modal" id="query1">
-                            <div class="modal-container">
-                              <header class="modal-container-header">
-                                <h1 class="modal-container-title">
-                                  Set Heading Query/Instruction
-                                </h1>
-                                <span class="icon-button" onclick="document.getElementById('query1').style.display='none'">
-                                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-                                    <path fill="none" d="M0 0h24v24H0z" />
-                                    <path fill="currentColor"
-                                      d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z" />
-                                  </svg>
-                                </span>
-                              </header>
-                              <section class="modal-container-body rtf">
-                                <textarea type="textarea" name="listquery" class="listquery" id="listquery1" cols="10" rows="10"></textarea>
-                              </section>
-                              <footer class="modal-container-footer">
-                                <span class="query-button is-primary" onclick="document.getElementById('query1').style.display='none'">Okay</span>
-                              </footer>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="add-list-container">
-                        <span class="list-title add-list"> Add Heading <span class="material-symbols-outlined">add</span></span>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="tab">
-                    <h3>Settings</h3>
-                    <ul class="details-inner">
-                      <div class="details-input">
-                        <div class="row">
-                          <div class="column">
-                            <div for="customerObjective" class="hide" id="outputCustomerObjective"></div>
-                            <label for="customerObjective">Customer Objectives</label>
-                            <select name="customerObjective" id="articleCO">
-                              <option class="selected" value="Select Customer Objective" disabled selected>Select Customer Objective
-                              </option>
-                              <option value="None">None</option>
-                              <option value="Improve Efficiency">Improve Efficiency</option>
-                              <option value="Expand Service Hours">Expand Service Hours</option>
-                              <option value="Enhance Customer Support">Enhance Customer Support</option>
-                              <option value="Increase Focus on Core Activities">Increase Focus on Core Activities</option>
-                              <option value="Access Specialized Skills">Access Specialized Skills</option>
-                              <option value="Scalability">Scalability</option>
-                              <option value="Cost-Effective Growth">Cost-Effective Growth</option>
-                              <option value="Faster Turnaround Times">Faster Turnaround Times</option>
-                              <option value="Focus on Innovation">Focus on Innovation</option>
-                              <option value="Flexibility in Staffing">Flexibility in Staffing</option>
-                              <option value="Risk Mitigation">Risk Mitigation</option>
-                              <option value="Market Expansion">Market Expansion</option>
-                              <option value="Focus on Sales and Growth">Focus on Sales and Growth</option>
-                              <option value="Work-Life Balance">Work-Life Balance</option>
-                            </select>
-                          </div>
-                        </div>
-                        <div class="row">
-                          <div class="column">
-                            <div for="tone" class="hide" id="outputTone"></div>
-                            <label for="tone" class="firstlabel">Tone/Personality</label>
-                            <select name="tone" id="articleTone">
-                              <option class="selected" value="Select Tone/Personality" disabled selected>Select Tone/Personality
-                              </option>
-                              <option value="None">Standard</option>
-                              <option value="Analytical">Analytical</option>
-                              <option value="Creative">Creative</option>
-                              <option value="Inspirational">Inspirational</option>
-                              <option value="Technical">Technical</option>
-                              <option value="Persuasive">Persuasive</option>
-                              <option value="Informal">Informal</option>
-                              <option value="Formal">Formal</option>
-                              <option value="Narrative">Narrative</option>
-                              <option value="Analyzing">Analyzing</option>
-                              <option value="Homorous">Homorous</option>
-                              <option value="Reflective">Reflective</option>
-                              <option value="Educational">Educational</option>
-                              <option value="Adventurous">Adventurous</option>
-                              <option value="Nurturing">Nurturing</option>
-                              <option value="Intellectual">Intellectual</option>
-                              <option value="Sentimental">Sentimental</option>
-                            </select>
-                          </div>
-                        </div>
-                        <div class="row">
-                          <div class="column">
-                            <input type="hidden" name="articleTargetOptions" id="articleTargetOptions" required>
-                            <label for="target">Target Market</label>
-                            <select name="target" id="articleTarget" multiple>
-                              <option value="None" selected>None</option>
-                              <option value="Property Management">Property Management</option>
-                              <option value="Real Estate Sales">Real Estate Sales</option>
-                              <option value="Property Development">Property Development</option>
-                              <option value="Construction Companies">Construction Companies</option>
-                              <option value="Home Builders">Home Builders</option>
-                              <option value="Conveyancing Companies">Conveyancing Companies</option>
-                              <option value="Mortgage Companies">Mortgage Companies</option>
-                              <option value="Real Estate Companies in the United States">Real Estate Companies in the United States
-                              </option>
-                            </select>
-                          </div>
-                        </div>
-                        <div class="row">
-                          <div class="column">
-                            <div for="author" class="hide" id="outputAuthor"></div>
-                            <label for="author">Author</label>
-                            <select name="author" id="articleAuthor">
-                              <option class="selected" value="Select Author" disabled selected>Select Author</option>
-                              <option value="None">None</option>
-                              <option value="Stephen Atcheler">Stephen Atcheler</option>
-                              <option value="Kevin Macabanti">Kevin Macabanti</option>
-                            </select>
-                          </div>
-                        </div>
-                        <div class="row">
-                          <div class="column">
-                            <input type="hidden" name="targetOptions" id="targetOptions" value="hello">
-                            <label for="perspective">Perspective</label>
-                            <select name="perspective" id="articlePerspective">
-                              <option class="selected" value="Select Perspective" disabled selected>Select Perspective</option>
-                              <option value="None">None</option>
-                              <option value="First Person">First Person</option>
-                              <option value="Second Person">Second Person</option>
-                              <option value="Third Person Limited">Third Person Limited</option>
-                              <option value="Third Person Omniscient">Third Person Omniscient</option>
-                              <option value="Objective/Narrative">Objective/Narrative</option>
-                              <option value="Multiple Perspectives">Multiple Perspectives</option>
-                              <option value="Impersonal/Analytical">Impersonal/Analytical</option>
-                            </select>
-                          </div>
-                        </div>
-                        <div class="row">
-                          <div class="column">
-                            <div class="button-container">
-                              <span onclick="document.getElementById('generalPrompt').style.display='flex'" class="editdata generalprompt">General Prompt</span>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="general-query-modal" id="generalPrompt">
-                          <div class="modal-container">
-                            <header class="modal-container-header">
-                              <h1 class="modal-container-title">
-                                Set General Query/Instruction
-                              </h1>
-                              <span class="icon-button" onclick="document.getElementById('generalPrompt').style.display='none'">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-                                  <path fill="none" d="M0 0h24v24H0z" />
-                                  <path fill="currentColor"
-                                    d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z" />
-                                </svg>
-                              </span>
-                            </header>
-                            <section class="modal-container-body rtf">
-                              <textarea type="textarea" name="generalquery" class="generalquery" id="generalquery" cols="10" rows="10"></textarea>
-                            </section>
-                            <footer class="modal-container-footer">
-                              <span class="query-button is-primary" onclick="document.getElementById('generalPrompt').style.display='none'">Okay</span>
-                            </footer>
-                          </div>
-                        </div>
-                      </div>
-                    </ul>
-                  </div>
-                  
-                  <div style="overflow:auto;">
-                    <div style="float:right;">
-                      <button type="button" id="prevBtn" class="button" onclick="nextPrev(-1)">Previous</button>
-                      <button type="button" id="nextBtn" class="button btn-disabled" onclick="nextPrev(1)">Next</button>
-                    </div>
-                  </div>
-                  
-                  <div style="text-align:center;margin-top:40px;">
-                    <span class="step"></span>
-                    <span class="step"></span>
-                  </div>
-                  
-                </form>
-  
-                <div id="queriedGenerator">
-                  <input type="hidden" name="userAction" id="userAction" value="QueriedGenerator">
-                  <div class="query-tab">
-                    <div class="options">
-                      <span class="material-symbols-outlined back">keyboard_return</span>
-                    </div>
-                    <div class="title-container">
-                      <div class="article-title">Focus Keyword</div>
-                      <div class="title-input"><input type="text" name="keyword" class="generator-input" id="queriedKeyword" placeholder="Enter your focus keyword..." required></div>
-                    </div>
-                    <div class="title-container">
-                      <div class="textarea-title">Article Overview</div>
-                      <div class="title-input"><textarea name="overview" class="generator-input" id="articleOverview" placeholder="Enter article overview and instructions..." rows="7" required></textarea></div>
-                    </div>
-                    <div class="title-container to-outer">
-                      <div class="textarea-title">Target Market</div>
-                      <div class="title-input">
-                        <div>
-                          <input type="hidden" name="articleTargetOptions" id="queryArticleTO" required>
-                          <select name="target" id="articleTargetBulk" multiple>
-                            <option value="None" selected>None</option>
-                            <option value="Property Management">Property Management</option>
-                            <option value="Real Estate Sales">Real Estate Sales</option>
-                            <option value="Property Development">Property Development</option>
-                            <option value="Construction Companies">Construction Companies</option>
-                            <option value="Home Builders">Home Builders</option>
-                            <option value="Conveyancing Companies">Conveyancing Companies</option>
-                            <option value="Mortgage Companies">Mortgage Companies</option>
-                            <option value="Real Estate Companies in the United States">Real Estate Companies in the United States
-                            </option>
-                          </select>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="title-container">
-                      <div class="textarea-title">Customer Objective</div>
-                      <div class="title-input">
-                        <div class="column">
-                          <div for="customerObjective" class="hide" id="queryOutputCO"></div>
-                          <select name="customerObjective" id="queryCO">
-                            <option class="selected" value="Select Customer Objective" disabled selected>Select Customer Objective
-                            </option>
-                            <option value="None">None</option>
-                            <option value="Improve Efficiency">Improve Efficiency</option>
-                            <option value="Expand Service Hours">Expand Service Hours</option>
-                            <option value="Enhance Customer Support">Enhance Customer Support</option>
-                            <option value="Increase Focus on Core Activities">Increase Focus on Core Activities</option>
-                            <option value="Access Specialized Skills">Access Specialized Skills</option>
-                            <option value="Scalability">Scalability</option>
-                            <option value="Cost-Effective Growth">Cost-Effective Growth</option>
-                            <option value="Faster Turnaround Times">Faster Turnaround Times</option>
-                            <option value="Focus on Innovation">Focus on Innovation</option>
-                            <option value="Flexibility in Staffing">Flexibility in Staffing</option>
-                            <option value="Risk Mitigation">Risk Mitigation</option>
-                            <option value="Market Expansion">Market Expansion</option>
-                            <option value="Focus on Sales and Growth">Focus on Sales and Growth</option>
-                            <option value="Work-Life Balance">Work-Life Balance</option>
-                          </select>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="title-container">
-                      <div class="textarea-title">Tone / Personality</div>
-                      <div class="title-input">
-                        <div class="column">
-                          <div for="tone" class="hide" id="queryOutputTone"></div>
-                          <select name="tone" id="queryArticleTone">
-                            <option class="selected" value="Select Tone/Personality" disabled selected>Select Tone/Personality
-                            </option>
-                            <option value="None">Standard</option>
-                            <option value="Analytical">Analytical</option>
-                            <option value="Creative">Creative</option>
-                            <option value="Inspirational">Inspirational</option>
-                            <option value="Technical">Technical</option>
-                            <option value="Persuasive">Persuasive</option>
-                            <option value="Informal">Informal</option>
-                            <option value="Formal">Formal</option>
-                            <option value="Narrative">Narrative</option>
-                            <option value="Analyzing">Analyzing</option>
-                            <option value="Homorous">Homorous</option>
-                            <option value="Reflective">Reflective</option>
-                            <option value="Educational">Educational</option>
-                            <option value="Adventurous">Adventurous</option>
-                            <option value="Nurturing">Nurturing</option>
-                            <option value="Intellectual">Intellectual</option>
-                            <option value="Sentimental">Sentimental</option>
-                          </select>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="title-container">
-                      <div class="textarea-title">Author</div>
-                      <div class="title-input">
-                        <div class="column">
-                          <div for="author" class="hide" id="queryOutputAuthor"></div>
-                          <select name="author" id="queryArticleAuthor">
-                            <option class="selected" value="Select Author" disabled selected>Select Author</option>
-                            <option value="None">None</option>
-                            <option value="Stephen Atcheler">Stephen Atcheler</option>
-                            <option value="Kevin Macabanti">Kevin Macabanti</option>
-                          </select>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="title-container">
-                      <div class="textarea-title">Perspective</div>
-                      <div class="title-input">
-                        <div class="column">
-                          <div for="perspective" class="hide" id="queryOutputPerspective"></div>
-                          <select name="perspective" id="queryArticlePerspective">
-                            <option class="selected" value="Select Perspective" disabled selected>Select Perspective</option>
-                            <option value="None">None</option>
-                            <option value="First Person">First Person</option>
-                            <option value="Second Person">Second Person</option>
-                            <option value="Third Person Limited">Third Person Limited</option>
-                            <option value="Third Person Omniscient">Third Person Omniscient</option>
-                            <option value="Objective/Narrative">Objective/Narrative</option>
-                            <option value="Multiple Perspectives">Multiple Perspectives</option>
-                            <option value="Impersonal/Analytical">Impersonal/Analytical</option>
-                          </select>
-                        </div>
-                      </div>
-                      </div>
-                    </div>
-                  <div>
-                    <div style="float:right;">
-                      <button type="button" id="nextBtnQuery" class="button btn-disabled" onclick="nextPrevQuery()">Generate</button>
-                    </div>
-                  </div>
-                </div>
-  
-                <div id="bulkGenerator">
-                  <div class="bulk-tab">
-                    <div class="bulk-options">
-                      <span class="material-symbols-outlined back">keyboard_return</span>
-                      <span class="material-symbols-outlined generate-keywords">edit_note</span>
-                    </div>
-                    <div class="title-container">
-                      <div class="article-title">Keyword 1</div>
-                      <div class="title-input"><input type="text" name="focuskeyword1" class="generator-input focuskeyword" id="focuskeyword1" placeholder="Enter your desired focus keyword..." required></div>
-                    </div>
-                    <div class="title-container">
-                      <div class="article-title">Keyword 2</div>
-                      <div class="title-input"><input type="text" name="focuskeyword2" class="generator-input focuskeyword" id="focuskeyword2" placeholder="Enter your desired focus keyword..." required></div>
-                    </div>
-                    <div class="title-container">
-                      <div class="article-title">Keyword 3</div>
-                      <div class="title-input"><input type="text" name="focuskeyword3" class="generator-input focuskeyword" id="focuskeyword3" placeholder="Enter your desired focus keyword..." required></div>
-                    </div>
-                    <div class="title-container">
-                      <div class="article-title">Keyword 4</div>
-                      <div class="title-input"><input type="text" name="focuskeyword4" class="generator-input focuskeyword" id="focuskeyword4" placeholder="Enter your desired focus keyword..." required></div>
-                    </div>
-                    <div class="title-container">
-                      <div class="article-title">Keyword 5</div>
-                      <div class="title-input"><input type="text" name="focuskeyword5" class="generator-input focuskeyword" id="focuskeyword5" placeholder="Enter your desired focus keyword..." required></div>
-                    </div>
-                    <div class="title-container">
-                      <div class="article-title">Keyword 6</div>
-                      <div class="title-input"><input type="text" name="focuskeyword6" class="generator-input focuskeyword" id="focuskeyword6" placeholder="Enter your desired focus keyword..." required></div>
-                    </div>
-                    <div class="title-container">
-                      <div class="article-title">Keyword 7</div>
-                      <div class="title-input"><input type="text" name="focuskeyword7" class="generator-input focuskeyword" id="focuskeyword7" placeholder="Enter your desired focus keyword..." required></div>
-                    </div>
-                    <div class="title-container">
-                      <div class="article-title">Keyword 8</div>
-                      <div class="title-input"><input type="text" name="focuskeyword8" class="generator-input focuskeyword" id="focuskeyword8" placeholder="Enter your desired focus keyword..." required></div>
-                    </div>
-                    <div class="title-container">
-                      <div class="article-title">Keyword 9</div>
-                      <div class="title-input"><input type="text" name="focuskeyword9" class="generator-input focuskeyword" id="focuskeyword9" placeholder="Enter your desired focus keyword..." required></div>
-                    </div>
-                    <div class="title-container">
-                      <div class="article-title">Keyword 10</div>
-                      <div class="title-input"><input type="text" name="focuskeyword10" class="generator-input focuskeyword" id="focuskeyword10" placeholder="Enter your desired focus keyword..." required></div>
-                    </div>
-                  </div>
-  
-                  <div class="bulk-tab">
-                    <h3>Settings</h3>
-                    <ul class="details-inner">
-                      <div class="details-input">
-                        <div class="row">
-                          <div class="column">
-                            <div for="customerObjective" class="hide" id="bulkOutputCO"></div>
-                            <label for="customerObjective">Customer Objectives</label>
-                            <select name="customerObjective" id="bulkCO">
-                              <option class="selected" value="Select Customer Objective" disabled selected>Select Customer Objective
-                              </option>
-                              <option value="None">None</option>
-                              <option value="Improve Efficiency">Improve Efficiency</option>
-                              <option value="Expand Service Hours">Expand Service Hours</option>
-                              <option value="Enhance Customer Support">Enhance Customer Support</option>
-                              <option value="Increase Focus on Core Activities">Increase Focus on Core Activities</option>
-                              <option value="Access Specialized Skills">Access Specialized Skills</option>
-                              <option value="Scalability">Scalability</option>
-                              <option value="Cost-Effective Growth">Cost-Effective Growth</option>
-                              <option value="Faster Turnaround Times">Faster Turnaround Times</option>
-                              <option value="Focus on Innovation">Focus on Innovation</option>
-                              <option value="Flexibility in Staffing">Flexibility in Staffing</option>
-                              <option value="Risk Mitigation">Risk Mitigation</option>
-                              <option value="Market Expansion">Market Expansion</option>
-                              <option value="Focus on Sales and Growth">Focus on Sales and Growth</option>
-                              <option value="Work-Life Balance">Work-Life Balance</option>
-                            </select>
-                          </div>
-                        </div>
-                        <div class="row">
-                          <div class="column">
-                            <div for="tone" class="hide" id="bulkOutputTone"></div>
-                            <label for="tone" class="firstlabel">Tone/Personality</label>
-                            <select name="tone" id="bulkArticleTone">
-                              <option class="selected" value="Select Tone/Personality" disabled selected>Select Tone/Personality
-                              </option>
-                              <option value="None">Standard</option>
-                              <option value="Analytical">Analytical</option>
-                              <option value="Creative">Creative</option>
-                              <option value="Inspirational">Inspirational</option>
-                              <option value="Technical">Technical</option>
-                              <option value="Persuasive">Persuasive</option>
-                              <option value="Informal">Informal</option>
-                              <option value="Formal">Formal</option>
-                              <option value="Narrative">Narrative</option>
-                              <option value="Analyzing">Analyzing</option>
-                              <option value="Homorous">Homorous</option>
-                              <option value="Reflective">Reflective</option>
-                              <option value="Educational">Educational</option>
-                              <option value="Adventurous">Adventurous</option>
-                              <option value="Nurturing">Nurturing</option>
-                              <option value="Intellectual">Intellectual</option>
-                              <option value="Sentimental">Sentimental</option>
-                            </select>
-                          </div>
-                        </div>
-                        <div class="row">
-                          <div class="column">
-                            <input type="hidden" name="articleTargetOptions" id="bulkArticleTO" required>
-                            <label for="target">Target Market</label>
-                            <select name="target" id="articleTargetBulk" multiple>
-                              <option value="None" selected>None</option>
-                              <option value="Property Management">Property Management</option>
-                              <option value="Real Estate Sales">Real Estate Sales</option>
-                              <option value="Property Development">Property Development</option>
-                              <option value="Construction Companies">Construction Companies</option>
-                              <option value="Home Builders">Home Builders</option>
-                              <option value="Conveyancing Companies">Conveyancing Companies</option>
-                              <option value="Mortgage Companies">Mortgage Companies</option>
-                              <option value="Real Estate Companies in the United States">Real Estate Companies in the United States
-                              </option>
-                            </select>
-                          </div>
-                        </div>
-                        <div class="row">
-                          <div class="column">
-                            <div for="author" class="hide" id="bulkOutputAuthor"></div>
-                            <label for="author">Author</label>
-                            <select name="author" id="bulkArticleAuthor">
-                              <option class="selected" value="Select Author" disabled selected>Select Author</option>
-                              <option value="None">None</option>
-                              <option value="Stephen Atcheler">Stephen Atcheler</option>
-                              <option value="Kevin Macabanti">Kevin Macabanti</option>
-                            </select>
-                          </div>
-                        </div>
-                        <div class="row">
-                          <div class="column">
-                            <div for="perspective" class="hide" id="bulkOutputPerspective"></div>
-                            <label for="perspective">Perspective</label>
-                            <select name="perspective" id="bulkArticlePerspective">
-                              <option class="selected" value="Select Perspective" disabled selected>Select Perspective</option>
-                              <option value="None">None</option>
-                              <option value="First Person">First Person</option>
-                              <option value="Second Person">Second Person</option>
-                              <option value="Third Person Limited">Third Person Limited</option>
-                              <option value="Third Person Omniscient">Third Person Omniscient</option>
-                              <option value="Objective/Narrative">Objective/Narrative</option>
-                              <option value="Multiple Perspectives">Multiple Perspectives</option>
-                              <option value="Impersonal/Analytical">Impersonal/Analytical</option>
-                            </select>
-                          </div>
-                        </div>
-                        <div class="row">
-                          <div class="column">
-                            <div class="button-container">
-                              <span onclick="document.getElementById('bulkGeneralPrompt').style.display='flex'" class="editdata generalprompt">General Prompt</span>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="general-query-modal" id="bulkGeneralPrompt">
-                          <div class="modal-container">
-                            <header class="modal-container-header">
-                              <h1 class="modal-container-title">
-                                Set General Query/Instruction
-                              </h1>
-                              <span class="icon-button" onclick="document.getElementById('bulkGeneralPrompt').style.display='none'">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-                                  <path fill="none" d="M0 0h24v24H0z"/>
-                                  <path fill="currentColor"
-                                    d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z" />
-                                </svg>
-                              </span>
-                            </header>
-                            <section class="modal-container-body rtf">
-                              <textarea type="textarea" name="generalquery" class="generalquery" id="bulkGeneralQuery" cols="10" rows="10"></textarea>
-                            </section>
-                            <footer class="modal-container-footer">
-                              <span class="query-button is-primary" onclick="document.getElementById('bulkGeneralPrompt').style.display='none'">Okay</span>
-                            </footer>
-                          </div>
-                        </div>
-                      </div>
-                    </ul>
-                  </div>
-  
-                  <div>
-                    <div style="float:right;">
-                      <button type="button" id="prevBtnBulk" class="button" onclick="nextPrevBulk(-1)">Previous</button>
-                      <button type="button" id="nextBtnBulk" class="button btn-disabled" onclick="nextPrevBulk(1)">Next</button>
-                    </div>
-                  </div>
-                  
-                  <div style="text-align:center;margin-top:40px;">
-                    <span class="bulk-step"></span>
-                    <span class="bulk-step"></span>
-                  </div>
-  
-                </div>
-              </li>
-  
-            </ul>
+
+<div class="container">
+
+  <aside class="left-section">
+    <div class="logo">
+      <button class="menu-btn" id="menu-close">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+      <img src="/images/sagpt-logo.png">
+      <a>ShoreAgents GPT</a>
+    </div>
+
+    <div class="sidebar">
+      <div class="item ai-assistant" id="active">
+        <span class="material-symbols-outlined">chat</span>
+        <a>AI Assistant</a>
+      </div>
+      <div class="item manual-article-generator">
+        <span class="material-symbols-outlined">edit_note</span>
+        <a>Manual Article Generator</a>
+      </div>
+      <div class="item instructive-article-generator">
+        <span class="material-symbols-outlined">article_shortcut</span>
+        <a>Instructive Article Generator</a>
+      </div>
+      <div class="item settings">
+        <span class="material-symbols-outlined">settings</span>
+        <a>Settings</a>
+      </div>
+    </div>
+
+    <div class="sidebar2"></div>
+
+    <!-- <div class="pic">
+          <img src="assets/pro.png">
+      </div> -->
+
+    <div class="profile">
+      <div class="left">
+        <div class="user">
+          <h5>
+            <%= firstname %>
+              <%= lastname %>
+          </h5>
+          <a>
+            <%= role %>
+          </a>
+        </div>
+      </div>
+      <form action="/logout?_method=DELETE" method="POST">
+        <input type="hidden" name="username" value="<%= username %>">
+        <button type="submit" class="material-symbols-rounded">logout</button>
+      </form>
+    </div>
+
+  </aside>
+
+  <main>
+    <header>
+      <div class="main-header">
+        <button class="menu-btn" id="menu-open">
+          <span class="material-symbols-outlined">menu</span>
+        </button>
+        <h5>Hello <b><%= firstname %></b>, welcome back!</h5>
+      </div>
+
+      <div class="chatbot tabs-section tab-content-1">
+        <div class="tab-content typography">
+          <ul class="chatbox">
+            <li class="chat incoming">
+              <span class="material-symbols-outlined">smart_toy</span>
+              <div>Hey there! How can I help you?</div>
+            </li>
+          </ul>
+          <div class="chat-input">
+            <textarea placeholder="Ask questions here..." required></textarea>
+            <span id="send-btn" class="material-symbols-rounded">send</span>
           </div>
         </div>
       </div>
-    </div>
+
+      <div class="tab-content tabs-section tab-content-settings typography">
+        <div class="settings-item ai-assistant-settings">
+          <span class="material-symbols-outlined">chat</span>
+          <span>AI Assistant Settings</span>
+        </div>
+        <div class="settings-item profile-settings">
+          <span class="material-symbols-outlined">manage_accounts</span>
+          <span>Profile Details</span>
+        </div>
+        <div class="settings-item change-password">
+          <span class="material-symbols-outlined">key</span>
+          <span>Change Password</span>
+        </div>
+
+        <% if (role=="Admin" ) { %>
+          <button class="settings-item download-logs"
+            onclick="document.getElementById('enterPassword').style.display='flex'">
+            <span class="material-symbols-outlined">file_download</span>Download Logs</button>
+          <style>
+            .download-logs {
+              border: none;
+              font-size: 16px;
+            }
+          </style>
+          <div class="enterPassword" id="enterPassword">
+            <article class="modal-container login-modal">
+              <div class="modal-container-header">
+                <h1 class="modal-container-title">
+                  Please enter your password
+                </h1>
+                <button class="icon-button" onclick="document.getElementById('enterPassword').style.display='none'">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                    <path fill="none" d="M0 0h24v24H0z" />
+                    <path fill="currentColor"
+                      d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z" />
+                  </svg>
+                </button>
+              </div>
+              <form method="POST" action="/">
+                <section class="modal-container-body login-body rtf">
+                  <input type="hidden" name="userAction" value="DownloadLogs">
+                  <div class="login-container">
+                    <div class="login-title">Password</div>
+                    <div class="title-input">
+                      <input type="password" class="login-input" id="confirmPassword" name="password"
+                        placeholder="Enter password..." required>
+                    </div>
+                  </div>
+                </section>
+                <footer class="modal-container-footer">
+                  <button type="submit" class="button is-primary enterPasswordBtn">Submit</button>
+                </footer>
+              </form>
+            </article>
+          </div>
+          <% } %>
+
+            <ul class="settings-inner details-inner">
+              <span class="material-symbols-outlined back">keyboard_return</span>
+              <h2>AI Assistant Settings</h2>
+              <div class="title-container">
+                <div class="article-title">Customer Objective</div>
+                <div class="title-input">
+                  <div class="column">
+                    <div for="customerObjective" class="hide" id="outputCustomerObjective"></div>
+                    <select name="customerObjective" id="customerObjective">
+                      <option class="selected" value="Select Customer Objective" disabled selected>Select Customer
+                        Objective
+                      </option>
+                      <option value="None">None</option>
+                      <% customerObjectives.forEach(customerObjective=> {%>
+                        <option value="<%= customerObjective.attributes.objectivename %>">
+                          <%= customerObjective.attributes.objectivename %>
+                        </option>
+                        <% }); %>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="title-container">
+                <div class="article-title">Tone / Personality</div>
+                <div class="title-input">
+                  <div class="column">
+                    <div for="tone" class="hide" id="outputTone"></div>
+                    <select name="tone" id="tone">
+                      <option class="selected" value="Select Tone/Personality" disabled selected>Select Tone/Personality
+                      </option>
+                      <option value="None">Standard</option>
+                      <% tones.forEach(tone=> {%>
+                        <option value="<%= tone.attributes.tonename %>">
+                          <%= tone.attributes.tonename %>
+                        </option>
+                        <% }); %>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="title-container">
+                <div class="article-title">Author</div>
+                <div class="title-input">
+                  <div class="column">
+                    <div for="author" class="hide" id="outputAuthor"></div>
+                    <select name="author" id="author">
+                      <option class="selected" value="Select Author" disabled selected>Select Author</option>
+                      <option value="None">None</option>
+                      <% authors.forEach(author=> {%>
+                        <% if (author.username !="sadev" ) { %>
+                          <option value="<%= author.firstname %> <%= author.lastname %>">
+                            <%= author.firstname %>
+                              <%= author.lastname %>
+                          </option>
+                          <% } %>
+                            <% }); %>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="title-container">
+                <div class="article-title">Perspective</div>
+                <div class="title-input">
+                  <div class="column">
+                    <div for="perspective" class="hide" id="outputPerspective"></div>
+                    <select name="perspective" id="perspective">
+                      <option class="selected" value="Select Perspective" disabled selected>Select Perspective</option>
+                      <option value="None">None</option>
+                      <% perspectives.forEach(perspective=> {%>
+                        <option value="<%= perspective.attributes.perspectivename %>">
+                          <%= perspective.attributes.perspectivename %>
+                        </option>
+                        <% }); %>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="title-container to-outer">
+                <div class="article-title">Target Market</div>
+                <div class="title-input">
+                  <div>
+                    <input type="hidden" name="targetOptions" id="targetOptions">
+                    <select name="target" id="target" multiple>
+                      <option value="None" selected>None</option>
+                      <% targetMarkets.forEach(targetMarket=> {%>
+                        <option value="<%= targetMarket.attributes.tonename %>">
+                          <%= targetMarket.attributes.targetname %>
+                        </option>
+                        <% }); %>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </ul>
+            <form class="settings-inner profile-inner" action="/" method="POST">
+              <input type="hidden" name="userAction" value="UpdateProfile">
+              <span class="material-symbols-outlined back">keyboard_return</span>
+              <h2>Profile Details</h2>
+              <span class="profile-notice">*username & email can't be changed</span>
+              <div class="title-container">
+                <div class="article-title">Username</div>
+                <div class="title-input"><input type="text" name="username" class="profile-input" id="username"
+                    value="<%= username %>" disabled></div>
+              </div>
+              <div class="title-container">
+                <div class="article-title">Email</div>
+                <div class="title-input"><input type="text" name="email" class="profile-input" id="email"
+                    value="<%= email %>" disabled></div>
+              </div>
+              <div class="title-container">
+                <div class="article-title">First Name</div>
+                <div class="title-input"><input type="text" name="firstname" class="profile-input" id="firstname"
+                    value="<%= firstname %>" required></div>
+              </div>
+              <div class="title-container">
+                <div class="article-title">Last Name</div>
+                <div class="title-input"><input type="text" name="lastname" class="profile-input" id="lastname"
+                    value="<%= lastname %>" required></div>
+              </div>
+              <div class="title-container bio-container">
+                <div class="textarea-title">Bio</div>
+                <div class="title-input"><textarea name="bio" class="profile-input" id="bio" rows="10"
+                    placeholder="Enter your bio here..."><%= bio %></textarea></div>
+              </div>
+              <div class="savechanges">
+                <button type="submit" class="button save material-symbols-rounded">save</button>
+              </div>
+            </form>
+            <form class="settings-inner change-password-inner" action="/" method="POST">
+              <input type="hidden" name="userAction" value="ChangePassword">
+              <span class="material-symbols-outlined back">keyboard_return</span>
+              <h2>Change Password</h2>
+              <div class="title-container">
+                <div class="article-title">Current Password</div>
+                <div class="title-input"><input type="password" name="password" class="profile-input" id="password"
+                    placeholder="Enter your current password..." minlength="6" required></div>
+              </div>
+              <div class="title-container">
+                <div class="article-title">New Password</div>
+                <div class="title-input"><input type="password" name="newpassword" class="profile-input"
+                    id="newpassword" placeholder="Enter your new password..." minlength="6" required></div>
+              </div>
+              <div class="title-container">
+                <div class="article-title">Confirm Password</div>
+                <div class="title-input"><input type="password" name="confirmpassword" class="profile-input"
+                    id="confirmpassword" placeholder="Confirm your new password..." minlength="6" required></div>
+              </div>
+              <div class="savechanges">
+                <button type="submit" class="button change material-symbols-rounded">save</button>
+              </div>
+            </form>
+      </div>
+
+      <form class="tabs-section tab-content-2" id="regForm">
+        <input type="hidden" name="userAction" id="userAction" value="ArticleGenerator">
+        <div class="tab">
+          <p class="instruction ins-1">* Article Title and Focus Keyword is required, make sure to add content.</p>
+          <p class="instruction ins-2">* Make sure to click the check icon after editing a heading/subheading title.
+          </p>
+          <div class="title-container">
+            <div class="article-title">Article Title</div>
+            <div class="title-input"><input type="text" name="articletitle" class="generator-input" id="articletitle"
+                placeholder="Enter your desired article title..." required></div>
+          </div>
+          <div class="focus-keyword">
+            <span class="keyword-title">Focus Keyword: <input type="text" name="keyword" class="generator-input"
+                id="keyword" placeholder="Enter your focus keyword..." required></span>
+          </div>
+          <div id="topics">
+            <div class="inner-list" draggable="true">
+              <div class="list" id="list1">
+                <span class="list-title heading-list">
+                  <label for="heading1">
+                    <input type="checkbox" class="heading" id="heading1" name="heading" checked="checked"
+                      value="Article Heading 1">
+                    <span class="checkmark"></span>
+                  </label>
+                  <input type="text" class="heading-text" id="headingText1" value="Article Heading 1">
+                </span>
+                <span class="material-symbols-outlined topic-actions checkheading" style="display:none;">check</span>
+                <span class="material-symbols-outlined topic-actions editheading">edit_square</span>
+                <span class="material-symbols-outlined topic-actions addsubheadings">forms_add_on</span>
+                <span class="material-symbols-outlined topic-actions addquery"
+                  onclick="document.getElementById('query1').style.display='flex'">page_info</span>
+                <span class="material-symbols-outlined topic-actions deleteheading">delete</span>
+                <span class="material-symbols-outlined">drag_indicator</span>
+                <div class="query-modal" id="query1">
+                  <div class="modal-container">
+                    <div class="modal-container-header">
+                      <h1 class="modal-container-title">
+                        Set Heading Query/Instruction
+                      </h1>
+                      <span class="icon-button" onclick="document.getElementById('query1').style.display='none'">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                          <path fill="none" d="M0 0h24v24H0z" />
+                          <path fill="currentColor"
+                            d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z" />
+                        </svg>
+                      </span>
+                    </div>
+                    <section class="modal-container-body rtf">
+                      <textarea type="textarea" name="listquery" class="listquery" id="listquery1" cols="10"
+                        rows="10"></textarea>
+                    </section>
+                    <footer class="modal-container-footer">
+                      <span class="query-button is-primary"
+                        onclick="document.getElementById('query1').style.display='none'">Okay</span>
+                    </footer>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="add-list-container">
+              <span class="list-title add-list"> Add Heading <span class="material-symbols-outlined">add</span></span>
+            </div>
+          </div>
+        </div>
+        <div class="tab regform-settings">
+          <div class="title-container">
+            <div class="article-title">Customer Objective</div>
+            <div class="title-input">
+              <div class="column">
+                <div for="customerObjective" class="hide" id="articleCustomerObjective"></div>
+                <select name="customerObjective" id="articleCO">
+                  <option class="selected" value="Select Customer Objective" disabled selected>Select Customer
+                    Objective
+                  </option>
+                  <option value="None">None</option>
+                  <% customerObjectives.forEach(customerObjective=> {%>
+                    <option value="<%= customerObjective.attributes.objectivename %>">
+                      <%= customerObjective.attributes.objectivename %>
+                    </option>
+                    <% }); %>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="title-container">
+            <div class="article-title">Tone / Personality</div>
+            <div class="title-input">
+              <div class="column">
+                <div class="hide" id="articleTonePersonality"></div>
+                <select name="tone" id="articleTone">
+                  <option class="selected" value="Select Tone/Personality" disabled selected>Select Tone/Personality
+                  </option>
+                  <option value="None">Standard</option>
+                  <% tones.forEach(tone=> {%>
+                    <option value="<%= tone.attributes.tonename %>">
+                      <%= tone.attributes.tonename %>
+                    </option>
+                    <% }); %>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="title-container">
+            <div class="article-title">Author</div>
+            <div class="title-input">
+              <div class="column">
+                <div class="hide" id="articleOutputAuthor"></div>
+                <select name="author" id="articleAuthor">
+                  <option class="selected" value="Select Author" disabled selected>Select Author</option>
+                  <option value="None">None</option>
+                  <% authors.forEach(author=> {%>
+                    <% if (author.username !="sadev" ) { %>
+                      <option value="<%= author.firstname %> <%= author.lastname %>">
+                        <%= author.firstname %>
+                          <%= author.lastname %>
+                      </option>
+                      <% } %>
+                        <% }); %>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="title-container">
+            <div class="article-title">Perspective</div>
+            <div class="title-input">
+              <div class="column">
+                <div class="hide" id="articleOutputPerspective"></div>
+                <select name="perspective" id="articlePerspective">
+                  <option class="selected" value="Select Perspective" disabled selected>Select Perspective</option>
+                  <option value="None">None</option>
+                  <% perspectives.forEach(perspective=> {%>
+                    <option value="<%= perspective.attributes.perspectivename %>">
+                      <%= perspective.attributes.perspectivename %>
+                    </option>
+                    <% }); %>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="title-container">
+            <div class="article-title">Target Market</div>
+            <div class="title-input">
+              <div class="column">
+                <input type="hidden" name="articleTargetOptions" id="articleTargetOptions" required>
+                <select name="target" id="articleTarget" multiple>
+                  <option value="None" selected>None</option>
+                  <% targetMarkets.forEach(targetMarket=> {%>
+                    <option value="<%= targetMarket.attributes.tonename %>">
+                      <%= targetMarket.attributes.targetname %>
+                    </option>
+                    <% }); %>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="button-container">
+            <span onclick="document.getElementById('generalPrompt').style.display='flex'"
+              class="editdata generalprompt">General Prompt</span>
+          </div>
+
+          <div class="general-query-modal" id="generalPrompt">
+            <div class="modal-container">
+              <div class="modal-container-header">
+                <h1 class="modal-container-title">
+                  Set General Query/Instruction
+                </h1>
+                <span class="icon-button" onclick="document.getElementById('generalPrompt').style.display='none'">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                    <path fill="none" d="M0 0h24v24H0z" />
+                    <path fill="currentColor"
+                      d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z" />
+                  </svg>
+                </span>
+              </div>
+              <section class="modal-container-body rtf">
+                <textarea type="textarea" name="generalquery" class="generalquery" id="generalquery" cols="10"
+                  rows="10"></textarea>
+              </section>
+              <footer class="modal-container-footer">
+                <span class="query-button is-primary"
+                  onclick="document.getElementById('generalPrompt').style.display='none'">Okay</span>
+              </footer>
+            </div>
+          </div>
+        </div>
+
+        <div style="overflow:auto;">
+          <div style="float:right; margin-top: 15px;">
+            <button type="button" id="prevBtn" class="button" onclick="nextPrev(-1)">Previous</button>
+            <button type="button" id="nextBtn" class="button btn-disabled" onclick="nextPrev(1)">Next</button>
+          </div>
+        </div>
+
+        <div style="text-align:center;margin:30px 0;">
+          <span class="step"></span>
+          <span class="step"></span>
+        </div>
+
+      </form>
+
+      <div class="tabs-section tab-content-3" id="queriedGenerator">
+        <input type="hidden" name="userAction" id="userAction" value="QueriedGenerator">
+        <div class="query-tab">
+          <div class="title-container">
+            <div class="article-title">Focus Keyword</div>
+            <div class="title-input"><input type="text" name="keyword" class="generator-input" id="queriedKeyword"
+                placeholder="Enter your focus keyword..." required></div>
+          </div>
+          <div class="title-container">
+            <div class="textarea-title">Article Overview</div>
+            <div class="title-input"><textarea name="overview" class="generator-input" id="articleOverview"
+                placeholder="Enter article overview and instructions..." rows="7" required></textarea></div>
+          </div>
+          <div class="title-container to-outer">
+            <div class="article-title">Target Market</div>
+            <div class="title-input">
+              <div>
+                <input type="hidden" name="articleTargetOptions" id="queryArticleTO" required>
+                <select name="target" id="articleTargetBulk" multiple>
+                  <option value="None" selected>None</option>
+                  <% targetMarkets.forEach(targetMarket=> {%>
+                    <option value="<%= targetMarket.attributes.tonename %>">
+                      <%= targetMarket.attributes.targetname %>
+                    </option>
+                    <% }); %>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="title-container">
+            <div class="article-title">Customer Objective</div>
+            <div class="title-input">
+              <div class="column">
+                <div for="customerObjective" class="hide" id="queryOutputCO"></div>
+                <select name="customerObjective" id="queryCO">
+                  <option class="selected" value="Select Customer Objective" disabled selected>Select Customer
+                    Objective
+                  </option>
+                  <option value="None">None</option>
+                  <% customerObjectives.forEach(customerObjective=> {%>
+                    <option value="<%= customerObjective.attributes.objectivename %>">
+                      <%= customerObjective.attributes.objectivename %>
+                    </option>
+                    <% }); %>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="title-container">
+            <div class="article-title">Tone / Personality</div>
+            <div class="title-input">
+              <div class="column">
+                <div for="tone" class="hide" id="queryOutputTone"></div>
+                <select name="tone" id="queryArticleTone">
+                  <option class="selected" value="Select Tone/Personality" disabled selected>Select Tone/Personality
+                  </option>
+                  <option value="None">Standard</option>
+                  <% tones.forEach(tone=> {%>
+                    <option value="<%= tone.attributes.tonename %>">
+                      <%= tone.attributes.tonename %>
+                    </option>
+                    <% }); %>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="title-container">
+            <div class="article-title">Author</div>
+            <div class="title-input">
+              <div class="column">
+                <div for="author" class="hide" id="queryOutputAuthor"></div>
+                <select name="author" id="queryArticleAuthor">
+                  <option class="selected" value="Select Author" disabled selected>Select Author</option>
+                  <option value="None">None</option>
+                  <% authors.forEach(author=> {%>
+                    <% if (author.username !="sadev" ) { %>
+                      <option value="<%= author.firstname %> <%= author.lastname %>">
+                        <%= author.firstname %>
+                          <%= author.lastname %>
+                      </option>
+                      <% } %>
+                        <% }); %>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="title-container">
+            <div class="article-title">Perspective</div>
+            <div class="title-input">
+              <div class="column">
+                <div for="perspective" class="hide" id="queryOutputPerspective"></div>
+                <select name="perspective" id="queryArticlePerspective">
+                  <option class="selected" value="Select Perspective" disabled selected>Select Perspective</option>
+                  <option value="None">None</option>
+                  <% perspectives.forEach(perspective=> {%>
+                    <option value="<%= perspective.attributes.perspectivename %>">
+                      <%= perspective.attributes.perspectivename %>
+                    </option>
+                    <% }); %>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class=".generate-btn-query">
+            <button type="button" id="nextBtnQuery" class="button btn-disabled"
+              onclick="nextPrevQuery()">Generate</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="tabs-section tab-content-4" id="bulkGenerator">
+        <div class="bulk-tab">
+          <div class="bulk-options">
+            <span class="material-symbols-outlined generate-keywords">edit_note</span>
+          </div>
+          <div class="title-container">
+            <div class="article-title">Keyword 1</div>
+            <div class="title-input"><input type="text" name="focuskeyword1" class="generator-input focuskeyword"
+                id="focuskeyword1" placeholder="Enter your desired focus keyword..." required></div>
+          </div>
+          <div class="title-container">
+            <div class="article-title">Keyword 2</div>
+            <div class="title-input"><input type="text" name="focuskeyword2" class="generator-input focuskeyword"
+                id="focuskeyword2" placeholder="Enter your desired focus keyword..." required></div>
+          </div>
+          <div class="title-container">
+            <div class="article-title">Keyword 3</div>
+            <div class="title-input"><input type="text" name="focuskeyword3" class="generator-input focuskeyword"
+                id="focuskeyword3" placeholder="Enter your desired focus keyword..." required></div>
+          </div>
+          <div class="title-container">
+            <div class="article-title">Keyword 4</div>
+            <div class="title-input"><input type="text" name="focuskeyword4" class="generator-input focuskeyword"
+                id="focuskeyword4" placeholder="Enter your desired focus keyword..." required></div>
+          </div>
+          <div class="title-container">
+            <div class="article-title">Keyword 5</div>
+            <div class="title-input"><input type="text" name="focuskeyword5" class="generator-input focuskeyword"
+                id="focuskeyword5" placeholder="Enter your desired focus keyword..." required></div>
+          </div>
+          <div class="title-container">
+            <div class="article-title">Keyword 6</div>
+            <div class="title-input"><input type="text" name="focuskeyword6" class="generator-input focuskeyword"
+                id="focuskeyword6" placeholder="Enter your desired focus keyword..." required></div>
+          </div>
+          <div class="title-container">
+            <div class="article-title">Keyword 7</div>
+            <div class="title-input"><input type="text" name="focuskeyword7" class="generator-input focuskeyword"
+                id="focuskeyword7" placeholder="Enter your desired focus keyword..." required></div>
+          </div>
+          <div class="title-container">
+            <div class="article-title">Keyword 8</div>
+            <div class="title-input"><input type="text" name="focuskeyword8" class="generator-input focuskeyword"
+                id="focuskeyword8" placeholder="Enter your desired focus keyword..." required></div>
+          </div>
+          <div class="title-container">
+            <div class="article-title">Keyword 9</div>
+            <div class="title-input"><input type="text" name="focuskeyword9" class="generator-input focuskeyword"
+                id="focuskeyword9" placeholder="Enter your desired focus keyword..." required></div>
+          </div>
+          <div class="title-container">
+            <div class="article-title">Keyword 10</div>
+            <div class="title-input"><input type="text" name="focuskeyword10" class="generator-input focuskeyword"
+                id="focuskeyword10" placeholder="Enter your desired focus keyword..." required></div>
+          </div>
+        </div>
+
+        <div class="bulk-tab">
+          <ul class="details-inner">
+            <div class="details-input">
+              <div class="row">
+                <div class="column">
+                  <div for="customerObjective" class="hide" id="bulkOutputCO"></div>
+                  <label for="customerObjective">Customer Objectives</label>
+                  <select name="customerObjective" id="bulkCO">
+                    <option class="selected" value="Select Customer Objective" disabled selected>Select Customer
+                      Objective
+                    </option>
+                    <option value="None">None</option>
+                    <% customerObjectives.forEach(customerObjective=> {%>
+                      <option value="<%= customerObjective.attributes.objectivename %>">
+                        <%= customerObjective.attributes.objectivename %>
+                      </option>
+                      <% }); %>
+                  </select>
+                </div>
+              </div>
+              <div class="row">
+                <div class="column">
+                  <div for="tone" class="hide" id="bulkOutputTone"></div>
+                  <label for="tone" class="firstlabel">Tone/Personality</label>
+                  <select name="tone" id="bulkArticleTone">
+                    <option class="selected" value="Select Tone/Personality" disabled selected>Select Tone/Personality
+                    </option>
+                    <option value="None">Standard</option>
+                    <% tones.forEach(tone=> {%>
+                      <option value="<%= tone.attributes.tonename %>">
+                        <%= tone.attributes.tonename %>
+                      </option>
+                      <% }); %>
+                  </select>
+                </div>
+              </div>
+              <div class="row">
+                <div class="column">
+                  <input type="hidden" name="articleTargetOptions" id="bulkArticleTO" required>
+                  <label for="target">Target Market</label>
+                  <select name="target" id="articleTargetBulk" multiple>
+                    <option value="None" selected>None</option>
+                    <% targetMarkets.forEach(targetMarket=> {%>
+                      <option value="<%= targetMarket.attributes.tonename %>">
+                        <%= targetMarket.attributes.targetname %>
+                      </option>
+                      <% }); %>
+                  </select>
+                </div>
+              </div>
+              <div class="row">
+                <div class="column">
+                  <div for="author" class="hide" id="bulkOutputAuthor"></div>
+                  <label for="author">Author</label>
+                  <select name="author" id="bulkArticleAuthor">
+                    <option class="selected" value="Select Author" disabled selected>Select Author</option>
+                    <option value="None">None</option>
+                    <% authors.forEach(author=> {%>
+                      <% if (author.username !="sadev" ) { %>
+                        <option value="<%= author.firstname %> <%= author.lastname %>">
+                          <%= author.firstname %>
+                            <%= author.lastname %>
+                        </option>
+                        <% } %>
+                          <% }); %>
+                  </select>
+                </div>
+              </div>
+              <div class="row">
+                <div class="column">
+                  <div for="perspective" class="hide" id="bulkOutputPerspective"></div>
+                  <label for="perspective">Perspective</label>
+                  <select name="perspective" id="bulkArticlePerspective">
+                    <option class="selected" value="Select Perspective" disabled selected>Select Perspective</option>
+                    <option value="None">None</option>
+                    <% perspectives.forEach(perspective=> {%>
+                      <option value="<%= perspective.attributes.perspectivename %>">
+                        <%= perspective.attributes.perspectivename %>
+                      </option>
+                      <% }); %>
+                  </select>
+                </div>
+              </div>
+              <div class="row">
+                <div class="column">
+                  <div class="button-container">
+                    <span onclick="document.getElementById('bulkGeneralPrompt').style.display='flex'"
+                      class="editdata generalprompt">General Prompt</span>
+                  </div>
+                </div>
+              </div>
+              <div class="general-query-modal" id="bulkGeneralPrompt">
+                <div class="modal-container">
+                  <div class="modal-container-header">
+                    <h1 class="modal-container-title">
+                      Set General Query/Instruction
+                    </h1>
+                    <span class="icon-button"
+                      onclick="document.getElementById('bulkGeneralPrompt').style.display='none'">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                        <path fill="none" d="M0 0h24v24H0z" />
+                        <path fill="currentColor"
+                          d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z" />
+                      </svg>
+                    </span>
+                  </div>
+                  <section class="modal-container-body rtf">
+                    <textarea type="textarea" name="generalquery" class="generalquery" id="bulkGeneralQuery" cols="10"
+                      rows="10"></textarea>
+                  </section>
+                  <footer class="modal-container-footer">
+                    <span class="query-button is-primary"
+                      onclick="document.getElementById('bulkGeneralPrompt').style.display='none'">Okay</span>
+                  </footer>
+                </div>
+              </div>
+            </div>
+          </ul>
+        </div>
+
+        <div>
+          <div style="float:right; margin-top: 15px;">
+            <button type="button" id="prevBtnBulk" class="button" onclick="nextPrevBulk(-1)">Previous</button>
+            <button type="button" id="nextBtnBulk" class="button btn-disabled" onclick="nextPrevBulk(1)">Next</button>
+          </div>
+        </div>
+
+        <div style="text-align:center;margin-top:40px;">
+          <span class="bulk-step"></span>
+          <span class="bulk-step"></span>
+        </div>
+
+      </div>
+
+
+    </header>
+
+  </main>
+
+  <aside class="right-section">
     <div class="blog-builder">
       <div class="user-outer">
-  
+
         <div class="chatbot user-section">
           <header>
-            <h2><img src="/images/sagpt-logo.png" alt="ShoreAgents Logo">Editor</h2>
+            <h2>Editor</h2>
           </header>
           <ul class="chatbox user-textarea">
             <div class="user-input">
@@ -710,26 +845,29 @@
             </div>
           </ul>
         </div>
-  
+
         <div class="chatbot meta-fields">
           <div class="title-container">
             <div class="article-title">SEO Title</div>
-            <div class="title-input"><input type="text" name="seoTitle" class="generator-input" id="seoTitle" placeholder="Enter article seo title..." required></div>
+            <div class="title-input"><input type="text" name="seoTitle" class="generator-input" id="seoTitle"
+                placeholder="Enter article seo title..." required></div>
           </div>
           <div class="title-container">
             <div class="textarea-title">Meta Description</div>
-            <div class="title-input"><textarea name="metadescription" class="generator-input" id="metaDescription" placeholder="Enter article meta description..." rows="3" required></textarea></div>
+            <div class="title-input"><textarea name="metadescription" class="generator-input" id="metaDescription"
+                placeholder="Enter article meta description..." rows="3" required></textarea></div>
           </div>
           <div class="title-container">
             <div class="article-title">Slug</div>
-            <div class="title-input"><input type="text" name="slug" class="generator-input" id="slug" placeholder="Enter article slug..." required></div>
+            <div class="title-input"><input type="text" name="slug" class="generator-input" id="slug"
+                placeholder="Enter article slug..." required></div>
           </div>
           <button class="float">
             <span class="material-symbols-outlined my-float">publish</span>
             <span class="float-content">Publish Article</span>
           </button>
         </div>
-  
+
         <div class="user-accordion">
           <h3>Articles Generated</h3>
           <button class="accordion article1"><span>Section 1</span></button>
@@ -773,31 +911,32 @@
             <textarea name="textarea" id="default"></textarea>
           </div>
           <div class="publish-container">
-            <button class="publish" onclick="document.getElementById('bulkLogin').style.display='flex'"><span>Publish Articles</span></button>
+            <button class="publish" onclick="document.getElementById('bulkLogin').style.display='flex'"><span>Publish
+                Articles</span></button>
           </div>
         </div>
       </div>
     </div>
-    
-      
-    </div>
-</div>
 
+  </aside>
+
+</div>
 
 <div id="myNav" class="overlay">
   <div class="overlay-content">
-  <p class="generating-text">Generating content. Please wait and do not exit or refresh this page!</p>
- 
-<script src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs" type="module"></script> 
-    <dotlottie-player src="https://lottie.host/fcf59440-0374-4239-bee5-bf128ca3b4e8/MNtTtobPqW.json" background="transparent" speed="1" style="width: 300px; height: 300px;" loop autoplay></dotlottie-player>
+    <p class="generating-text">Generating content. Please wait and do not exit or refresh this page!</p>
+
+    <script src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs" type="module"></script>
+    <dotlottie-player src="https://lottie.host/fcf59440-0374-4239-bee5-bf128ca3b4e8/MNtTtobPqW.json"
+      background="transparent" speed="1" style="width: 300px; height: 300px;" loop autoplay></dotlottie-player>
   </div>
 </div>
 
 <div class="login" id="login">
   <article class="modal-container login-modal">
-    <header class="modal-container-header">
+    <div class="modal-container-header">
       <h1 class="modal-container-title">
-        Login to ShoreAgents Site
+        Publish Article
       </h1>
       <button class="icon-button" onclick="document.getElementById('login').style.display='none'">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
@@ -806,61 +945,30 @@
             d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z" />
         </svg>
       </button>
-    </header>
-    <form class="login-wordpress">
+    </div>
+    <div class="choose-site">
+      <span class="shoreagents-site"><img src="/images/shoreagents-logo-white.png" alt="ShoreAgents Logo"></span>
+      <span class="careers-site"><img src="/images/shoreagents-careers-logo-white.png" alt="ShoreAgents Careers Logo"></span>
+    </div>
+    <div class="login-wordpress">
+      <input type="hidden" class="publish-website" value="">
       <section class="modal-container-body login-body rtf">
+        <span class="material-symbols-outlined publish-back">keyboard_return</span>
         <p class="login-error">Invalid username/password</p>
         <div class="login-container">
-          <div class="article-title">Username</div>
-          <div class="title-input"><input type="text" class="login-input" id="username"  name="username" placeholder="Enter username..." required></div>
+          <div class="login-title">Username</div>
+          <div class="title-input"><input type="text" class="login-input" id="loginusername" name="username"
+              placeholder="Enter username..." required></div>
         </div>
-
         <div class="login-container">
-          <div class="article-title">Password</div>
-          <div class="title-input"><input type="password" class="login-input" id="password"  name="password" placeholder="Enter password..." required></div>
+          <div class="login-title">Password</div>
+          <div class="title-input"><input type="password" class="login-input" id="loginpassword" name="password"
+              placeholder="Enter password..." required></div>
         </div>
-        
       </section>
       <footer class="modal-container-footer">
-        <span class="is-primary loginbtn">Login</span>
+        <span class="button is-primary loginbtn">Login</span>
       </footer>
-    </form>
+    </div>
   </article>
 </div>
-
-<div class="login" id="bulkLogin">
-  <article class="modal-container login-modal">
-    <header class="modal-container-header">
-      <h1 class="modal-container-title">
-        Login to ShoreAgents Site
-      </h1>
-      <button class="icon-button" onclick="document.getElementById('bulkLogin').style.display='none'">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
-          <path fill="none" d="M0 0h24v24H0z" />
-          <path fill="currentColor"
-            d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z" />
-        </svg>
-      </button>
-    </header>
-    <form class="login-wordpress">
-      <section class="modal-container-body login-body rtf">
-        <p class="login-error">Invalid username/password</p>
-        <div class="login-container">
-          <div class="article-title">Username</div>
-          <div class="title-input"><input type="text" class="login-input" id="bulkUsername"  name="username" placeholder="Enter username..." required></div>
-        </div>
-
-        <div class="login-container">
-          <div class="article-title">Password</div>
-          <div class="title-input"><input type="password" class="login-input" id="bulkPassword"  name="password" placeholder="Enter password..." required></div>
-        </div>
-        
-      </section>
-      <footer class="modal-container-footer">
-        <span class="is-primary loginBulk">Login</span>
-      </footer>
-    </form>
-  </article>
-</div>
-
-
