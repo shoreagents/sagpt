@@ -149,7 +149,7 @@ function checkAuthenticated(req, res, next) {
         loggeduser.tokenJWT = data.jwt;
         // res.cookie('jwtToken', data.jwt, { maxAge: 900000, httpOnly: true });
         res.cookie('username', data.user.username, { maxAge: 900000, httpOnly: true });
-        fetch("https://sagpt.onrender.com//users", {
+        fetch("https://sagpt.onrender.com/users", {
           method: "POST",
           headers: {
             'Authorization': `Bearer ${accessToken}`,
@@ -656,7 +656,7 @@ router.post('/', async (req, res) => {
               users.push(user);
               // res.cookie('jwtToken', data.jwt, { maxAge: 900000, httpOnly: true });
               res.cookie('username', data.username, { maxAge: 900000, httpOnly: true });
-              fetch("https://sagpt.onrender.com//users", {
+              fetch("https://sagpt.onrender.com/users", {
                 method: "POST",
                 headers: {
                   'Authorization': `Bearer ${accessToken}`,
