@@ -1,4 +1,4 @@
-<% if (notice == "success") {%>
+<% if (notice == "success" || notice == "error") {%>
     <p class="server-<%= notice %> notice" id="backend-notice">
       <span><%= noticemsg %></span>
       <button class="icon-button" onclick="document.getElementById('backend-notice').style.display='none'">

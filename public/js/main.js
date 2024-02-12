@@ -94,6 +94,7 @@ const generateResponse = (chatElement) => {
 
   const outputTarget = $("#targetOptions").val();
   const messageElement = chatElement.querySelector("div");
+  const userName = document.getElementById('userNameChat').value;
   try {
     const API_URL = "/";
 
@@ -110,7 +111,8 @@ const generateResponse = (chatElement) => {
         target: outputTarget,
         perspective: outputPerspective.textContent,
         customerObjective: outputCustomerObjective.textContent,
-        userAction: "ChatAI"
+        userAction: "ChatAI",
+        userName: userName
       })
     }
 
@@ -247,6 +249,11 @@ $('.bulk-generator').on('click', function () {
   $('.generator-options').css('display', 'none');
 });
 
+$('.bulk-generator').on('click', function () {
+  $('#bulkGenerator').css('display', 'flex');
+  $('.generator-options').css('display', 'none');
+});
+
 $('.shoreagents-site').on('click', function () {
   $('.login-wordpress').css('display', 'block');
   $('.choose-site').css('display', 'none');
@@ -322,6 +329,7 @@ function articleResponse() {
     const API_URL = "/";
     const outputTarget = $("#articleTargetOptions").val();
     const generalQ = document.getElementById('generalquery').value;
+    const userName = document.getElementById('userName').value;
     const requestOptions = {
       method: "POST",
 
@@ -340,7 +348,8 @@ function articleResponse() {
         keyword: keyword,
         generalQuery: generalQ,
         listquery: listqueryArr,
-        userAction: "ArticleGenerator"
+        userAction: "ArticleGenerator",
+        userName: userName
       })
     }
     fetch(API_URL, requestOptions).then(res => res.json()).then(data => {
@@ -418,6 +427,7 @@ function queryArticleResponse() {
   try {
     const API_URL = "/";
     const outputTarget = $("#queryArticleTO").val();
+    const userName = document.getElementById('userNameQuery').value;
     const requestOptions = {
       method: "POST",
 
@@ -432,7 +442,8 @@ function queryArticleResponse() {
         target: outputTarget,
         perspective: outputPerspective.textContent,
         customerObjective: outputCustomerObjective.textContent,
-        userAction: "QueryArticleGenerator"
+        userAction: "QueryArticleGenerator",
+        userName: userName
       })
     }
     fetch(API_URL, requestOptions).then(res => res.json()).then(data => {
@@ -443,7 +454,6 @@ function queryArticleResponse() {
         document.getElementById("server-notice").style.display = "flex";
       } else {
         var $iframe = $('#default_ifr');
-        console.log(data.output);
         $iframe.ready(function () {
           $iframe.contents().find("body").append(data.output.content);
         });
@@ -1311,6 +1321,12 @@ $(document).on('click', '.back', function () {
   $(".settings-item").css("display", "flex");
   $(".tab-content-settings").css("display", "grid");
   $(".settings-inner").css("display", "none");
+});
+
+$(document).on('click', '.enterPasswordBtn', function () {
+  $(".enterPassword").css("display", "none");
+  setTimeout(function () { $('#confirmPassword').val('');  }, 2000);
+  
 });
 
 $(document).on('click', '.ai-assistant-settings', function () {

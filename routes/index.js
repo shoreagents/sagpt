@@ -15,17 +15,18 @@ const router = express.Router()
 import MethodOverrideOptions from 'method-override';
 router.use(MethodOverrideOptions('_method'))
 
-router.use(cookieParser())
+router.use(cookieParser());
 
 dotenv.config();
 
-var tokenJWT;
 var users = [];
 
 function authenticateToken(req, res, next) {
-
   try {
-    const jwtToken = tokenJWT;
+    const usernameValue = req.body.username;
+    console.log("Username authenticate token: " + usernameValue);
+    var loggeduser = users.find(({ username }) => username === usernameValue);
+    const jwtToken = loggeduser.tokenJWT;
     if (jwtToken === undefined) res.redirect('/');
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1]
@@ -43,8 +44,9 @@ function authenticateToken(req, res, next) {
 
 function checkNotAuthenticated(req, res, next) {
   try {
-    const identifier = users[0].username;
-    const password = users[0].password;
+    var loggeduser = users.find(({ username }) => username === req.cookies["username"]);
+    const identifier = loggeduser.username;
+    const password = loggeduser.password;
     const API_URL = "https://sagpt-data.onrender.com/api/auth/local";
     const requestOptions = {
       method: "POST",
@@ -69,11 +71,12 @@ function checkNotAuthenticated(req, res, next) {
   }
 }
 
-async function getData(name) {
+async function getData(name, userName) {
+  var loggeduser = users.find(({ username }) => username === userName);
   const response = await fetch(`https://sagpt-data.onrender.com/api/${name}`, {
     method: "GET",
     headers: {
-      'Authorization': `Bearer ${tokenJWT}`
+      'Authorization': `Bearer ${loggeduser.tokenJWT}`
     }
   }).catch((error) => {
     console.log(error);
@@ -88,32 +91,32 @@ async function getData(name) {
   return output;
 }
 
-function logAction(logaction) {
+function logAction(userName, logaction,) {
+  var loggeduser = users.find(({ username }) => username === userName);
   fetch(`https://sagpt-data.onrender.com/api/logs`, {
     method: "POST",
     headers: {
       'Content-Type': 'application/json',
       'accept': 'application/json',
-      'Authorization': `Bearer ${tokenJWT}`
+      'Authorization': `Bearer ${loggeduser.tokenJWT}`
     },
     body: JSON.stringify({
       data: {
         logname: logaction,
-        authorname: users[0].username
+        authorname: loggeduser.username
       }
     })
   }).then(res => res.json()).then(async (data) => {
     if (data.error) {
       console.log(data.error.message);
-      const perspectives = await getData("perspectives");
-      const tones = await getData("tones");
-      const customerObjectives = await getData("customer-objectives");
-      const targetMarkets = await getData("target-markets");
-      const authors = await getData("users");
-      res.render('index', { authors: authors, targetMarkets: targetMarkets, customerObjectives: customerObjectives, tones: tones, perspectives: perspectives, role: users[0].role, firstname: users[0].firstname, lastname: users[0].lastname, username: users[0].username, email: users[0].email, bio: users[0].bio, notice: "error", noticemsg: data.error.message });
+      const perspectives = await getData("perspectives", loggeduser.username);
+      const tones = await getData("tones", loggeduser.username);
+      const customerObjectives = await getData("customer-objectives", loggeduser.username);
+      const targetMarkets = await getData("target-markets", loggeduser.username);
+      const authors = await getData("users", loggeduser.username);
+      res.render('index', { authors: authors, targetMarkets: targetMarkets, customerObjectives: customerObjectives, tones: tones, perspectives: perspectives, role: loggeduser.role, firstname: loggeduser.firstname, lastname: loggeduser.lastname, username: loggeduser.username, email: loggeduser.email, bio: loggeduser.bio, notice: "error", noticemsg: data.error.message });
     }
   }).catch((error) => {
-    users = [];
     console.log(error)
     res.redirect('/login');
   })
@@ -121,8 +124,9 @@ function logAction(logaction) {
 
 function checkAuthenticated(req, res, next) {
   try {
-    const identifier = users[0].username;
-    const password = users[0].password;
+    var loggeduser = users.find(({ username }) => username === req.cookies["username"]);
+    const identifier = loggeduser.username;
+    const password = loggeduser.password;
     const API_URL = "https://sagpt-data.onrender.com/api/auth/local";
     const requestOptions = {
       method: "POST",
@@ -142,64 +146,76 @@ function checkAuthenticated(req, res, next) {
       } else {
         const user = data.user;
         const accessToken = jwt.sign(user, data.jwt);
-        tokenJWT = data.jwt;
+        loggeduser.tokenJWT = data.jwt;
         // res.cookie('jwtToken', data.jwt, { maxAge: 900000, httpOnly: true });
-        fetch("https://sagpt.onrender.com/users", {
-          method: "GET",
+        res.cookie('username', data.user.username, { maxAge: 900000, httpOnly: true });
+        fetch("http://localhost:8082/users", {
+          method: "POST",
           headers: {
-            'Authorization': `Bearer ${accessToken}`
-          }
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json',
+            'accept': 'application/json',
+          },
+          body: JSON.stringify({
+            "username": user.username
+          })
         }).then(res => res.json()).then(data => {
           if (data.error) {
             console.log(data.error.message);
-            users = [];
             res.render('login', { notice: "none", noticemsg: "none", errormsg: data.error.message });
           } else {
             req.user = data;
             next();
           }
+        }).catch((error) => {
+          console.log(error)
+          res.redirect('/login');
         })
       }
     })
   } catch (error) {
-    users = [];
+    // users = [];
     res.redirect('/login');
   }
 }
-
-router.get('/users', authenticateToken, async (req, res) => {
-  const output = req.user;
-  return res.json(output);
-})
 
 router.get('/login', checkNotAuthenticated, async (req, res) => {
   res.render('login', { notice: "none", noticemsg: "none", errormsg: "none" });
 })
 
 router.get('/', checkAuthenticated, async (req, res) => {
-  const perspectives = await getData("perspectives");
-  const tones = await getData("tones");
-  const customerObjectives = await getData("customer-objectives");
-  const targetMarkets = await getData("target-markets");
-  const authors = await getData("users");
-  res.render('index', { authors: authors, targetMarkets: targetMarkets, customerObjectives: customerObjectives, tones: tones, perspectives: perspectives, role: users[0].role, firstname: req.user.firstname, lastname: req.user.lastname, username: req.user.username, email: req.user.email, bio: req.user.bio, notice: "none", noticemsg: "none" });
+  var loggeduser = users.find(({ username }) => username === req.cookies["username"]);
+  const perspectives = await getData("perspectives", loggeduser.username);
+  const tones = await getData("tones", loggeduser.username);
+  const customerObjectives = await getData("customer-objectives", loggeduser.username);
+  const targetMarkets = await getData("target-markets", loggeduser.username);
+  const authors = await getData("users", loggeduser.username);
+  res.render('index', { authors: authors, targetMarkets: targetMarkets, customerObjectives: customerObjectives, tones: tones, perspectives: perspectives, role: loggeduser.role, firstname: req.user.firstname, lastname: req.user.lastname, username: req.user.username, email: req.user.email, bio: req.user.bio, notice: "none", noticemsg: "none" });
 })
 
 router.get('*', function (req, res) {
   res.status(404).render('404');
 });
 
-
 router.delete('/logout', (req, res) => {
-  const username = req.body.username;
-  console.log(username + " logging out");
-  logAction("User has logged out.");
-  users = [];
+  const userName = req.body.username;
+  console.log("Logging out " + userName);
+  console.log(userName + " logging out");
+  logAction(userName, "User has logged out.");
+  users = users.filter(function (obj) {
+    return obj.username !== userName;
+  });
   res.redirect('/');
+})
+
+router.post('/users', authenticateToken, async (req, res) => {
+  const output = req.user;
+  return res.json(output);
 })
 
 router.post('/', async (req, res) => {
   const userAction = req.body.userAction;
+  const userName = req.body.userName;
   if (userAction == "ChatAI") {
     const question = req.body.userinput;
     const tone = req.body.tone;
@@ -244,9 +260,9 @@ router.post('/', async (req, res) => {
     try {
       var temp = await runWithEmbeddings(question, perspectiveOutput, toneOutput, targetOutput, authorOutput, customerObjectiveOutput);
       output = marked.parse(temp);
-      logAction("User used AI Assistant.");
+      logAction(userName, "User used AI Assistant.");
     } catch (error) {
-      logAction("User attempted to use AI Assistant but failed.");
+      logAction(userName, "User attempted to use AI Assistant but failed.");
       output = "There is an error on our server. Sorry for inconvenience. Please try again later."
       console.log(error);
       console.log(output);
@@ -263,6 +279,7 @@ router.post('/', async (req, res) => {
     const target = req.body.target;
     const perspective = req.body.perspective;
     const customerObjective = req.body.customerObjective;
+    const userName = req.body.userName;
     var articlearray = {};
     articlearray.title = title;
     for (let i = 0; i < heading.length; i++) {
@@ -358,10 +375,10 @@ router.post('/', async (req, res) => {
       console.log(output);
       var wordCount = output.content.match(/(\w+)/g).length;
       console.log(wordCount);
-      logAction("User successfully generated an article using Manual Article Generator.");
+      logAction(userName, "User successfully generated an article using Manual Article Generator.");
       res.send({ output });
     } catch (error) {
-      logAction("User attempted to generate an article using Manual Article Generator but failed.");
+      logAction(userName, "User attempted to generate an article using Manual Article Generator but failed.");
       output = "There is an error on our server. Sorry for inconvenience. Please try again later.";
       console.log(output + " | " + error);
       res.send({ output });
@@ -374,6 +391,7 @@ router.post('/', async (req, res) => {
     const target = req.body.target;
     const perspective = req.body.perspective;
     const customerObjective = req.body.customerObjective;
+    const userName = req.body.userName;
 
     var toneOutput = "";
     var authorOutput = "";
@@ -410,6 +428,7 @@ router.post('/', async (req, res) => {
     try {
       var title;
       var output;
+      var temp;
       const createTitle = await titleGenerator(keyword, perspectiveOutput, toneOutput, targetOutput, customerObjectiveOutput);
       var titleTemp = createTitle.replace(/['"]+/g, '')
       title = titleTemp;
@@ -438,27 +457,33 @@ router.post('/', async (req, res) => {
         }
       }
 
-      const content = "<h1>" + title + "</h1>" + "\n" + createArticle
+      const tempcontent = "<h1>" + title + "</h1>" + "\n" + createArticle;
+      temp = tempcontent.replace(/```html/g, '');
+      const content = temp.replace(/```/g, '');
       const seoTitle = await seoTitleGenerator(keyword);
       const metaDescription = await metaDescriptionGenerator(keyword, content);
       const slug = keyword.replace(/\s+/g, '-').toLowerCase();
+      
+      // var createArticle = await bulkArticleGenerator(generalQuery, articleTitle, articleKeyword, perspectiveOutput, toneOutput, targetOutput, authorOutput,customerObjectiveOutput);
+      console.log("/////////////////////////////////////////////////////////////////////////////////");
+      console.log("//////////////////////////////////// OUTPUT /////////////////////////////////////");
+      console.log("/////////////////////////////////////////////////////////////////////////////////");
+      
+
       output = {
         content,
         seoTitle,
         metaDescription,
         slug
       }
-      // var createArticle = await bulkArticleGenerator(generalQuery, articleTitle, articleKeyword, perspectiveOutput, toneOutput, targetOutput, authorOutput,customerObjectiveOutput);
-      console.log("/////////////////////////////////////////////////////////////////////////////////");
-      console.log("//////////////////////////////////// OUTPUT /////////////////////////////////////");
-      console.log("/////////////////////////////////////////////////////////////////////////////////");
+
       console.log(output);
       // var wordCount = output.match(/(\w+)/g).length;
       // console.log(wordCount);
-      logAction("User successfully generated an article using Instructive Article Generator.");
+      logAction(userName, "User successfully generated an article using Instructive Article Generator.");
       res.send({ output });
     } catch (error) {
-      logAction("User attempted to generate an article using Instructive Article Generator but failed.");
+      logAction(userName, "User attempted to generate an article using Instructive Article Generator but failed.");
       output = "There is an error on our server. Sorry for inconvenience. Please try again later.";
       console.log(bulkdata + " | " + error);
       res.send({ output });
@@ -594,6 +619,7 @@ router.post('/', async (req, res) => {
   } else if (userAction == "LoginGPT") {
     const identifier = req.body.identifier;
     const password = req.body.password;
+    var accessToken;
     try {
       const API_URL = "https://sagpt-data.onrender.com/api/auth/local";
       const requestOptions = {
@@ -607,15 +633,15 @@ router.post('/', async (req, res) => {
           "password": password
         })
       }
-      fetch(API_URL, requestOptions).then(res => res.json()).then(data => {
+      await fetch(API_URL, requestOptions).then(res => res.json()).then(data => {
         if (data.error) {
           console.log(data.error.message);
           res.render('login', { notice: "none", noticemsg: "none", errormsg: data.error.message });
         } else {
           var user = data.user;
           user.password = password;
-          const accessToken = jwt.sign(user, data.jwt);
-          tokenJWT = data.jwt;
+          user.tokenJWT = data.jwt;
+          accessToken = jwt.sign(user, data.jwt);
           fetch("https://sagpt-data.onrender.com/api/users/me?populate=role", {
             method: "GET",
             headers: {
@@ -629,27 +655,34 @@ router.post('/', async (req, res) => {
               user.role = role;
               users.push(user);
               // res.cookie('jwtToken', data.jwt, { maxAge: 900000, httpOnly: true });
-              fetch("https://sagpt.onrender.com/users", {
-                method: "GET",
+              res.cookie('username', data.username, { maxAge: 900000, httpOnly: true });
+              fetch("http://localhost:8082/users", {
+                method: "POST",
                 headers: {
-                  'Authorization': `Bearer ${accessToken}`
-                }
+                  'Authorization': `Bearer ${accessToken}`,
+                  'Content-Type': 'application/json',
+                  'accept': 'application/json',
+                },
+                body: JSON.stringify({
+                  "username": data.username
+                })
               }).then(res => res.json()).then(async (data) => {
                 if (data.error) {
                   console.log(data.error.message);
                   res.render('login', { notice: "none", noticemsg: "none", errormsg: data.error.message });
                 } else {
                   console.log(data.username + " logged in");
-                  logAction("User has logged in.");
-                  const perspectives = await getData("perspectives");
-                  const tones = await getData("tones");
-                  const customerObjectives = await getData("customer-objectives");
-                  const targetMarkets = await getData("target-markets");
-                  const authors = await getData("users");
+                  logAction(data.username, "User has logged in.");
+                  const perspectives = await getData("perspectives", data.username);
+                  const tones = await getData("tones", data.username);
+                  const customerObjectives = await getData("customer-objectives", data.username);
+                  const targetMarkets = await getData("target-markets", data.username);
+                  const authors = await getData("users", data.username);
                   res.render('index', { authors: authors, targetMarkets: targetMarkets, customerObjectives: customerObjectives, tones: tones, perspectives: perspectives, role: role, firstname: data.firstname, lastname: data.lastname, username: data.username, email: data.email, bio: data.bio, notice: "none", noticemsg: "none" });
                 }
               }).catch((error) => {
-                console.log(error);
+                console.log("Catches Error:" + error);
+                res.render('login', { notice: "error", noticemsg: "Oops! An error has occured, please try to refresh the page and try again.", errormsg: "none" });
               })
             }
           })
@@ -662,8 +695,9 @@ router.post('/', async (req, res) => {
     }
   } else if (userAction == "ChangePassword") {
     try {
-      const identifier = users[0].username;
-      const password = users[0].password;
+      var loggeduser = users.find(({ username }) => username === req.cookies["username"]);
+      const identifier = loggeduser.username;
+      const password = loggeduser.password;
       const currentPassword = req.body.password;
       const newPassword = req.body.newpassword;
       const confirmPassword = req.body.confirmpassword;
@@ -685,8 +719,9 @@ router.post('/', async (req, res) => {
           res.render('login', { notice: "none", noticemsg: "none", errormsg: data.error.message });
         } else {
           const user = data.user;
-          tokenJWT = data.jwt;
+          loggeduser.tokenJWT = data.jwt;
           // res.cookie('jwtToken', data.jwt, { maxAge: 900000, httpOnly: true });
+          res.cookie('username', data.user.username, { maxAge: 900000, httpOnly: true });
           fetch("https://sagpt-data.onrender.com/api/auth/change-password", {
             method: "POST",
             headers: {
@@ -702,16 +737,18 @@ router.post('/', async (req, res) => {
           }).then(res => res.json()).then(async (data) => {
             if (data.error) {
               console.log(data.error.message);
-              const perspectives = await getData("perspectives");
-              const tones = await getData("tones");
-              const customerObjectives = await getData("customer-objectives");
-              const targetMarkets = await getData("target-markets");
-              const authors = await getData("users");
-              res.render('index', { authors: authors, targetMarkets: targetMarkets, customerObjectives: customerObjectives, tones: tones, perspectives: perspectives, role: users[0].role, firstname: user.firstname, lastname: user.lastname, username: user.username, email: user.email, bio: user.bio, notice: "error", noticemsg: data.error.message });
+              const perspectives = await getData("perspectives", loggeduser.username);
+              const tones = await getData("tones", loggeduser.username);
+              const customerObjectives = await getData("customer-objectives", loggeduser.username);
+              const targetMarkets = await getData("target-markets", loggeduser.username);
+              const authors = await getData("users", loggeduser.username);
+              res.render('index', { authors: authors, targetMarkets: targetMarkets, customerObjectives: customerObjectives, tones: tones, perspectives: perspectives, role: loggeduser.role, firstname: user.firstname, lastname: user.lastname, username: user.username, email: user.email, bio: user.bio, notice: "error", noticemsg: data.error.message });
             } else {
               console.log("Password successfully changed.");
-              logAction("User has changed their password.");
-              users = [];
+              logAction(loggeduser.username, "User has changed their password.");
+              users = users.filter(function (obj) {
+                return obj.username !== loggeduser.username;
+              });
               res.render('login', { notice: "success", noticemsg: "Password successfully changed. Please login again", errormsg: "none" });
             }
           })
@@ -723,8 +760,9 @@ router.post('/', async (req, res) => {
     }
   } else if (userAction == "UpdateProfile") {
     try {
-      const identifier = users[0].username;
-      const password = users[0].password;
+      var loggeduser = users.find(({ username }) => username === req.cookies["username"]);
+      const identifier = loggeduser.username;
+      const password = loggeduser.password;
       const firstname = req.body.firstname;
       const lastname = req.body.lastname;
       const bio = req.body.bio;
@@ -746,8 +784,9 @@ router.post('/', async (req, res) => {
           res.render('login', { notice: "none", noticemsg: "none", errormsg: data.error.message });
         } else {
           const user = data.user;
-          tokenJWT = data.jwt;
+          loggeduser.tokenJWT = data.jwt;
           // res.cookie('jwtToken', data.jwt, { maxAge: 900000, httpOnly: true });
+          res.cookie('username', data.user.username, { maxAge: 900000, httpOnly: true });
           fetch(`https://sagpt-data.onrender.com/api/users/${user.id}`, {
             method: "PUT",
             headers: {
@@ -763,15 +802,15 @@ router.post('/', async (req, res) => {
           }).then(res => res.json()).then(async (data) => {
             if (data.error) {
               console.log(data.error.message);
-              const perspectives = await getData("perspectives");
-              const tones = await getData("tones");
-              const customerObjectives = await getData("customer-objectives");
-              const targetMarkets = await getData("target-markets");
-              const authors = await getData("users");
-              res.render('index', { authors: authors, targetMarkets: targetMarkets, customerObjectives: customerObjectives, tones: tones, perspectives: perspectives, role: users[0].role, firstname: user.firstname, lastname: user.lastname, username: user.username, email: user.email, bio: user.bio, notice: "error", noticemsg: data.error.message });
+              const perspectives = await getData("perspectives", loggeduser.username);
+              const tones = await getData("tones", loggeduser.username);
+              const customerObjectives = await getData("customer-objectives", loggeduser.username);
+              const targetMarkets = await getData("target-markets", loggeduser.username);
+              const authors = await getData("users", loggeduser.username);
+              res.render('index', { authors: authors, targetMarkets: targetMarkets, customerObjectives: customerObjectives, tones: tones, perspectives: perspectives, role: loggeduser.role, firstname: user.firstname, lastname: user.lastname, username: user.username, email: user.email, bio: user.bio, notice: "error", noticemsg: data.error.message });
             } else {
               console.log("User Profile successfully updated.");
-              logAction("User has updated their profile.");
+              logAction(loggeduser.username, "User has updated their profile.");
               res.redirect('/');
             }
           })
@@ -783,9 +822,9 @@ router.post('/', async (req, res) => {
     }
   } else if (userAction == "DownloadLogs") {
     try {
-      const identifier = users[0].username;
+      var loggeduser = users.find(({ username }) => username === req.cookies["username"]);
+      const identifier = loggeduser.username;
       const password = req.body.password;
-      console.log(password);
       const API_URL = "https://sagpt-data.onrender.com/api/auth/local";
       const requestOptions = {
         method: "POST",
@@ -799,31 +838,32 @@ router.post('/', async (req, res) => {
         })
       }
       fetch(API_URL, requestOptions).then(res => res.json()).then(async (data) => {
+        var loggeduser = users.find(({ username }) => username === req.cookies["username"]);
         if (data.error) {
           console.log(data.error.message);
-          const perspectives = await getData("perspectives");
-          const tones = await getData("tones");
-          const customerObjectives = await getData("customer-objectives");
-          const targetMarkets = await getData("target-markets");
-          const authors = await getData("users");
-          res.render('index', { authors: authors, targetMarkets: targetMarkets, customerObjectives: customerObjectives, tones: tones, perspectives: perspectives, role: users[0].role, firstname: users[0].firstname, lastname: users[0].lastname, username: users[0].username, email: users[0].email, bio: users[0].bio, notice: "error", noticemsg: data.error.message });
+          const perspectives = await getData("perspectives", loggeduser.username);
+          const tones = await getData("tones", loggeduser.username);
+          const customerObjectives = await getData("customer-objectives", loggeduser.username);
+          const targetMarkets = await getData("target-markets", loggeduser.username);
+          const authors = await getData("users", loggeduser.username);
+          res.render('index', { authors: authors, targetMarkets: targetMarkets, customerObjectives: customerObjectives, tones: tones, perspectives: perspectives, role: loggeduser.role, firstname: loggeduser.firstname, lastname: loggeduser.lastname, username: loggeduser.username, email: loggeduser.email, bio: loggeduser.bio, notice: "error", noticemsg: data.error.message });
         } else {
           const user = data.user;
-          tokenJWT = data.jwt;
+          loggeduser.tokenJWT = data.jwt;
           fetch(`https://sagpt-data.onrender.com/api/logs`, {
             method: "GET",
             headers: {
-              'Authorization': `Bearer ${tokenJWT}`
+              'Authorization': `Bearer ${loggeduser.tokenJWT}`
             }
           }).then(res => res.json()).then(async (response) => {
             if (response.error) {
               console.log(response.error.message);
-              const perspectives = await getData("perspectives");
-              const tones = await getData("tones");
-              const customerObjectives = await getData("customer-objectives");
-              const targetMarkets = await getData("target-markets");
-              const authors = await getData("users");
-              res.render('index', { authors: authors, targetMarkets: targetMarkets, customerObjectives: customerObjectives, tones: tones, perspectives: perspectives, role: users[0].role, firstname: user.firstname, lastname: user.lastname, username: user.username, email: user.email, bio: user.bio, notice: "error", noticemsg: data.error.message });
+              const perspectives = await getData("perspectives", loggeduser.username);
+              const tones = await getData("tones", loggeduser.username);
+              const customerObjectives = await getData("customer-objectives", loggeduser.username);
+              const targetMarkets = await getData("target-markets", loggeduser.username);
+              const authors = await getData("users", loggeduser.username);
+              res.render('index', { authors: authors, targetMarkets: targetMarkets, customerObjectives: customerObjectives, tones: tones, perspectives: perspectives, role: loggeduser.role, firstname: user.firstname, lastname: user.lastname, username: user.username, email: user.email, bio: user.bio, notice: "error", noticemsg: data.error.message });
             } else {
               const parser = new Parser();
               const data = response.data;
@@ -840,14 +880,18 @@ router.post('/', async (req, res) => {
               }
               const csv = parser.parse(newdata);
               console.log("Data successfully exported");
-              logAction("User exported the logs data.");
+              logAction(user.username, "User exported the logs data.");
               fs.writeFileSync('SAGPT-Logs.csv', csv);
               res.download('./SAGPT-Logs.csv');
             }
+          }).then(function () {
+            setTimeout(function () { fs.unlinkSync('./SAGPT-Logs.csv'); }, 1000);
+          }).catch((error) => {
+            console.log(error);
+            res.redirect('/');
           })
         }
       })
-      setTimeout(function () { fs.unlinkSync('./SAGPT-Logs.csv'); }, 1000);
     } catch (error) {
       console.log(error);
       res.redirect('/');
@@ -1221,6 +1265,7 @@ export const addHeadingContent = async (wordCount, articleContent, generalQuery,
       Do not add the word 'Subheading:' in the subheading titles.
       Strictly, do not add any H2 or H3 Conclusions.
       Strictly, you will not give any comments on the generated content, it must be content article body only.
+      DO NOT add any comments or tags at the start ('''html) and end (''') of the output.
       Do not add the '${title}' itself.`;
   } else {
     userprompt = `You are a content writer and will draft HTML formatted article heading where at the start of every paragraph you will just add '<p>' and must end with '</p>', it will be the same with Headings using '<h2>' and '</h2>', as well as Subheadings but with '<h3>' and '</h3>'. Your responsibility is to generate an article H2 Heading ONLY and it's content body, do not include the previous headings. Make sure it's readability is good and is SEO optimized, using the article title "${title}", and the focus keyword "${keyword}". ${perspectiveOutput} ${toneOutput} ${authorOutput} ${targetOutput} ${customerObjectiveOutput}
@@ -1236,7 +1281,7 @@ export const addHeadingContent = async (wordCount, articleContent, generalQuery,
       Do not add the word 'Subheading:' in the subheading titles.
       Strictly, do not add any H2 or H3 Conclusions.
       Strictly, you will not give any comments on the generated content, it must be content article body only.
-      Do not add any comments "html" or tags at the start and end of the output.
+      DO NOT add any comments or tags at the start ('''html) and end (''') of the output.
       Do not add the '${title}' itself.
       Make sure not to repeat previous H2 heading contents, it should be different and not related to each other.
       You will only add new H2 heading contents, and DO NOT REPEAT PREVIOUS ARTICLE HEADINGS AND ITS CONTENTS.
@@ -1289,9 +1334,6 @@ export const addHeadingContent = async (wordCount, articleContent, generalQuery,
     console.log("Since there are no matches, GPT-3 will not be queried.");
     output = "I'm sorry, there are no matches that are related to the question in our data.";
   }
-  console.log("/////////////////////////////////////////////////////////////////////////////////");
-  console.log(output);
-  console.log("/////////////////////////////////////////////////////////////////////////////////");
   return output
 };
 
@@ -1355,9 +1397,6 @@ export const generateConclusion = async (articleContent, generalQuery, title, ke
     console.log("I'm sorry, there are no matches that are related to the question in our data.");
     output = "I'm sorry, there are no matches that are related to the question in our data.";
   }
-  console.log("/////////////////////////////////////////////////////////////////////////////////");
-  console.log(output);
-  console.log("/////////////////////////////////////////////////////////////////////////////////");
   return output;
 };
 
@@ -1370,11 +1409,11 @@ export const addInternalLinks = async (articleContent) => {
   
   Do not add additional contents or any comments from you. Just rewrite everything with <a> links added.
 
-  Stricly, SO NOT ADD LINKS OR CREATE LINKS THAT IS NOT FOUND ON THE DATA. Only use the links that you can only be found in sectors / services, main pages, roles, directory and blog links.
+  Stricly, SO NOT ADD LINKS OR CREATE LINKS THAT IS NOT FOUND ON THE DATA. ONLY use the links that you can only be found in SECTORS / SERVICES, MAIN PAGES, ROLES, DIRECTORY and BLOG links.
 
-  Do not repeat the same internal links, there must only one with the same internal link.
+  Do not add the links that is already given, there must only one with the same internal link.
   
-  Don't include homepage as internal link.`;
+  Don't include homepage (https://www.shoreagents.com/) as internal link.`;
 
   console.log(userprompt);
 

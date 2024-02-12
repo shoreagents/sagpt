@@ -8,7 +8,7 @@
     "dev": "nodemon server.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Jones Fundar",
   "license": "ISC",
   "dependencies": {
     "@pinecone-database/pinecone": "^1.1.2",

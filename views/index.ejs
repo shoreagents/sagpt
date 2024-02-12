@@ -86,6 +86,7 @@
 
   <main>
     <header>
+      <input type="hidden" name="userName" id="userNameChat" value="<%= username %>">
       <div class="main-header">
         <button class="menu-btn" id="menu-open">
           <span class="material-symbols-outlined">menu</span>
@@ -320,6 +321,7 @@
 
       <form class="tabs-section tab-content-2" id="regForm">
         <input type="hidden" name="userAction" id="userAction" value="ArticleGenerator">
+        <input type="hidden" name="userName" id="userName" value="<%= username %>">
         <div class="tab">
           <p class="instruction ins-1">* Article Title and Focus Keyword is required, make sure to add content.</p>
           <p class="instruction ins-2">* Make sure to click the check icon after editing a heading/subheading title.
@@ -525,6 +527,7 @@
 
       <div class="tabs-section tab-content-3" id="queriedGenerator">
         <input type="hidden" name="userAction" id="userAction" value="QueriedGenerator">
+        <input type="hidden" name="userName" id="userNameQuery" value="<%= username %>">
         <div class="query-tab">
           <div class="title-container">
             <div class="article-title">Focus Keyword</div>
