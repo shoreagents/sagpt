@@ -202,6 +202,7 @@ router.delete('/logout', (req, res) => {
   console.log("Logging out " + userName);
   console.log(userName + " logging out");
   logAction(userName, "User has logged out.");
+  res.clearCookie('username');
   users = users.filter(function (obj) {
     return obj.username !== userName;
   });
