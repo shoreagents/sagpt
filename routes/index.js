@@ -32,6 +32,7 @@ function authenticateToken(req, res, next) {
     const token = authHeader && authHeader.split(' ')[1]
     if (token == null) return res.sendStatus(401)
     jwt.verify(token, jwtToken, (err, user) => {
+      if (err) console.log(err);
       if (err) return res.sendStatus(403)
       req.user = user;
       next();
@@ -464,12 +465,12 @@ router.post('/', async (req, res) => {
       const seoTitle = await seoTitleGenerator(keyword);
       const metaDescription = await metaDescriptionGenerator(keyword, content);
       const slug = keyword.replace(/\s+/g, '-').toLowerCase();
-      
+
       // var createArticle = await bulkArticleGenerator(generalQuery, articleTitle, articleKeyword, perspectiveOutput, toneOutput, targetOutput, authorOutput,customerObjectiveOutput);
       console.log("/////////////////////////////////////////////////////////////////////////////////");
       console.log("//////////////////////////////////// OUTPUT /////////////////////////////////////");
       console.log("/////////////////////////////////////////////////////////////////////////////////");
-      
+
 
       output = {
         content,
@@ -654,7 +655,14 @@ router.post('/', async (req, res) => {
             } else {
               const role = data.role.name;
               user.role = role;
-              users.push(user);
+              if (users.some(e => e.username === identifier)) {
+                const index = users.findIndex(obj => { return obj.username === identifier });
+                users[index].tokenJWT = user.tokenJWT;
+                console.log(identifier+" re-logging in due to expired cookie");
+              }
+              else {
+                users.push(user);
+              }
               // res.cookie('jwtToken', data.jwt, { maxAge: 900000, httpOnly: true });
               res.cookie('username', data.username, { maxAge: 900000, httpOnly: true });
               fetch("https://sagpt.onrender.com/users", {
