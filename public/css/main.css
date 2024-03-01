@@ -378,8 +378,11 @@ header h2 {
   width: 90%;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 20px;
+  overflow: auto;
   gap: 10px;
-  padding-top: 30px;
 }
 
 .user-input {
@@ -1302,10 +1305,10 @@ textarea {
 }
 
 .float {
-  position: absolute;
+  position: relative;
   width: 100%;
   height: 60px;
-  bottom: 0px;
+  padding: 5px;
   background-color: #7eac0b;
   color: #FFF;
   text-align: center;
@@ -1580,6 +1583,7 @@ textarea {
   display: flex;
   align-items: center;
   padding: 15px;
+  gap: 5px;
   cursor: grab;
   border-radius: 6px;
 }
@@ -1616,6 +1620,7 @@ textarea {
   display: flex;
   align-items: center;
   align-self: end;
+  gap: 5px;
   cursor: grab;
   border-radius: 6px;
 }
@@ -1689,7 +1694,6 @@ textarea {
 
 .up,
 .down {
-  width: 100%;
   cursor: pointer;
 }
 

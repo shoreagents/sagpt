@@ -225,6 +225,45 @@ tinymce.init({
   content_style: 'body{ font-family:Montserrat,sans-serif; font-size:16px}'
 });
 
+/* Hide Menu Button Script */
+
+$('.menu-hide').on('click', function () {
+  if ($(".menu-hide").hasClass("menu-expand")) {
+    $('.logo a').css('display', 'block');
+    $('.sidebar a').css('display', 'block');
+    $('.profile .left').css('padding-left', '30px');
+    $('.profile .user').css('padding', '0');
+    $('.profile').css('flex-direction', 'row');
+    $('.profile').css('height', '60px');
+    $('.profile form').css('width', 'auto');
+    $('.profile form').css('border-top', 'none');
+    $('.profile form').css('justify-content', 'right');
+    $('.profile form').css('padding', '0');
+    $('.profile .material-symbols-rounded').css('padding-right', '30px');
+    $('.container').css('grid-template-columns', '1fr 2fr 3fr');
+    $('.menu-expand .material-symbols-outlined').text('chevron_left');
+    $('.menu-expand .tooltiptext').text('Minimize Menu');
+    $(".menu-expand").removeClass("menu-expand");
+  } else {
+    $('.logo a').css('display', 'none');
+    $('.sidebar a').css('display', 'none');
+    $('.profile .left').css('padding-left', '0');
+    $('.profile .user').css('padding', '10px');
+    $('.profile').css('flex-direction', 'column');
+    $('.profile').css('height', 'auto');
+    $('.profile form').css('width', '100%');
+    $('.profile form').css('border-top', '1px solid #F0F0F0');
+    $('.profile form').css('justify-content', 'center');
+    $('.profile form').css('padding', '10px');
+    $('.profile .material-symbols-rounded').css('padding-right', '0');
+    $('.container').css('grid-template-columns', '0fr 3fr 7fr');
+    $('.menu-hide .material-symbols-outlined').text('chevron_right');
+    $('.menu-hide .tooltiptext').text('Expand Menu');
+    $(".menu-hide").addClass("menu-expand");
+  }
+
+});
+
 /* Article Generator Options Button Script */
 
 $('.back').on('click', function () {
@@ -1325,8 +1364,8 @@ $(document).on('click', '.back', function () {
 
 $(document).on('click', '.enterPasswordBtn', function () {
   $(".enterPassword").css("display", "none");
-  setTimeout(function () { $('#confirmPassword').val('');  }, 2000);
-  
+  setTimeout(function () { $('#confirmPassword').val(''); }, 2000);
+
 });
 
 $(document).on('click', '.ai-assistant-settings', function () {

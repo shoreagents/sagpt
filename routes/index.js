@@ -150,7 +150,7 @@ function checkAuthenticated(req, res, next) {
         loggeduser.tokenJWT = data.jwt;
         // res.cookie('jwtToken', data.jwt, { maxAge: 900000, httpOnly: true });
         res.cookie('username', data.user.username, { maxAge: 900000, httpOnly: true });
-        fetch("https://sagpt.onrender.com/users", {
+        fetch("http://localhost:8082/users", {
           method: "POST",
           headers: {
             'Authorization': `Bearer ${accessToken}`,
@@ -364,7 +364,8 @@ router.post('/', async (req, res) => {
         const createArticle = await articleGenerator(generalQuery, articleTopic, query, articleTitle, articleKeyword, perspectiveOutput, toneOutput, targetOutput, authorOutput, customerObjectiveOutput);
         contentBody += `\n\n<h2>${articleHeading}</h2>\n${createArticle}`;
       }
-      const content = contentBody;
+      temp = contentBody.replace(/```html/g, '');
+      const content = temp.replace(/```/g, '');
       const seoTitle = await seoTitleGenerator(articleKeyword);
       const metaDescription = await metaDescriptionGenerator(articleKeyword, content);
       const slug = articleKeyword.replace(/\s+/g, '-').toLowerCase();
@@ -665,7 +666,7 @@ router.post('/', async (req, res) => {
               }
               // res.cookie('jwtToken', data.jwt, { maxAge: 900000, httpOnly: true });
               res.cookie('username', data.username, { maxAge: 900000, httpOnly: true });
-              fetch("https://sagpt.onrender.com/users", {
+              fetch("http://localhost:8082/users", {
                 method: "POST",
                 headers: {
                   'Authorization': `Bearer ${accessToken}`,
@@ -1331,8 +1332,9 @@ export const addHeadingContent = async (wordCount, articleContent, generalQuery,
         question: userprompt
       });
 
-      const temp = result.text;
-      output = addInternalLinks(temp);
+      // const temp = result.text;
+      // output = addInternalLinks(temp);
+      output = result.text;
       console.log("User Prompt:", userprompt);
       console.log("Chain Result:", output);
     } catch (error) {
@@ -1394,8 +1396,9 @@ export const generateConclusion = async (articleContent, generalQuery, title, ke
         question: userprompt
       });
 
-      const temp = result.text;
-      output = addInternalLinks(temp);
+      // const temp = result.text;
+      // output = addInternalLinks(temp);
+      output = result.text;
       console.log("User Prompt:", userprompt);
       console.log("Chain Result:", output);
     } catch (error) {

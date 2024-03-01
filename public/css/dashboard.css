@@ -150,7 +150,7 @@ i {
     width: 160px;
 }
 
-.sidebar2{
+.sidebar2 {
     height: 200px;
 }
 
@@ -371,13 +371,98 @@ main .separator input {
     color: #000;
 }
 
-.meta-fields {
-    display: flex;
-    align-items: center;
-}
-
 .meta-fields .title-container {
     width: 90%;
+}
+
+.menu-hide, .menu-expand {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    justify-content: center;
+    border: 2px solid #F0F0F0;
+    border-radius: 6px;
+    width: 20px;
+    background-color: #fff;
+    align-self: end;
+    top: 10px;
+    margin-right: -11px;
+    z-index: 1;
+    cursor: pointer;
+}
+
+.tooltiptext{
+    font-size: 14px;
+}
+
+.menu-hide .tooltiptext, .menu-expand .tooltiptext {
+    visibility: hidden;
+    width: max-content;
+    background-color: #7eac0b;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    left: 180%;
+}
+
+.menu-hide .tooltiptext::after, .menu-expand .tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 100%;
+    margin-top: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent #7eac0b transparent transparent;
+}
+
+.menu-hide:hover .tooltiptext, .menu-expand:hover .tooltiptext {
+    visibility: visible;
+}
+
+.logout .tooltiptext {
+    visibility: hidden;
+    width: 70px;
+    background-color: #7eac0b;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    margin-top: -5px;
+    margin-left: 8px;
+    z-index: 1;
+}
+
+.logout .tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 100%;
+    margin-top: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent #7eac0b transparent transparent;
+}
+
+.logout:hover .tooltiptext {
+    visibility: visible;
+}
+
+.menu-hide .material-symbols-outlined, .menu-expand .material-symbols-outlined {
+    color: #F0F0F0;
+}
+
+.menu-hide:hover, .menu-expand:hover {
+    background-color: #7eac0b;
+    border-color: #7eac0b;
+}
+
+.menu-hide .material-symbols-outlined:hover, .menu-expand .material-symbols-outlined:hover {
+    color: #fff;
 }
 
 @media screen and (max-width: 1550px) {
@@ -441,13 +526,14 @@ main .separator input {
     }
 
     .article-title,
-    .textarea-title, .login-title {
+    .textarea-title,
+    .login-title {
         width: 100%;
         border-radius: 6px 6px 0 0px;
         height: 40px;
     }
 
-    .sidebar2{
+    .sidebar2 {
         display: none;
     }
 
@@ -475,7 +561,8 @@ main .separator input {
         z-index: 10;
     }
 
-    .title-container, .login-container {
+    .title-container,
+    .login-container {
         flex-direction: column;
     }
 

@@ -31,6 +31,7 @@
 <div class="container">
 
   <aside class="left-section">
+    <div class="menu-hide"><span class="material-symbols-outlined">chevron_left</span><span class="tooltiptext">Minimize Menu</span></div>
     <div class="logo">
       <button class="menu-btn" id="menu-close">
         <span class="material-symbols-outlined">close</span>
@@ -78,7 +79,8 @@
       </div>
       <form action="/logout?_method=DELETE" method="POST">
         <input type="hidden" name="username" value="<%= username %>">
-        <button type="submit" class="material-symbols-rounded">logout</button>
+        <button type="submit" class="logout material-symbols-rounded">logout<span class="tooltiptext">Logout</span></button>
+        
       </form>
     </div>
 
@@ -957,6 +959,7 @@
       <input type="hidden" class="publish-website" value="">
       <section class="modal-container-body login-body rtf">
         <span class="material-symbols-outlined publish-back">keyboard_return</span>
+        <span class="profile-notice"></span>
         <p class="login-error">Invalid username/password</p>
         <div class="login-container">
           <div class="login-title">Username</div>
