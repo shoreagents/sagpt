@@ -467,10 +467,6 @@ main .separator input {
 
 @media screen and (max-width: 1550px) {
 
-    .container {
-        grid-template-columns: 1fr 3fr 3fr;
-    }
-
     .logo {
         padding: 0 30px;
     }
@@ -480,13 +476,21 @@ main .separator input {
 @media screen and (max-width: 1200px) {
 
     .container {
-        grid-template-columns: 1fr 4fr 5fr;
+        grid-template-columns: 1fr 4fr 5fr !important;
     }
+
+    main {
+        padding: 40px 20px;
+    }
+
+}
+
+@media screen and (max-width: 992px) {
 
     .container .left-section .logo a,
     .container .left-section .sidebar a,
     .container .left-section .pic img {
-        display: none;
+        display: none !important;
     }
 
     .profile {
@@ -494,8 +498,8 @@ main .separator input {
         height: auto;
     }
 
-    .profile .left {
-        padding: 10px;
+    .profile .left{
+        padding: 5px;
     }
 
     .profile form {
@@ -509,20 +513,16 @@ main .separator input {
         padding-right: 0;
     }
 
-    main {
-        padding: 40px 20px;
+    .menu-hide{
+        display: none;
     }
-
-}
-
-@media screen and (max-width: 992px) {
 
     .modal-container {
         width: 80%;
     }
 
     .container {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr 1fr !important;
     }
 
     .article-title,
@@ -628,7 +628,7 @@ main .separator input {
     }
 
     .container {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr !important;
     }
 
     .container .right-section>.top {
