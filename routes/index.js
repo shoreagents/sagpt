@@ -24,7 +24,6 @@ var users = [];
 function authenticateToken(req, res, next) {
   try {
     const usernameValue = req.body.username;
-    console.log("Username authenticate token: " + usernameValue);
     var loggeduser = users.find(({ username }) => username === usernameValue);
     const jwtToken = loggeduser.tokenJWT;
     if (jwtToken === undefined) res.redirect('/');
@@ -150,7 +149,8 @@ function checkAuthenticated(req, res, next) {
         loggeduser.tokenJWT = data.jwt;
         // res.cookie('jwtToken', data.jwt, { maxAge: 900000, httpOnly: true });
         res.cookie('username', data.user.username, { maxAge: 900000, httpOnly: true });
-        fetch("https://sagpt.onrender.com/users", {
+        var fullUrl = req.protocol + '://' + req.get('host') + "/";
+        fetch(`${fullUrl}users`, {
           method: "POST",
           headers: {
             'Authorization': `Bearer ${accessToken}`,
@@ -659,14 +659,15 @@ router.post('/', async (req, res) => {
               if (users.some(e => e.username === identifier)) {
                 const index = users.findIndex(obj => { return obj.username === identifier });
                 users[index].tokenJWT = user.tokenJWT;
-                console.log(identifier+" re-logging in due to expired cookie");
+                console.log(identifier + " re-logging in due to expired cookie");
               }
               else {
                 users.push(user);
               }
               // res.cookie('jwtToken', data.jwt, { maxAge: 900000, httpOnly: true });
               res.cookie('username', data.username, { maxAge: 900000, httpOnly: true });
-              fetch("https://sagpt.onrender.com/users", {
+              var fullUrl = req.protocol + '://' + req.get('host') + "/";
+              fetch(`${fullUrl}users`, {
                 method: "POST",
                 headers: {
                   'Authorization': `Bearer ${accessToken}`,
