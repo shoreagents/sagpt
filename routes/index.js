@@ -170,9 +170,7 @@ function checkAuthenticated(req, res, next) {
               next();
             }
           }).catch((error) => {
-            console.log(error)
-            res.clearCookie('username');
-            res.clearCookie('tokenJWT');
+            console.log(error);
             res.redirect('/login');
           })
         }
