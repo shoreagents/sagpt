@@ -125,57 +125,63 @@ function logAction(userName, logaction) {
 function checkAuthenticated(req, res, next) {
   try {
     var loggeduser = users.find(({ username }) => username === req.cookies["username"]);
-    const identifier = loggeduser.username;
-    const password = loggeduser.password;
-    const API_URL = "https://sagpt-data.onrender.com/api/auth/local";
-    const requestOptions = {
-      method: "POST",
+    if (req.cookies["tokenJWT"] == loggeduser.tokenJWT) {
+      const identifier = loggeduser.username;
+      const password = loggeduser.password;
+      const API_URL = "https://sagpt-data.onrender.com/api/auth/local";
+      const requestOptions = {
+        method: "POST",
 
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        "identifier": identifier,
-        "password": password
-      })
-    }
-    fetch(API_URL, requestOptions).then(res => res.json()).then(data => {
-      if (data.error) {
-        console.log(data.error.message);
-        res.render('login', { notice: "none", noticemsg: "none", errormsg: data.error.message });
-      } else {
-        const user = data.user;
-        const accessToken = jwt.sign(user, data.jwt);
-        loggeduser.tokenJWT = data.jwt;
-        // res.cookie('jwtToken', data.jwt, { maxAge: 900000, httpOnly: true });
-        res.cookie('username', data.user.username, { maxAge: 900000, httpOnly: true });
-        var fullUrl = req.protocol + '://' + req.get('host') + "/";
-        fetch(`${fullUrl}users`, {
-          method: "POST",
-          headers: {
-            'Authorization': `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-            'accept': 'application/json',
-          },
-          body: JSON.stringify({
-            "username": user.username
-          })
-        }).then(res => res.json()).then(data => {
-          if (data.error) {
-            console.log(data.error.message);
-            res.render('login', { notice: "none", noticemsg: "none", errormsg: data.error.message });
-          } else {
-            req.user = data;
-            next();
-          }
-        }).catch((error) => {
-          console.log(error)
-          res.redirect('/login');
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          "identifier": identifier,
+          "password": password
         })
       }
-    })
+      fetch(API_URL, requestOptions).then(res => res.json()).then(data => {
+        if (data.error) {
+          console.log(data.error.message);
+          res.render('login', { notice: "none", noticemsg: "none", errormsg: data.error.message });
+        } else {
+          const user = data.user;
+          const accessToken = jwt.sign(user, data.jwt);
+          loggeduser.tokenJWT = data.jwt;
+          res.cookie('tokenJWT', data.jwt, { maxAge: 900000, httpOnly: true });
+          res.cookie('username', data.user.username, { maxAge: 900000, httpOnly: true });
+          var fullUrl = req.protocol + '://' + req.get('host') + "/";
+          fetch(`${fullUrl}users`, {
+            method: "POST",
+            headers: {
+              'Authorization': `Bearer ${accessToken}`,
+              'Content-Type': 'application/json',
+              'accept': 'application/json',
+            },
+            body: JSON.stringify({
+              "username": user.username
+            })
+          }).then(res => res.json()).then(data => {
+            if (data.error) {
+              console.log(data.error.message);
+              res.render('login', { notice: "none", noticemsg: "none", errormsg: data.error.message });
+            } else {
+              req.user = data;
+              next();
+            }
+          }).catch((error) => {
+            console.log(error)
+            res.redirect('/login');
+          })
+        }
+      })
+    } else {
+      console.log("Login Validation Error");
+      res.clearCookie('username');
+      res.clearCookie('tokenJWT');
+      res.redirect('/login');
+    }
   } catch (error) {
-    // users = [];
     res.redirect('/login');
   }
 }
@@ -204,6 +210,7 @@ router.delete('/logout', (req, res) => {
   console.log(userName + " logging out");
   logAction(userName, "User has logged out.");
   res.clearCookie('username');
+  res.clearCookie('tokenJWT');
   users = users.filter(function (obj) {
     return obj.username !== userName;
   });
@@ -664,7 +671,7 @@ router.post('/', async (req, res) => {
               else {
                 users.push(user);
               }
-              // res.cookie('jwtToken', data.jwt, { maxAge: 900000, httpOnly: true });
+              res.cookie('tokenJWT', user.tokenJWT, { maxAge: 900000, httpOnly: true });
               res.cookie('username', data.username, { maxAge: 900000, httpOnly: true });
               var fullUrl = req.protocol + '://' + req.get('host') + "/";
               fetch(`${fullUrl}users`, {
@@ -731,7 +738,7 @@ router.post('/', async (req, res) => {
         } else {
           const user = data.user;
           loggeduser.tokenJWT = data.jwt;
-          // res.cookie('jwtToken', data.jwt, { maxAge: 900000, httpOnly: true });
+          res.cookie('tokenJWT', data.jwt, { maxAge: 900000, httpOnly: true });
           res.cookie('username', data.user.username, { maxAge: 900000, httpOnly: true });
           fetch("https://sagpt-data.onrender.com/api/auth/change-password", {
             method: "POST",
@@ -796,7 +803,7 @@ router.post('/', async (req, res) => {
         } else {
           const user = data.user;
           loggeduser.tokenJWT = data.jwt;
-          // res.cookie('jwtToken', data.jwt, { maxAge: 900000, httpOnly: true });
+          res.cookie('tokenJWT', data.jwt, { maxAge: 900000, httpOnly: true });
           res.cookie('username', data.user.username, { maxAge: 900000, httpOnly: true });
           fetch(`https://sagpt-data.onrender.com/api/users/${user.id}`, {
             method: "PUT",
