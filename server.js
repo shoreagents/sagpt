@@ -22,9 +22,16 @@ app.use(express.urlencoded({limit: '50mb', extended: true}));
 app.use( bodyParser.json() );
 app.use(bodyParser.urlencoded({ extended: true })); 
 
-
-
 app.use('/', indexRouter)
+
+app.enable('trust proxy');
+app.use((req, res, next) => {
+    if (req.secure) {
+        next();
+    } else {
+        res.redirect('https://' + req.headers.host + req.url);
+    }
+});
 
 app.listen(process.env.PORT)
 
