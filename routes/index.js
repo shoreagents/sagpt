@@ -653,15 +653,13 @@ router.post('/', async (req, res) => {
           var user = data.user;
           user.password = password;
           user.tokenJWT = data.jwt;
-          accessToken = jwt.sign(user, data.jwt);
-          console.log("check error 1");
+          accessToken = jwt.sign(user, data.jwt)
           fetch("https://sagpt-data.onrender.com/api/users/me?populate=role", {
             method: "GET",
             headers: {
               'Authorization': `Bearer ${data.jwt}`
             }
           }).then(res => res.json()).then(data => {
-            console.log("check error 2");
             if (data.error) {
               console.log(data.error.message);
             } else {
@@ -678,7 +676,6 @@ router.post('/', async (req, res) => {
               res.cookie('tokenJWT', user.tokenJWT, { maxAge: 900000, httpOnly: true });
               res.cookie('username', data.username, { maxAge: 900000, httpOnly: true });
               var fullUrl = req.protocol + '://' + req.get('host') + "/";
-              console.log(fullUrl);
               fetch(`${fullUrl}users`, {
                 method: "POST",
                 headers: {
