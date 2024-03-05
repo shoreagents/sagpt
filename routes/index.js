@@ -91,7 +91,7 @@ async function getData(name, userName) {
   return output;
 }
 
-function logAction(userName, logaction,) {
+function logAction(userName, logaction) {
   var loggeduser = users.find(({ username }) => username === userName);
   fetch(`https://sagpt-data.onrender.com/api/logs`, {
     method: "POST",

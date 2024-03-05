@@ -1386,6 +1386,15 @@ $(document).on('click', '.change-password', function () {
   $(".settings-item").css("display", "none");
 });
 
+$(document).on('click', '.strapi-admin', function () {
+  var win = window.open('https://sagpt-data.onrender.com/admin', '_blank');
+  if (win) {
+    win.focus();
+  } else {
+    alert('Please allow popups for this website');
+  }
+});
+
 $(document).on('click', '.login-modal .icon-button', function () {
   $("body").css("overflow", "auto");
 });
