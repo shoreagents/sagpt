@@ -171,6 +171,8 @@ function checkAuthenticated(req, res, next) {
             }
           }).catch((error) => {
             console.log(error)
+            res.clearCookie('username');
+            res.clearCookie('tokenJWT');
             res.redirect('/login');
           })
         }
@@ -182,6 +184,8 @@ function checkAuthenticated(req, res, next) {
       res.redirect('/login');
     }
   } catch (error) {
+    res.clearCookie('username');
+    res.clearCookie('tokenJWT');
     res.redirect('/login');
   }
 }
