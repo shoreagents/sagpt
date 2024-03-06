@@ -562,7 +562,7 @@ router.post('/', async (req, res) => {
         }
         var num = wordCount - 500;
         console.log(wordCount);
-        if (num < 500) {
+        if (num < 1000) {
           if (typeof createArticle === 'undefined') {
             createArticle = "\n";
           }
@@ -579,7 +579,7 @@ router.post('/', async (req, res) => {
       const seoTitle = await seoTitleGenerator(keyword);
       const metaDescription = await metaDescriptionGenerator(keyword, content);
       const slug = keyword.replace(/\s+/g, '-').toLowerCase();
-
+      const articleTitle = title;
       // var createArticle = await bulkArticleGenerator(generalQuery, articleTitle, articleKeyword, perspectiveOutput, toneOutput, targetOutput, authorOutput,customerObjectiveOutput);
       console.log("/////////////////////////////////////////////////////////////////////////////////");
       console.log("//////////////////////////////////// OUTPUT /////////////////////////////////////");
@@ -589,6 +589,7 @@ router.post('/', async (req, res) => {
       output = {
         content,
         seoTitle,
+        articleTitle,
         metaDescription,
         slug
       }
