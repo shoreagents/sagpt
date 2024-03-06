@@ -500,6 +500,108 @@ router.post('/', async (req, res) => {
       console.log(bulkdata + " | " + error);
       res.send({ output });
     }
+  } else if (userAction == "IntegromatArticleGenerator") {
+    const keyword = req.body.keyword;
+    const articleOverview = req.body.articleOverview;
+    const tone = req.body.tone;
+    const author = req.body.author;
+    const target = req.body.target;
+    const perspective = req.body.perspective;
+    const customerObjective = req.body.customerObjective;
+
+    var toneOutput = "";
+    var authorOutput = "";
+    var targetOutput = "";
+    var perspectiveOutput = "";
+    var customerObjectiveOutput = "";
+
+    if (tone == "Select Tone/Personality") {
+      var toneOutput = "";
+    } else if (tone != "None") {
+      toneOutput = `You are in ${tone} personality, so you will answer with the given subtones of that personality.`;
+    }
+    if (author == "Select Author") {
+      var authorOutput = "";
+    } else if (author != "None") {
+      authorOutput = `The author is ${author}.`;
+    }
+    if (target == "Select Target Market") {
+      var targetOutput = "";
+    } else if (target != "None") {
+      targetOutput = `Your Target Market/s will be ${target}.`;
+    }
+    if (perspective == "Select Perspective") {
+      var perspectiveOutput = "";
+    } else if (perspective != "None") {
+      perspectiveOutput = `You will write in ${perspective} writing perspective.`;
+    }
+    if (customerObjective == "Select Customer Objective") {
+      var customerObjectiveOutput = "";
+    } else if (customerObjective != "None") {
+      customerObjectiveOutput = `The selected Customer Objective is ${customerObjective}.`;
+    }
+
+    try {
+      var title;
+      var output;
+      var temp;
+      const createTitle = await titleGenerator(keyword, perspectiveOutput, toneOutput, targetOutput, customerObjectiveOutput);
+      var titleTemp = createTitle.replace(/['"]+/g, '')
+      title = titleTemp;
+      console.log("Article Title: " + title);
+      var createArticle;
+      var wordCount;
+      var num = wordCount - 500;
+      console.log(wordCount);
+
+      for (let i = 0; i < 20; i++) {
+        if (createArticle == null) {
+          wordCount = 0;
+        } else {
+          wordCount = createArticle.match(/(\w+)/g).length;
+        }
+        var num = wordCount - 500;
+        console.log(wordCount);
+        if (num < 500) {
+          if (typeof createArticle === 'undefined') {
+            createArticle = "\n";
+          }
+          createArticle += "\n\n" + await addHeadingContent(wordCount, createArticle, articleOverview, title, keyword, perspectiveOutput, toneOutput, targetOutput, authorOutput, customerObjectiveOutput);
+        } else {
+          createArticle += "\n\n" + await generateConclusion(createArticle, articleOverview, title, keyword, perspectiveOutput, toneOutput, targetOutput, authorOutput, customerObjectiveOutput);
+          break;
+        }
+      }
+
+      const tempcontent = "<h1>" + title + "</h1>" + "\n" + createArticle;
+      temp = tempcontent.replace(/```html/g, '');
+      const content = temp.replace(/```/g, '');
+      const seoTitle = await seoTitleGenerator(keyword);
+      const metaDescription = await metaDescriptionGenerator(keyword, content);
+      const slug = keyword.replace(/\s+/g, '-').toLowerCase();
+
+      // var createArticle = await bulkArticleGenerator(generalQuery, articleTitle, articleKeyword, perspectiveOutput, toneOutput, targetOutput, authorOutput,customerObjectiveOutput);
+      console.log("/////////////////////////////////////////////////////////////////////////////////");
+      console.log("//////////////////////////////////// OUTPUT /////////////////////////////////////");
+      console.log("/////////////////////////////////////////////////////////////////////////////////");
+
+
+      output = {
+        content,
+        seoTitle,
+        metaDescription,
+        slug
+      }
+
+      console.log(output);
+      // var wordCount = output.match(/(\w+)/g).length;
+      // console.log(wordCount);
+      res.send({ output });
+    } catch (error) {
+      output = "There is an error on our server. Sorry for inconvenience. Please try again later.";
+      console.log(bulkdata + " | " + error);
+      res.send({ output });
+    }
   } else if (userAction == "BulkArticleGenerator") {
     const focuskeyword1 = req.body.focuskeyword1;
     const focuskeyword2 = req.body.focuskeyword2;
@@ -716,6 +818,7 @@ router.post('/', async (req, res) => {
   } else if (userAction == "ChangePassword") {
     try {
       var loggeduser = users.find(({ username }) => username === req.cookies["username"]);
+      console.log(loggeduser);
       const identifier = loggeduser.username;
       const password = loggeduser.password;
       const currentPassword = req.body.password;

@@ -968,7 +968,13 @@ $('.add-list-container').on('click', function () {
       $("#" + newId).val($("#" + newHeadingText).val());
     });
   });
+
   $('.checkheading').on('click', function () {
+    // if ($(".heading-text").hasClass("edit-active")) {
+    //   $('.button').addClass('btn-disabled');
+    // } else {
+    //   $('.button').removeClass('btn-disabled');
+    // }
     var inputValue = $(this).parent().find(".heading").val();
     $(this).parent().find(".heading-value").text(inputValue);
     $(this).parent().find(".heading-text").attr("value", inputValue);
