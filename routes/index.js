@@ -575,7 +575,7 @@ router.post('/', async (req, res) => {
         }
       }
 
-      const tempcontent = "<h1>" + title + "</h1>" + "\n" + createArticle;
+      const tempcontent = createArticle;
       temp = tempcontent.replace(/```html/g, '');
       const content = temp.replace(/```/g, '');
       const seoTitle = await seoTitleGenerator(keyword);
