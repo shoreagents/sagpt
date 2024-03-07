@@ -1322,10 +1322,10 @@ textarea {
 }
 
 .updatepost {
-  position: absolute;
+  position: relative;
   width: 100%;
   height: 60px;
-  bottom: 0px;
+  padding: 5px;
   background-color: #7eac0b;
   color: #FFF;
   text-align: center;
@@ -1540,8 +1540,35 @@ textarea {
   gap: 10px;
 }
 
-.choose-site img{
-  width: 30%;
+.choose-site-container{
+  display: flex;
+  width: 100%;
+  height: 130px;
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.choose-site-container-query{
+  display: flex;
+  width: 100%;
+  height: 130px;
+  gap: 10px;
+}
+
+.choose-site-container input, .choose-site-container-query input{
+  display: none;
+}
+
+.choose-site img, .choose-site-container img, .choose-site-container-query img{
+  width: 60%;
+}
+
+.choose-site-info{
+  font-size: 20px;
+}
+
+.choose-site-container .shoreagents-site, .choose-site-container-query .shoreagents-site{
+  opacity: .5;
 }
 
 .shoreagents-site{
@@ -1563,7 +1590,7 @@ textarea {
 }
 
 .shoreagents-site:hover, .careers-site:hover{
-  opacity: 70%;
+  opacity: .5 !important;
 }
 
 .login-input {

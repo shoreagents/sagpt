@@ -311,6 +311,26 @@ $('.publish-back').on('click', function () {
   $(".publish-website").val("");
 });
 
+$('.choose-site-container .shoreagents-site').on('click', function () {
+  $('.choose-site-container .shoreagents-site').css('opacity', '.5');
+  $('.choose-site-container .careers-site').css('opacity', '1');
+});
+
+$('.choose-site-container .careers-site').on('click', function () {
+  $('.choose-site-container .careers-site').css('opacity', '.5');
+  $('.choose-site-container .shoreagents-site').css('opacity', '1');
+});
+
+$('.choose-site-container-query .shoreagents-site').on('click', function () {
+  $('.choose-site-container-query .shoreagents-site').css('opacity', '.5');
+  $('.choose-site-container-query .careers-site').css('opacity', '1');
+});
+
+$('.choose-site-container-query .careers-site').on('click', function () {
+  $('.choose-site-container-query .careers-site').css('opacity', '.5');
+  $('.choose-site-container-query .shoreagents-site').css('opacity', '1');
+});
+
 /* Article Generate Response Script */
 
 function articleResponse() {
@@ -369,6 +389,7 @@ function articleResponse() {
     const outputTarget = $("#articleTargetOptions").val();
     const generalQ = document.getElementById('generalquery').value;
     const userName = document.getElementById('userName').value;
+    const chooseSite = document.querySelector('input[name="choose-site"]:checked').value;
     const requestOptions = {
       method: "POST",
 
@@ -385,6 +406,7 @@ function articleResponse() {
         perspective: outputPerspective.textContent,
         customerObjective: outputCustomerObjective.textContent,
         keyword: keyword,
+        site: chooseSite,
         generalQuery: generalQ,
         listquery: listqueryArr,
         userAction: "ArticleGenerator",
@@ -467,6 +489,7 @@ function queryArticleResponse() {
     const API_URL = "/";
     const outputTarget = $("#queryArticleTO").val();
     const userName = document.getElementById('userNameQuery').value;
+    const chooseSite = document.querySelector('input[name="choose-site-query"]:checked').value;
     const requestOptions = {
       method: "POST",
 
@@ -481,6 +504,7 @@ function queryArticleResponse() {
         target: outputTarget,
         perspective: outputPerspective.textContent,
         customerObjective: outputCustomerObjective.textContent,
+        site: chooseSite,
         userAction: "QueryArticleGenerator",
         userName: userName
       })

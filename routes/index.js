@@ -291,6 +291,7 @@ router.post('/', async (req, res) => {
     const perspective = req.body.perspective;
     const customerObjective = req.body.customerObjective;
     const userName = req.body.userName;
+    const site = req.body.site;
     var articlearray = {};
     articlearray.title = title;
     for (let i = 0; i < heading.length; i++) {
@@ -370,7 +371,7 @@ router.post('/', async (req, res) => {
             articleTopic += "\n" + value;
           }
         }
-        const createArticle = await articleGenerator(generalQuery, articleTopic, query, articleTitle, articleKeyword, perspectiveOutput, toneOutput, targetOutput, authorOutput, customerObjectiveOutput);
+        const createArticle = await articleGenerator(generalQuery, articleTopic, query, articleTitle, articleKeyword, perspectiveOutput, toneOutput, targetOutput, authorOutput, customerObjectiveOutput, site);
         contentBody += `\n\n<h2>${articleHeading}</h2>\n${createArticle}`;
       }
       temp = contentBody.replace(/```html/g, '');
@@ -404,6 +405,7 @@ router.post('/', async (req, res) => {
     const perspective = req.body.perspective;
     const customerObjective = req.body.customerObjective;
     const userName = req.body.userName;
+    const site = req.body.site;
 
     var toneOutput = "";
     var authorOutput = "";
@@ -462,9 +464,9 @@ router.post('/', async (req, res) => {
           if (typeof createArticle === 'undefined') {
             createArticle = "\n";
           }
-          createArticle += "\n\n" + await addHeadingContent(wordCount, createArticle, articleOverview, title, keyword, perspectiveOutput, toneOutput, targetOutput, authorOutput, customerObjectiveOutput);
+          createArticle += "\n\n" + await addHeadingContent(wordCount, createArticle, articleOverview, title, keyword, perspectiveOutput, toneOutput, targetOutput, authorOutput, customerObjectiveOutput, site);
         } else {
-          createArticle += "\n\n" + await generateConclusion(createArticle, articleOverview, title, keyword, perspectiveOutput, toneOutput, targetOutput, authorOutput, customerObjectiveOutput);
+          createArticle += "\n\n" + await generateConclusion(createArticle, articleOverview, title, keyword, perspectiveOutput, toneOutput, targetOutput, authorOutput, customerObjectiveOutput, site);
           break;
         }
       }
@@ -1075,7 +1077,14 @@ export const runWithEmbeddings = async (question, perspectiveOutput, toneOutput,
   return output;
 };
 
-export const articleGenerator = async (generalQuery, question, query, title, keyword, perspectiveOutput, toneOutput, targetOutput, authorOutput, customerObjectiveOutput) => {
+export const articleGenerator = async (generalQuery, question, query, title, keyword, perspectiveOutput, toneOutput, targetOutput, authorOutput, customerObjectiveOutput, site) => {
+
+  var siteText;
+  if (site == "Company Site") {
+    siteText = "This article is for the ShoreAgents Company Website";
+  } else if (site == "Careers Site") {
+    siteText = "This article is for the ShoreAgents Careers Website";
+  }
 
   var output;
   const userprompt = `You are a content writer and will draft HTML formatted articles where at the start of every paragraph you will add '<p>' and must end with '</p>', it will be the same with Subheadings but with '<h3>' and '</h3>', and your responsibility is to elaborate on the provided heading title. "PLEASE DO NOT CREATE AN ENTIRE ARTICLE." ${perspectiveOutput} ${toneOutput} ${authorOutput} ${targetOutput} ${customerObjectiveOutput}` + ` Expand this outline using the article title "${title}", and the focus keyword "${keyword}". The article outline: ${question}.
@@ -1083,6 +1092,7 @@ export const articleGenerator = async (generalQuery, question, query, title, key
   Instructions:
   ${query}
   ${generalQuery}
+  ${siteText}
   Do not include the article heading but you can include subheadings.
   Make sure that the heading body is long and explained in detail.
   You can add h4 subheadings inside h3 if possible.
@@ -1375,7 +1385,14 @@ export const titleGenerator = async (focuskeyword, perspectiveOutput, toneOutput
 //   return output;
 // };
 
-export const addHeadingContent = async (wordCount, articleContent, generalQuery, title, keyword, perspectiveOutput, toneOutput, targetOutput, authorOutput, customerObjectiveOutput) => {
+export const addHeadingContent = async (wordCount, articleContent, generalQuery, title, keyword, perspectiveOutput, toneOutput, targetOutput, authorOutput, customerObjectiveOutput, site) => {
+
+  var siteText;
+  if (site == "Company Site") {
+    siteText = "This article is for the ShoreAgents Company Website";
+  } else if (site == "Careers Site") {
+    siteText = "This article is for the ShoreAgents Careers Website";
+  }
 
   var output;
   var userprompt;
@@ -1384,6 +1401,7 @@ export const addHeadingContent = async (wordCount, articleContent, generalQuery,
   
     Instructions:
       ${generalQuery}
+      ${siteText}
       You can be creative such as adding <ul> <li> and <h4> subheadings inside H2 headings.
       Make sure to add the generated H2 Heading.
       Do not add the word 'Subheading:' in the subheading titles.
@@ -1400,6 +1418,7 @@ export const addHeadingContent = async (wordCount, articleContent, generalQuery,
     ${generalQuery}
   
     Instructions:
+      ${siteText}
       You can be creative such as adding <ul> <li> and <h4> subheadings inside H2 headings.
       Make sure to add the generated H2 Heading.
       Do not add the word 'Subheading:' in the subheading titles.

@@ -391,6 +391,15 @@
           </div>
         </div>
         <div class="tab regform-settings">
+          <h2 class="choose-site-info">Choose the website where the article is intended for creation.</h2>
+          
+          <div class="choose-site-container">
+            <input type="radio" id="companySite" name="choose-site" value="Company Site" checked="checked">
+            <label for="companySite" class="shoreagents-site"><img src="/images/shoreagents-white.png" alt="ShoreAgents Logo"></label>
+            <input type="radio" id="careersSite" name="choose-site" value="Careers Site">
+            <label for="careersSite" class="careers-site"><img src="/images/shoreagents-careers-white.png" alt="ShoreAgents Careers Logo"></label>
+          </div>
+
           <div class="title-container">
             <div class="article-title">Customer Objective</div>
             <div class="title-input">
@@ -535,6 +544,13 @@
         <input type="hidden" name="userAction" id="userAction" value="QueriedGenerator">
         <input type="hidden" name="userName" id="userNameQuery" value="<%= username %>">
         <div class="query-tab">
+          <h2 class="choose-site-info">Choose the website where the article is intended for creation.</h2>
+          <div class="choose-site-container-query">
+            <input type="radio" id="companySiteQuery" name="choose-site-query" value="Company Site" checked="checked">
+            <label for="companySiteQuery" class="shoreagents-site"><img src="/images/shoreagents-white.png" alt="ShoreAgents Logo"></label>
+            <input type="radio" id="careersSiteQuery" name="choose-site-query" value="Careers Site">
+            <label for="careersSiteQuery" class="careers-site"><img src="/images/shoreagents-careers-white.png" alt="ShoreAgents Careers Logo"></label>
+          </div>
           <div class="title-container">
             <div class="article-title">Focus Keyword</div>
             <div class="title-input"><input type="text" name="keyword" class="generator-input" id="queriedKeyword"
@@ -956,8 +972,8 @@
       </button>
     </div>
     <div class="choose-site">
-      <span class="shoreagents-site"><img src="/images/shoreagents-logo-white.png" alt="ShoreAgents Logo"></span>
-      <span class="careers-site"><img src="/images/shoreagents-careers-logo-white.png" alt="ShoreAgents Careers Logo"></span>
+      <span class="shoreagents-site"><img src="/images/shoreagents-white.png" alt="ShoreAgents Logo"></span>
+      <span class="careers-site"><img src="/images/shoreagents-careers-white.png" alt="ShoreAgents Careers Logo"></span>
     </div>
     <div class="login-wordpress">
       <input type="hidden" class="publish-website" value="">
