@@ -578,8 +578,6 @@ router.post('/', async (req, res) => {
       const tempcontent = createArticle;
       temp = tempcontent.replace(/```html/g, '');
       const content = temp.replace(/```/g, '');
-      const seoTitle = await seoTitleGenerator(keyword);
-      const metaDescription = await metaDescriptionGenerator(keyword, content);
       const slug = keyword.replace(/\s+/g, '-').toLowerCase();
       const articleTitle = title;
       // var createArticle = await bulkArticleGenerator(generalQuery, articleTitle, articleKeyword, perspectiveOutput, toneOutput, targetOutput, authorOutput,customerObjectiveOutput);
@@ -590,9 +588,7 @@ router.post('/', async (req, res) => {
 
       output = {
         content,
-        seoTitle,
         articleTitle,
-        metaDescription,
         slug
       }
 
