@@ -578,6 +578,8 @@ router.post('/', async (req, res) => {
       const tempcontent = createArticle;
       temp = tempcontent.replace(/```html/g, '');
       const content = temp.replace(/```/g, '');
+      const seoTitle = await seoTitleGenerator(keyword);
+      const metaDescription = await metaDescriptionGenerator(keyword, content);
       const slug = keyword.replace(/\s+/g, '-').toLowerCase();
       const articleTitle = title;
       // var createArticle = await bulkArticleGenerator(generalQuery, articleTitle, articleKeyword, perspectiveOutput, toneOutput, targetOutput, authorOutput,customerObjectiveOutput);
@@ -588,7 +590,9 @@ router.post('/', async (req, res) => {
 
       output = {
         content,
+        seoTitle,
         articleTitle,
+        metaDescription,
         slug
       }
 
@@ -1260,7 +1264,7 @@ export const metaDescriptionGenerator = async (focuskeyword, articleContent) => 
 export const titleGenerator = async (focuskeyword, perspectiveOutput, toneOutput, targetOutput, customerObjectiveOutput) => {
 
   var output;
-  const userprompt = `Create a good article title using the keyword '${focuskeyword}'. Make sure to make it SEO optimized. ${perspectiveOutput} ${toneOutput} ${targetOutput} ${customerObjectiveOutput} Make sure to keep it a title only, and do not include any introductions or short descriptions.`
+  const userprompt = `Create a good article title using the keyword '${focuskeyword}'. Make sure to make it SEO optimized. ${perspectiveOutput} ${toneOutput} ${targetOutput} ${customerObjectiveOutput} Make sure to keep it a title only, and do not include any introductions or short descriptions. Avoid using the terms "Maximize, Streamline, Leverage, Transform, Discover, Boosting, Enhancing, Optimizing."`
 
   console.log(userprompt);
 
