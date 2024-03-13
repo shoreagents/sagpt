@@ -230,167 +230,167 @@ router.post('/users', authenticateToken, async (req, res) => {
   return res.json(output);
 })
 
-router.post('/testimage', async (req, res) => {
-  const article = `<h2>Revolutionize Your Real Estate Team with the Ideal Virtual Assistant in 2024</h2>
-  <p>Hey there, go-getters in the real estate realm! Are you ready to catapult your business into the stratosphere of success in 2024? It's time to get jazzed about the "The Ultimate Hiring Guide 2024: Securing the Best Real Estate Virtual Assistant for Your Business"! This guide is your golden ticket to finding a virtual assistant (VA) who doesn't just meet the mark but skyrockets past it, giving your team that competitive edge you're hungry for.</p>
-  <p>Let's dive into the smorgasbord of hiring options at your fingertips. Picture this: a world where Business Process Outsourcing (BPO) companies like ShoreAgents are your trusted allies in the quest for the finest VA talent. We're talking about a smooth, streamlined hiring process versus the wild west of online freelance platforms. Sure, platforms like Upwork or Fiverr might seem tempting with their vast pools of candidates, but here's the scoop: BPOs bring a whole lot more to the table.</p>
-  <ul>
-  <li><strong>Managed Services:</strong> BPOs like ShoreAgents offer a guided experience, ensuring you're matched with VAs who have the skills to shine in the real estate industry.</li>
-  <li><strong>Secure Working Environments:</strong> No more fretting over data security. BPOs have got your back with top-notch security protocols, so your business info stays safe.</li>
-  <li><strong>Cost-Effectiveness:</strong> Get ready to high-five your accountant because BPOs provide a stellar workforce at a fraction of the cost of local hires.</li>
-  <li><strong>Stability and Reliability:</strong> Forget the freelancer flake-outs. BPO workers are in it for the long haul, providing the commitment and consistency your team deserves.</li>
-  </ul>
-  <p>But hey, don't just take our word for it. Let's peel back the curtain and show you the behind-the-scenes magic of hiring a real estate VA through a BPO. Starting with crafting that killer job description, to engaging with ShoreAgents for a lineup of vetted candidates, you're in for a hiring journey smoother than a cold brew on a hot day.</p>
-  <p>Imagine a world where initial interviews and candidate screenings are taken care of by the BPO—yes, you can stop pinching yourself now, it's real! You're steps away from making that final hiring decision with confidence, knowing you've got the cream of the crop knocking at your digital door.</p>
-  <p>So, are you ready to make waves in the real estate industry? Embrace the hiring revolution with open arms and let ShoreAgents lead the way. It's time to boost your team's edge and stay at the forefront of the competitive real estate market in 2024. Let's do this!</p>
-  <h2>Unlock the Potential of Your Real Estate Business with a Top-Tier Virtual Assistant</h2>
-  <p>Listen up, trailblazers of the real estate industry! It's 2024, and the time to elevate your business game is now! Navigate through the "The Ultimate Hiring Guide 2024: Securing the Best Real Estate Virtual Assistant for Your Business" with an electrifying sense of purpose. We're not just scratching the surface; we're delving deep into the realm of hiring a virtual assistant who will not only be a fitting addition to your team but will also drive you to unparalleled heights of productivity and innovation.</p>
-  <p>Imagine cutting through the noise and chaos of the hiring world and landing a VA that's the embodiment of efficiency and expertise. With ShoreAgents, you're getting more than a helping hand; you're getting a brain trust that understands the ins and outs of the real estate business like the back of their hand.</p>
-  <ul>
-  <li><strong>Customized Training:</strong> ShoreAgents doesn't just match you with any VA; we ensure they're trained specifically for real estate tasks, making them a bespoke fit for your business needs.</li>
-  <li><strong>Round-the-Clock Support:</strong> Time zones are no barrier. Whether you're sipping your morning coffee or wrapping up for the day, your VA is there to keep the wheels turning.</li>
-  <li><strong>Scalability:</strong> As your business grows, your VA team can grow with you. ShoreAgents helps you scale up effortlessly, ensuring your support system strengthens with your expanding empire.</li>
-  <li><strong>Quality Assurance:</strong> Rest easy knowing that your VA is delivering top-notch work. BPOs are all about quality, and we make sure that every task meets your high standards.</li>
-  </ul>
-  <p>Now, let's map out the journey to your perfect VA match. You want someone who's not just a cog in the machine, but a catalyst for growth. With ShoreAgents, you'll navigate the hiring process with expert guidance, from pinpointing the exact skill set you need to integrating your VA into your team dynamics seamlessly.</p>
-  <p>Picture your business operations running smoother than ever, with a VA who's not just managing tasks but optimizing them. With the right virtual assistant, you're not just keeping pace; you're setting the pace in the real estate market. Get ready to lead the pack and make 2024 the year you redefine industry standards.</p>
-  <p>So, why wait? The ultimate real estate virtual assistant is out there, and with ShoreAgents, you're on the fast track to finding them. Let's ignite your business potential and make this year your most extraordinary yet. Onward and upward, my friends!</p>
-  <h2>Empower Your Agency with a Stellar Virtual Assistant</h2>
-  <p>Thriving real estate moguls, get set to power up your agency with insider know-how from "The Ultimate Hiring Guide 2024: Securing the Best Real Estate Virtual Assistant for Your Business". We're zipping past the basics and zooming into the game-changing strategies that will land you a virtual assistant (VA) who's a cut above the rest!</p>
-  <p>Envision your VA as the superhero sidekick of your real estate operations. With the wisdom of ShoreAgents, you're not just getting an assistant; you're unlocking a treasure trove of talent and dedication. These VAs come prepped and primed to tackle the real estate market's unique challenges, propelling your business to the top of the leaderboard.</p>
-  <ul>
-  <li><strong>Insider Industry Knowledge:</strong> ShoreAgents ensures your VA is steeped in real estate knowledge, ready to contribute from day one.</li>
-  <li><strong>Technology Savvy:</strong> Your VA will wield the latest real estate tech tools with ease, keeping your business ahead of the tech curve.</li>
-  <li><strong>Flexibility and Adaptability:</strong> In the dynamic world of real estate, your VA will be your chameleon, adept at shifting gears to meet your evolving business needs.</li>
-  <li><strong>Focus on Revenue-Generating Activities:</strong> While your VA handles the day-to-day, you'll have more time to focus on closing deals and expanding your client base.</li>
-  </ul>
-  <p>Let's sketch out the blueprint for securing your top-tier VA. You're not looking for a one-size-fits-all solution; you're after a tailored power player who can juggle the complexities of real estate deals with finesse. ShoreAgents stands by to guide you through the hiring labyrinth, ensuring you extract the gold nugget in a sea of candidates.</p>
-  <p>Visualize your operations ticking along like a well-oiled machine, with a VA who's not just a task-taker but a strategic partner. With the perfect VA on board, your business will not only keep up with the trends but will be the trendsetter in your market. And that's how you stay competitive and triumph in 2024!</p>
-  <p>So, come on! The time is now to harness the full potential of your real estate business. With ShoreAgents as your co-pilot, you're all set to soar to new heights. Let's make 2024 a landmark year where your real estate business shines brighter than ever. Are you ready to take the leap? Let's blast off!</p>
-  <h2>Charting the Course for Success: Find Your Real Estate Virtual Assistant Maverick in 2024</h2>
-  <p>Attention, dynamic leaders of the real estate industry! 2024 is your year to shine and what better way to do so than by snagging the ultimate real estate virtual assistant? Dive into "The Ultimate Hiring Guide 2024: Securing the Best Real Estate Virtual Assistant for Your Business" and gear up for a thrilling hiring adventure that will set your agency apart from the rest!</p>
-  <p>With ShoreAgents by your side, imagine the thrill of discovering that one VA who stands out from the crowd—someone who's not just a task executor but a strategy enhancer. Get ready to be wowed by a professional who's as passionate about real estate as you are and ready to turbocharge your business operations!</p>
-  <ul>
-  <li><strong>Unmatched Expertise:</strong> Your VA will be a repository of real estate wisdom, equipped to handle nuanced tasks with aplomb.</li>
-  <li><strong>Proactive Problem-Solving:</strong> Watch in awe as your VA anticipates challenges and presents solutions before they even hit your radar.</li>
-  <li><strong>Innovative Mindset:</strong> Embrace the creativity your VA brings to the table, offering fresh perspectives that keep your business on the cutting edge.</li>
-  <li><strong>Client Relations Ace:</strong> With your VA's help, watch your client satisfaction soar as they deliver stellar service with every interaction.</li>
-  </ul>
-  <p>Embrace the excitement as we lay out the strategic roadmap to find your real estate VA who’s not just a fit but a catalyst for exponential growth. ShoreAgents is here to navigate you through every twist and turn of the hiring process, ensuring you land a VA who is the missing puzzle piece to your agency's success.</p>
-  <p>Envision your business as a beacon of efficiency, where every process is streamlined, and your VA is at the helm, steering you towards your goals with precision. With the right VA, you can expect your agency to not just meet the industry benchmarks but to set new ones. It's time to lead the charge and dominate the real estate scene in 2024!</p>
-  <p>The future is bright, and the opportunity to elevate your business with a top-notch VA is knocking at your door. At ShoreAgents, we're ready to fuel your journey to the top. Let's embark on this quest together and watch your real estate business soar to new heights. Ready, set, let's launch into the future!</p>
-  <h2>Conclusion: Elevate Your Real Estate Agency with the Optimal Virtual Assistant</h2>
-  <p>As we wrap up this exhilarating guide, "The Ultimate Hiring Guide 2024: Securing the Best Real Estate Virtual Assistant for Your Business," let's reflect on your journey ahead. You're not just hiring a virtual assistant; you're strategically enhancing your agency's productivity and competitive edge in the bustling real estate market of 2024. With ShoreAgents as your hiring partner, you're set to onboard a virtual maven who aligns perfectly with your mission to dominate the industry.</p>
-  <p>ShoreAgents stands out as your go-to BPO, offering a harmonious blend of managed services, secure working environment, and cost-effectiveness. We understand the importance of longevity and commitment, which is why we offer you a stable and reliable workforce that's ready to invest in your success. By choosing ShoreAgents for your hiring needs, you're not just making a savvy business decision; you're propelling your agency to the forefront of innovation and client satisfaction.</p>
-  <p>So, take a bold step forward and secure your spot as a leading real estate agency. Let ShoreAgents help you find that exceptional virtual assistant who will be pivotal in achieving your ambitious goals for 2024. It's time to make a move that will redefine your agency's trajectory and keep you at the top of the game. Are you ready to embrace the future with the finest real estate virtual assistant by your side? Let's make it happen!</p>`
-  var headings = [];
-  var imageLinks = [];
-  var heading;
-  console.log("Getting article headings");
-  for (let i = 0; i < 3; i++) {
-    const num = i + 1;
-    console.log("Getting heading number " + num);
-    var prompt;
-    if (headings === undefined || headings.length == 0) {
-      prompt = `Your task is only to get one of the H2 Heading Title in this given article ${article}. Get the title only, do not add any comments, and it should not be a sentence or the whole heading content.`
-    } else {
-      prompt = `Your task is only to get one of the H2 Heading Title in this given article ${article}. Get the title only, do not add any comments, and it should not be a sentence or the whole heading content. Make sure it is not one of these (${headings})`;
-    }
+// router.post('/testimage', async (req, res) => {
+//   const article = `<h2>Revolutionize Your Real Estate Team with the Ideal Virtual Assistant in 2024</h2>
+//   <p>Hey there, go-getters in the real estate realm! Are you ready to catapult your business into the stratosphere of success in 2024? It's time to get jazzed about the "The Ultimate Hiring Guide 2024: Securing the Best Real Estate Virtual Assistant for Your Business"! This guide is your golden ticket to finding a virtual assistant (VA) who doesn't just meet the mark but skyrockets past it, giving your team that competitive edge you're hungry for.</p>
+//   <p>Let's dive into the smorgasbord of hiring options at your fingertips. Picture this: a world where Business Process Outsourcing (BPO) companies like ShoreAgents are your trusted allies in the quest for the finest VA talent. We're talking about a smooth, streamlined hiring process versus the wild west of online freelance platforms. Sure, platforms like Upwork or Fiverr might seem tempting with their vast pools of candidates, but here's the scoop: BPOs bring a whole lot more to the table.</p>
+//   <ul>
+//   <li><strong>Managed Services:</strong> BPOs like ShoreAgents offer a guided experience, ensuring you're matched with VAs who have the skills to shine in the real estate industry.</li>
+//   <li><strong>Secure Working Environments:</strong> No more fretting over data security. BPOs have got your back with top-notch security protocols, so your business info stays safe.</li>
+//   <li><strong>Cost-Effectiveness:</strong> Get ready to high-five your accountant because BPOs provide a stellar workforce at a fraction of the cost of local hires.</li>
+//   <li><strong>Stability and Reliability:</strong> Forget the freelancer flake-outs. BPO workers are in it for the long haul, providing the commitment and consistency your team deserves.</li>
+//   </ul>
+//   <p>But hey, don't just take our word for it. Let's peel back the curtain and show you the behind-the-scenes magic of hiring a real estate VA through a BPO. Starting with crafting that killer job description, to engaging with ShoreAgents for a lineup of vetted candidates, you're in for a hiring journey smoother than a cold brew on a hot day.</p>
+//   <p>Imagine a world where initial interviews and candidate screenings are taken care of by the BPO—yes, you can stop pinching yourself now, it's real! You're steps away from making that final hiring decision with confidence, knowing you've got the cream of the crop knocking at your digital door.</p>
+//   <p>So, are you ready to make waves in the real estate industry? Embrace the hiring revolution with open arms and let ShoreAgents lead the way. It's time to boost your team's edge and stay at the forefront of the competitive real estate market in 2024. Let's do this!</p>
+//   <h2>Unlock the Potential of Your Real Estate Business with a Top-Tier Virtual Assistant</h2>
+//   <p>Listen up, trailblazers of the real estate industry! It's 2024, and the time to elevate your business game is now! Navigate through the "The Ultimate Hiring Guide 2024: Securing the Best Real Estate Virtual Assistant for Your Business" with an electrifying sense of purpose. We're not just scratching the surface; we're delving deep into the realm of hiring a virtual assistant who will not only be a fitting addition to your team but will also drive you to unparalleled heights of productivity and innovation.</p>
+//   <p>Imagine cutting through the noise and chaos of the hiring world and landing a VA that's the embodiment of efficiency and expertise. With ShoreAgents, you're getting more than a helping hand; you're getting a brain trust that understands the ins and outs of the real estate business like the back of their hand.</p>
+//   <ul>
+//   <li><strong>Customized Training:</strong> ShoreAgents doesn't just match you with any VA; we ensure they're trained specifically for real estate tasks, making them a bespoke fit for your business needs.</li>
+//   <li><strong>Round-the-Clock Support:</strong> Time zones are no barrier. Whether you're sipping your morning coffee or wrapping up for the day, your VA is there to keep the wheels turning.</li>
+//   <li><strong>Scalability:</strong> As your business grows, your VA team can grow with you. ShoreAgents helps you scale up effortlessly, ensuring your support system strengthens with your expanding empire.</li>
+//   <li><strong>Quality Assurance:</strong> Rest easy knowing that your VA is delivering top-notch work. BPOs are all about quality, and we make sure that every task meets your high standards.</li>
+//   </ul>
+//   <p>Now, let's map out the journey to your perfect VA match. You want someone who's not just a cog in the machine, but a catalyst for growth. With ShoreAgents, you'll navigate the hiring process with expert guidance, from pinpointing the exact skill set you need to integrating your VA into your team dynamics seamlessly.</p>
+//   <p>Picture your business operations running smoother than ever, with a VA who's not just managing tasks but optimizing them. With the right virtual assistant, you're not just keeping pace; you're setting the pace in the real estate market. Get ready to lead the pack and make 2024 the year you redefine industry standards.</p>
+//   <p>So, why wait? The ultimate real estate virtual assistant is out there, and with ShoreAgents, you're on the fast track to finding them. Let's ignite your business potential and make this year your most extraordinary yet. Onward and upward, my friends!</p>
+//   <h2>Empower Your Agency with a Stellar Virtual Assistant</h2>
+//   <p>Thriving real estate moguls, get set to power up your agency with insider know-how from "The Ultimate Hiring Guide 2024: Securing the Best Real Estate Virtual Assistant for Your Business". We're zipping past the basics and zooming into the game-changing strategies that will land you a virtual assistant (VA) who's a cut above the rest!</p>
+//   <p>Envision your VA as the superhero sidekick of your real estate operations. With the wisdom of ShoreAgents, you're not just getting an assistant; you're unlocking a treasure trove of talent and dedication. These VAs come prepped and primed to tackle the real estate market's unique challenges, propelling your business to the top of the leaderboard.</p>
+//   <ul>
+//   <li><strong>Insider Industry Knowledge:</strong> ShoreAgents ensures your VA is steeped in real estate knowledge, ready to contribute from day one.</li>
+//   <li><strong>Technology Savvy:</strong> Your VA will wield the latest real estate tech tools with ease, keeping your business ahead of the tech curve.</li>
+//   <li><strong>Flexibility and Adaptability:</strong> In the dynamic world of real estate, your VA will be your chameleon, adept at shifting gears to meet your evolving business needs.</li>
+//   <li><strong>Focus on Revenue-Generating Activities:</strong> While your VA handles the day-to-day, you'll have more time to focus on closing deals and expanding your client base.</li>
+//   </ul>
+//   <p>Let's sketch out the blueprint for securing your top-tier VA. You're not looking for a one-size-fits-all solution; you're after a tailored power player who can juggle the complexities of real estate deals with finesse. ShoreAgents stands by to guide you through the hiring labyrinth, ensuring you extract the gold nugget in a sea of candidates.</p>
+//   <p>Visualize your operations ticking along like a well-oiled machine, with a VA who's not just a task-taker but a strategic partner. With the perfect VA on board, your business will not only keep up with the trends but will be the trendsetter in your market. And that's how you stay competitive and triumph in 2024!</p>
+//   <p>So, come on! The time is now to harness the full potential of your real estate business. With ShoreAgents as your co-pilot, you're all set to soar to new heights. Let's make 2024 a landmark year where your real estate business shines brighter than ever. Are you ready to take the leap? Let's blast off!</p>
+//   <h2>Charting the Course for Success: Find Your Real Estate Virtual Assistant Maverick in 2024</h2>
+//   <p>Attention, dynamic leaders of the real estate industry! 2024 is your year to shine and what better way to do so than by snagging the ultimate real estate virtual assistant? Dive into "The Ultimate Hiring Guide 2024: Securing the Best Real Estate Virtual Assistant for Your Business" and gear up for a thrilling hiring adventure that will set your agency apart from the rest!</p>
+//   <p>With ShoreAgents by your side, imagine the thrill of discovering that one VA who stands out from the crowd—someone who's not just a task executor but a strategy enhancer. Get ready to be wowed by a professional who's as passionate about real estate as you are and ready to turbocharge your business operations!</p>
+//   <ul>
+//   <li><strong>Unmatched Expertise:</strong> Your VA will be a repository of real estate wisdom, equipped to handle nuanced tasks with aplomb.</li>
+//   <li><strong>Proactive Problem-Solving:</strong> Watch in awe as your VA anticipates challenges and presents solutions before they even hit your radar.</li>
+//   <li><strong>Innovative Mindset:</strong> Embrace the creativity your VA brings to the table, offering fresh perspectives that keep your business on the cutting edge.</li>
+//   <li><strong>Client Relations Ace:</strong> With your VA's help, watch your client satisfaction soar as they deliver stellar service with every interaction.</li>
+//   </ul>
+//   <p>Embrace the excitement as we lay out the strategic roadmap to find your real estate VA who’s not just a fit but a catalyst for exponential growth. ShoreAgents is here to navigate you through every twist and turn of the hiring process, ensuring you land a VA who is the missing puzzle piece to your agency's success.</p>
+//   <p>Envision your business as a beacon of efficiency, where every process is streamlined, and your VA is at the helm, steering you towards your goals with precision. With the right VA, you can expect your agency to not just meet the industry benchmarks but to set new ones. It's time to lead the charge and dominate the real estate scene in 2024!</p>
+//   <p>The future is bright, and the opportunity to elevate your business with a top-notch VA is knocking at your door. At ShoreAgents, we're ready to fuel your journey to the top. Let's embark on this quest together and watch your real estate business soar to new heights. Ready, set, let's launch into the future!</p>
+//   <h2>Conclusion: Elevate Your Real Estate Agency with the Optimal Virtual Assistant</h2>
+//   <p>As we wrap up this exhilarating guide, "The Ultimate Hiring Guide 2024: Securing the Best Real Estate Virtual Assistant for Your Business," let's reflect on your journey ahead. You're not just hiring a virtual assistant; you're strategically enhancing your agency's productivity and competitive edge in the bustling real estate market of 2024. With ShoreAgents as your hiring partner, you're set to onboard a virtual maven who aligns perfectly with your mission to dominate the industry.</p>
+//   <p>ShoreAgents stands out as your go-to BPO, offering a harmonious blend of managed services, secure working environment, and cost-effectiveness. We understand the importance of longevity and commitment, which is why we offer you a stable and reliable workforce that's ready to invest in your success. By choosing ShoreAgents for your hiring needs, you're not just making a savvy business decision; you're propelling your agency to the forefront of innovation and client satisfaction.</p>
+//   <p>So, take a bold step forward and secure your spot as a leading real estate agency. Let ShoreAgents help you find that exceptional virtual assistant who will be pivotal in achieving your ambitious goals for 2024. It's time to make a move that will redefine your agency's trajectory and keep you at the top of the game. Are you ready to embrace the future with the finest real estate virtual assistant by your side? Let's make it happen!</p>`
+//   var headings = [];
+//   var imageLinks = [];
+//   var heading;
+//   console.log("Getting article headings");
+//   for (let i = 0; i < 3; i++) {
+//     const num = i + 1;
+//     console.log("Getting heading number " + num);
+//     var prompt;
+//     if (headings === undefined || headings.length == 0) {
+//       prompt = `Your task is only to get one of the H2 Heading Title in this given article ${article}. Get the title only, do not add any comments, and it should not be a sentence or the whole heading content.`
+//     } else {
+//       prompt = `Your task is only to get one of the H2 Heading Title in this given article ${article}. Get the title only, do not add any comments, and it should not be a sentence or the whole heading content. Make sure it is not one of these (${headings})`;
+//     }
 
-    const pinecone = new Pinecone({
-      apiKey: process.env.PINECONE_API_KEY,
-      environment: process.env.PINECONE_ENVIRONMENT
-    });
-    const index = pinecone.index('sagpt');
-    const queryEmbedding = await new OpenAIEmbeddings().embedQuery(prompt);
-    const queryResponse = await index.query({
-      topK: 5,
-      vector: queryEmbedding,
-      includeMetadata: true,
-      includeValues: true
-    });
+//     const pinecone = new Pinecone({
+//       apiKey: process.env.PINECONE_API_KEY,
+//       environment: process.env.PINECONE_ENVIRONMENT
+//     });
+//     const index = pinecone.index('sagpt');
+//     const queryEmbedding = await new OpenAIEmbeddings().embedQuery(prompt);
+//     const queryResponse = await index.query({
+//       topK: 5,
+//       vector: queryEmbedding,
+//       includeMetadata: true,
+//       includeValues: true
+//     });
 
-    if (queryResponse.matches.length) {
-      const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4-1106-preview" });
-      const chain = loadQAStuffChain(llm);
+//     if (queryResponse.matches.length) {
+//       const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4-1106-preview" });
+//       const chain = loadQAStuffChain(llm);
 
-      const concatenatedPageContent = queryResponse.matches
-        .map((match) => match.metadata.text)
-        .join("\n\n");
+//       const concatenatedPageContent = queryResponse.matches
+//         .map((match) => match.metadata.text)
+//         .join("\n\n");
 
 
-      const result = await chain.call({
-        input_documents: [new Document({ pageContent: concatenatedPageContent })],
-        question: prompt
-      });
+//       const result = await chain.call({
+//         input_documents: [new Document({ pageContent: concatenatedPageContent })],
+//         question: prompt
+//       });
 
-      heading = result.text;
-      headings.push(heading);
-      console.log(heading);
+//       heading = result.text;
+//       headings.push(heading);
+//       console.log(heading);
 
-      console.log(`Get Article Headings Success`)
-      console.log(headings);
+//       console.log(`Get Article Headings Success`)
+//       console.log(headings);
 
-      const headingTitle = headings[i];
+//       const headingTitle = headings[i];
 
-      console.log('Getting heading #"' + num + '" prompt for image generation');
+//       console.log('Getting heading #"' + num + '" prompt for image generation');
 
-      const imagePrompt = `Using this Heading Title (${headingTitle}), you will create a good prompt for an image to be generated. Do not add any comments or any other unnecessary content. If there is a person involved, make it a Filipino and a Real Estate Virtual Assistant. Make sure to not include the Title itself (${headingTitle}), and remove any quotations ("").`;
+//       const imagePrompt = `Using this Heading Title (${headingTitle}), you will create a good prompt for an image to be generated. Do not add any comments or any other unnecessary content. If there is a person involved, make it a Filipino and a Real Estate Virtual Assistant. Make sure to not include the Title itself (${headingTitle}), and remove any quotations ("").`;
 
-      const finalPrompt = await chain.call({
-        input_documents: [new Document({ pageContent: concatenatedPageContent })],
-        question: imagePrompt
-      });
+//       const finalPrompt = await chain.call({
+//         input_documents: [new Document({ pageContent: concatenatedPageContent })],
+//         question: imagePrompt
+//       });
 
-      console.log("Image Prompt #" + num + ": " + finalPrompt.text);
+//       console.log("Image Prompt #" + num + ": " + finalPrompt.text);
 
-      console.log("Generating image...")
+//       console.log("Generating image...")
 
-      const imageOutput = await replicate.run(
-        "konieshadow/fooocus-api-realistic:612fd74b69e6c030e88f6548848593a1aaabe16a09cb79e6d714718c15f37f47",
-        {
-          input: {
-            prompt: finalPrompt.text,
-            cn_type1: "ImagePrompt",
-            cn_type2: "ImagePrompt",
-            cn_type3: "ImagePrompt",
-            cn_type4: "ImagePrompt",
-            sharpness: 2,
-            image_seed: 6091967260935476000,
-            uov_method: "Disabled",
-            image_number: 1,
-            guidance_scale: 3,
-            refiner_switch: 0.5,
-            negative_prompt: "unrealistic, saturated, high contrast, big nose, painting, drawing, sketch, cartoon, anime, manga, render, CG, 3d, watermark, signature, label",
-            style_selections: "Fooocus V2,Fooocus Photograph,Fooocus Negative",
-            uov_upscale_value: 0,
-            outpaint_selections: "",
-            outpaint_distance_top: 0,
-            performance_selection: "Speed",
-            outpaint_distance_left: 0,
-            aspect_ratios_selection: "1152*896",
-            outpaint_distance_right: 0,
-            outpaint_distance_bottom: 0,
-            inpaint_additional_prompt: ""
-          }
-        }
-      );
+//       const imageOutput = await replicate.run(
+//         "konieshadow/fooocus-api-realistic:612fd74b69e6c030e88f6548848593a1aaabe16a09cb79e6d714718c15f37f47",
+//         {
+//           input: {
+//             prompt: finalPrompt.text,
+//             cn_type1: "ImagePrompt",
+//             cn_type2: "ImagePrompt",
+//             cn_type3: "ImagePrompt",
+//             cn_type4: "ImagePrompt",
+//             sharpness: 2,
+//             image_seed: 6091967260935476000,
+//             uov_method: "Disabled",
+//             image_number: 1,
+//             guidance_scale: 3,
+//             refiner_switch: 0.5,
+//             negative_prompt: "unrealistic, saturated, high contrast, big nose, painting, drawing, sketch, cartoon, anime, manga, render, CG, 3d, watermark, signature, label",
+//             style_selections: "Fooocus V2,Fooocus Photograph,Fooocus Negative",
+//             uov_upscale_value: 0,
+//             outpaint_selections: "",
+//             outpaint_distance_top: 0,
+//             performance_selection: "Speed",
+//             outpaint_distance_left: 0,
+//             aspect_ratios_selection: "1152*896",
+//             outpaint_distance_right: 0,
+//             outpaint_distance_bottom: 0,
+//             inpaint_additional_prompt: ""
+//           }
+//         }
+//       );
 
-      const imageKey = "image" + num;
+//       const imageKey = "image" + num;
 
-      imageLinks.push({
-        imageKey: imageKey,
-        imageLink: imageOutput
-      })
+//       imageLinks.push({
+//         imageKey: imageKey,
+//         imageLink: imageOutput
+//       })
 
-      console.log("Image #" + num + " Link = " + imageOutput);
+//       console.log("Image #" + num + " Link = " + imageOutput);
 
-    }
-  }
-  const output = imageLinks.reduce((acc, cur) => ({ ...acc, [cur.imageKey]: cur.imageLink }), {})
-  console.log(output);
+//     }
+//   }
+//   const output = imageLinks.reduce((acc, cur) => ({ ...acc, [cur.imageKey]: cur.imageLink }), {})
+//   console.log(output);
 
-})
+// })
 
 router.post('/', async (req, res) => {
   const userAction = req.body.userAction;
