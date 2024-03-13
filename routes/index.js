@@ -1291,7 +1291,7 @@ export const generateHeadingImage = async (headings, loopNum) => {
     console.log("Generating image...")
 
     const imageOutput = await replicate.run(
-      "konieshadow/fooocus-api-realistic:612fd74b69e6c030e88f6548848593a1aaabe16a09cb79e6d714718c15f37f47",
+      `konieshadow/fooocus-api-realistic:${process.env.FOOOCUS_API}`,
       {
         input: {
           prompt: finalPrompt.text,
