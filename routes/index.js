@@ -1796,6 +1796,7 @@ export const addHeadingContent = async (wordCount, articleContent, generalQuery,
       Make sure to add the generated H2 Heading.
       Do not add the word 'Subheading:' in the subheading titles.
       Strictly, do not add any H2 or H3 Conclusions.
+      Strictly, do not add any conclusion "In conclusion..." content anywhere.
       Strictly, you will not give any comments on the generated content, it must be content article body only.
       DO NOT add any comments or tags at the start ('''html) and end (''') of the output.
       Do not add the '${title}' itself.`;
@@ -1813,6 +1814,7 @@ export const addHeadingContent = async (wordCount, articleContent, generalQuery,
       Make sure to add the generated H2 Heading.
       Do not add the word 'Subheading:' in the subheading titles.
       Strictly, do not add any H2 or H3 Conclusions.
+      Strictly, do not add any conclusion "In conclusion..." content anywhere.
       Strictly, you will not give any comments on the generated content, it must be content article body only.
       DO NOT add any comments or tags at the start ('''html) and end (''') of the output.
       Do not add the '${title}' itself.
