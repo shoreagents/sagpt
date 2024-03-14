@@ -392,6 +392,82 @@ router.post('/users', authenticateToken, async (req, res) => {
 
 // })
 
+router.post('/instagram-image', async (req, res) => {
+  const metaDescription = req.body.metaDescription;
+  var output;
+
+  console.log(`GENERATE IMAGE FOR INSTAGRAM STARTED`)
+
+  const imagePrompt = `Using this content (${metaDescription}), you will create a good prompt for an image to be generated. Do not add any comments or any other unnecessary content. If there is a person involved, make it a Filipino and a Real Estate Virtual Assistant. Make sure to not include the Title itself (${metaDescription}), and remove any quotations ("").`;
+
+  const pinecone = new Pinecone({
+    apiKey: process.env.PINECONE_API_KEY,
+    environment: process.env.PINECONE_ENVIRONMENT
+  });
+  const index = pinecone.index('sagpt');
+  const queryEmbedding = await new OpenAIEmbeddings().embedQuery(imagePrompt);
+  const queryResponse = await index.query({
+    topK: 5,
+    vector: queryEmbedding,
+    includeMetadata: true,
+    includeValues: true
+  });
+
+  if (queryResponse.matches.length) {
+    const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4-1106-preview" });
+    const chain = loadQAStuffChain(llm);
+
+    const concatenatedPageContent = queryResponse.matches
+      .map((match) => match.metadata.text)
+      .join("\n\n");
+
+    console.log("Generating prompt")
+
+    const finalPrompt = await chain.call({
+      input_documents: [new Document({ pageContent: concatenatedPageContent })],
+      question: imagePrompt
+    });
+
+    console.log(`Generating image using the generated prompt "${finalPrompt.text}"`)
+
+    const imageOutput = await replicate.run(
+      `konieshadow/fooocus-api-realistic:${process.env.FOOOCUS_API}`,
+      {
+        input: {
+          prompt: finalPrompt.text,
+          cn_type1: "ImagePrompt",
+          cn_type2: "ImagePrompt",
+          cn_type3: "ImagePrompt",
+          cn_type4: "ImagePrompt",
+          sharpness: 2,
+          image_seed: -1,
+          uov_method: "Disabled",
+          image_number: 1,
+          guidance_scale: 3,
+          refiner_switch: 0.5,
+          negative_prompt: "unrealistic, saturated, high contrast, big nose, painting, drawing, sketch, cartoon, anime, manga, render, CG, 3d, watermark, signature, label",
+          style_selections: "Fooocus V2,Fooocus Photograph,Fooocus Negative",
+          uov_upscale_value: 0,
+          outpaint_selections: "",
+          outpaint_distance_top: 0,
+          performance_selection: "Speed",
+          outpaint_distance_left: 0,
+          aspect_ratios_selection: "1152*896",
+          outpaint_distance_right: 0,
+          outpaint_distance_bottom: 0,
+          inpaint_additional_prompt: ""
+        }
+      }
+    );
+
+    output = imageOutput[0];
+    console.log("Image Successfully Generated");
+    console.log("IMAGE OUTPUT LINK: " + output);
+
+  }
+  res.send({ output });
+});
+
 router.post('/', async (req, res) => {
   const userAction = req.body.userAction;
   const userName = req.body.userName;
@@ -1254,7 +1330,7 @@ export const getArticleHeading = async (headings, article) => {
 
 export const generateHeadingImage = async (headings, loopNum) => {
   const headingTitle = headings[loopNum];
-  const num = loopNum+1;
+  const num = loopNum + 1;
   var output;
   console.log('Getting heading #"' + num + '" prompt for image generation');
 
@@ -1842,7 +1918,7 @@ export const generateConclusion = async (articleContent, generalQuery, title, ke
       // const temp = result.text;
       // output = addInternalLinks(temp);
       output = result.text;
-      
+
       console.log("Chain Result:", output);
     } catch (error) {
       console.error("Error in processing chain:", error);
