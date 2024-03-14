@@ -422,7 +422,7 @@ router.post('/instagram-image', async (req, res) => {
         .map((match) => match.metadata.text)
         .join("\n\n");
 
-      console.log(`Generating prompt using the meta description "("${metaDescription}"`)
+      console.log(`Generating prompt using the meta description "${metaDescription}"`)
 
       const finalPrompt = await chain.call({
         input_documents: [new Document({ pageContent: concatenatedPageContent })],
@@ -822,20 +822,20 @@ router.post('/', async (req, res) => {
             createArticle = "\n";
           }
           createArticle += "\n\n" + await addHeadingContent(wordCount, createArticle, articleOverview, title, keyword, perspectiveOutput, toneOutput, targetOutput, authorOutput, customerObjectiveOutput);
-          const articleHeading = await getArticleHeading(headings, createArticle);
-          headings.push(articleHeading);
-          console.log(headings);
-          const imageLink = await generateHeadingImage(headings, i);
-          console.log(imageLink);
-          imageLinks.push(imageLink);
+          // const articleHeading = await getArticleHeading(headings, createArticle);
+          // headings.push(articleHeading);
+          // console.log(headings);
+          // const imageLink = await generateHeadingImage(headings, i);
+          // console.log(imageLink);
+          // imageLinks.push(imageLink);
         } else {
           createArticle += "\n\n" + await generateConclusion(createArticle, articleOverview, title, keyword, perspectiveOutput, toneOutput, targetOutput, authorOutput, customerObjectiveOutput);
-          const articleHeading = await getArticleHeading(headings, createArticle);
-          headings.push(articleHeading);
-          console.log(headings);
-          const imageLink = await generateHeadingImage(headings, i);
-          console.log(imageLink);
-          imageLinks.push(imageLink);
+          // const articleHeading = await getArticleHeading(headings, createArticle);
+          // headings.push(articleHeading);
+          // console.log(headings);
+          // const imageLink = await generateHeadingImage(headings, i);
+          // console.log(imageLink);
+          // imageLinks.push(imageLink);
           break;
         }
       }
@@ -847,7 +847,6 @@ router.post('/', async (req, res) => {
       const metaDescription = await metaDescriptionGenerator(keyword, content);
       const slug = keyword.replace(/\s+/g, '-').toLowerCase();
       const articleTitle = title;
-      // var createArticle = await bulkArticleGenerator(generalQuery, articleTitle, articleKeyword, perspectiveOutput, toneOutput, targetOutput, authorOutput,customerObjectiveOutput);
       console.log("/////////////////////////////////////////////////////////////////////////////////");
       console.log("//////////////////////////////////// OUTPUT /////////////////////////////////////");
       console.log("/////////////////////////////////////////////////////////////////////////////////");
@@ -859,7 +858,7 @@ router.post('/', async (req, res) => {
         seoTitle,
         articleTitle,
         metaDescription,
-        articleImages,
+        // articleImages,
         slug
       }
 
