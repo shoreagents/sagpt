@@ -399,7 +399,7 @@ router.post('/instagram-image', async (req, res) => {
   console.log(`GENERATE IMAGE FOR INSTAGRAM STARTED`)
 
   try {
-    const imagePrompt = `Using this content (${metaDescription}), you will create a good prompt for an image to be generated. Do not add any comments or any other unnecessary content. If there is a person involved, make it a Filipino and a Real Estate Virtual Assistant. Make sure to not include the Title itself (${metaDescription}), and remove any quotations ("").`;
+    const imagePrompt = `Using this content (${metaDescription}), you will create a good prompt for an image to be generated. Do not add any comments or any other unnecessary content. Use an Attractive Filipino female or male as the subject in and instagrammable style. Either in the BPO work place, on lunch break with friends or a setting in Clark Free Port Zone Philippines. Make sure to not include the Title itself (${metaDescription}), and remove any quotations ("").`;
 
     const pinecone = new Pinecone({
       apiKey: process.env.PINECONE_API_KEY,
