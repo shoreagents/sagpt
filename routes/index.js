@@ -451,7 +451,7 @@ router.post('/instagram-image', async (req, res) => {
             uov_upscale_value: 0,
             outpaint_selections: "",
             outpaint_distance_top: 0,
-            performance_selection: "Speed",
+            performance_selection: "Quality",
             outpaint_distance_left: 0,
             aspect_ratios_selection: "1152*896",
             outpaint_distance_right: 0,
@@ -822,20 +822,20 @@ router.post('/', async (req, res) => {
             createArticle = "\n";
           }
           createArticle += "\n\n" + await addHeadingContent(wordCount, createArticle, articleOverview, title, keyword, perspectiveOutput, toneOutput, targetOutput, authorOutput, customerObjectiveOutput);
-          // const articleHeading = await getArticleHeading(headings, createArticle);
-          // headings.push(articleHeading);
-          // console.log(headings);
-          // const imageLink = await generateHeadingImage(headings, i);
-          // console.log(imageLink);
-          // imageLinks.push(imageLink);
+          const articleHeading = await getArticleHeading(headings, createArticle);
+          headings.push(articleHeading);
+          console.log(headings);
+          const imageLink = await generateHeadingImage(headings, i);
+          console.log(imageLink);
+          imageLinks.push(imageLink);
         } else {
           createArticle += "\n\n" + await generateConclusion(createArticle, articleOverview, title, keyword, perspectiveOutput, toneOutput, targetOutput, authorOutput, customerObjectiveOutput);
-          // const articleHeading = await getArticleHeading(headings, createArticle);
-          // headings.push(articleHeading);
-          // console.log(headings);
-          // const imageLink = await generateHeadingImage(headings, i);
-          // console.log(imageLink);
-          // imageLinks.push(imageLink);
+          const articleHeading = await getArticleHeading(headings, createArticle);
+          headings.push(articleHeading);
+          console.log(headings);
+          const imageLink = await generateHeadingImage(headings, i);
+          console.log(imageLink);
+          imageLinks.push(imageLink);
           break;
         }
       }
@@ -858,7 +858,7 @@ router.post('/', async (req, res) => {
         seoTitle,
         articleTitle,
         metaDescription,
-        // articleImages,
+        articleImages,
         slug
       }
 
