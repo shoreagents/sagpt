@@ -757,7 +757,6 @@ router.post('/', async (req, res) => {
       res.send({ output });
     }
   } else if (userAction == "IntegromatArticleGenerator") {
-    console.log("test")
     const keyword = req.body.keyword;
     const articleOverview = req.body.articleOverview;
     const tone = req.body.tone;
