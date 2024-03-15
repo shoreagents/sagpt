@@ -658,6 +658,8 @@ router.post('/', async (req, res) => {
     const customerObjective = req.body.customerObjective;
     const userName = req.body.userName;
     const site = req.body.site;
+    console.log('---------------------------------------------------------------');
+    console.log("This article is for " + site);
 
     var toneOutput = "";
     var authorOutput = "";
@@ -755,6 +757,7 @@ router.post('/', async (req, res) => {
       res.send({ output });
     }
   } else if (userAction == "IntegromatArticleGenerator") {
+    console.log("test")
     const keyword = req.body.keyword;
     const articleOverview = req.body.articleOverview;
     const tone = req.body.tone;
@@ -810,6 +813,10 @@ router.post('/', async (req, res) => {
       console.log(wordCount);
       var headings = [];
       var imageLinks = [];
+
+      console.log('---------------------------------------------------------------');
+      console.log("This article is for " + site);
+
       for (let i = 0; i < 20; i++) {
         if (createArticle == null) {
           wordCount = 0;
@@ -928,6 +935,8 @@ router.post('/', async (req, res) => {
       console.log(wordCount);
       var headings = [];
       var imageLinks = [];
+      console.log('---------------------------------------------------------------');
+      console.log("This article is for " + site);
       for (let i = 0; i < 20; i++) {
         if (createArticle == null) {
           wordCount = 0;
