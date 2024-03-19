@@ -1,11 +1,12 @@
 import { OpenAI } from 'langchain/llms/openai';
+import OpenAIChat from "openai";
 import { Pinecone } from '@pinecone-database/pinecone';
 import { marked } from 'marked';
 import { loadQAStuffChain } from 'langchain/chains';
 import { Document } from "langchain/document";
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
 import * as dotenv from 'dotenv';
-import express from "express";
+import express, { query } from "express";
 import cookieParser from 'cookie-parser';
 import jwt from 'jsonwebtoken';
 import fs from 'fs';
@@ -392,6 +393,24 @@ router.post('/users', authenticateToken, async (req, res) => {
 
 // })
 
+router.post('/fine-tuned', async (req, res) => {
+  const question = req.body.question;
+  const openai = new OpenAIChat({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
+  const response = await openai.completions.create({
+    model: "ft:davinci-002:shoreagents:shoreagents:93ua3KOy",
+    prompt: question+"\n\n",
+    temperature: 0.7,
+    max_tokens: 100,
+    top_p: 1,
+    frequency_penalty: 0,
+    presence_penalty: 0,
+    stop: ["###"]
+  });
+  res.send(response);
+})
+
 router.post('/instagram-image', async (req, res) => {
   const metaDescription = req.body.metaDescription;
   var output;
@@ -399,7 +418,7 @@ router.post('/instagram-image', async (req, res) => {
   console.log(`GENERATE IMAGE FOR INSTAGRAM STARTED`)
 
   try {
-    const imagePrompt = `Using this content (${metaDescription}), you will create a good prompt for an image to be generated. Do not add any comments or any other unnecessary content. Use an Attractive Filipino female or male as the subject in and instagrammable style. Either in the BPO work place, on lunch break with friends or a setting in Clark Free Port Zone Philippines. Make sure to not include the Title itself (${metaDescription}), and remove any quotations ("").`;
+    const imagePrompt = `Using this content (${metaDescription}), you will create a good prompt for an image to be generated. Do not add any comments or any other unnecessary content. Use an Attractive Filipino female or male as the subject in and instagrammable style. Avoid using 2 or more people. Either in the BPO work place, or a setting in Clark Free Port Zone Philippines. Make sure to not include the Title itself (${metaDescription}), and remove any quotations ("").`;
 
     const pinecone = new Pinecone({
       apiKey: process.env.PINECONE_API_KEY,
@@ -453,7 +472,7 @@ router.post('/instagram-image', async (req, res) => {
             outpaint_distance_top: 0,
             performance_selection: "Quality",
             outpaint_distance_left: 0,
-            aspect_ratios_selection: "1152*896",
+            aspect_ratios_selection: "1344*768",
             outpaint_distance_right: 0,
             outpaint_distance_bottom: 0,
             inpaint_additional_prompt: ""
@@ -1522,7 +1541,7 @@ export const generateHeadingImage = async (headings, loopNum) => {
           outpaint_distance_top: 0,
           performance_selection: "Speed",
           outpaint_distance_left: 0,
-          aspect_ratios_selection: "1152*896",
+          aspect_ratios_selection: "1344*768",
           outpaint_distance_right: 0,
           outpaint_distance_bottom: 0,
           inpaint_additional_prompt: ""
@@ -1928,15 +1947,17 @@ export const addHeadingContent = async (wordCount, articleContent, generalQuery,
       DO NOT add any comments or tags at the start ('''html) and end (''') of the output.
       Do not add the '${title}' itself.`;
   } else {
-    userprompt = `You are a content writer and will draft HTML formatted article heading where at the start of every paragraph you will just add '<p>' and must end with '</p>', it will be the same with Headings using '<h2>' and '</h2>', as well as Subheadings but with '<h3>' and '</h3>'. Your responsibility is to generate an article H2 Heading ONLY and it's content body, do not include the previous headings. Make sure it's readability is good and is SEO optimized, using the article title "${title}", and the focus keyword "${keyword}". ${perspectiveOutput} ${toneOutput} ${authorOutput} ${targetOutput} ${customerObjectiveOutput}
+    userprompt = `You are a content writer and will draft HTML formatted article heading where at the start of every paragraph you will just add '<p>' and must end with '</p>', it will be the same with Headings using '<h2>' and '</h2>', as well as Subheadings but with '<h3>' and '</h3>'. Your responsibility is to generate an article H2 Heading ONLY and it's content body, do not include the previous headings. Make sure it's readability is good and is SEO optimized, using the article title "${title}", and the focus keyword "${keyword}". ${perspectiveOutput} ${toneOutput} ${targetOutput} ${customerObjectiveOutput}
 
-    You will continue this article and make it as a reference only and do not add this in the new generated content '${articleContent}'. Please ensure to review the provided sentences to generate unique content that differs from what has already been given. Avoid repeating sentences, especially with the first sentence.
+    You will continue this article and make it as a reference only and do not add this in the new generated content '${articleContent}'. 
 
     Article Overview:
     ${generalQuery}
   
     Instructions:
       ${siteText}
+      Please ensure that the provided sentences to generate unique content that differs from what has already been given. Avoid repeating sentences, especially with the first sentence.
+      Avoid using the Article Title to be added in the content.
       You can be creative such as adding <ul> <li> and <h4> subheadings inside H2 headings.
       Make sure to add the generated H2 Heading.
       Do not add the word 'Subheading:' in the subheading titles.
