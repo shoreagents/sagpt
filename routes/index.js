@@ -12,9 +12,6 @@ import jwt from 'jsonwebtoken';
 import fs from 'fs';
 import { Parser } from 'json2csv';
 import Replicate from "replicate";
-import { fetch, setGlobalDispatcher, Agent } from 'undici'
-
-setGlobalDispatcher(new Agent({ connect: { timeout: 60_000 } }) )
 
 const router = express.Router()
 
@@ -413,95 +410,11 @@ router.post('/fine-tuned', async (req, res) => {
   res.send(response);
 })
 
-// router.post('/instagram-image', async (req, res) => {
-//   const metaDescription = req.body.metaDescription;
-//   var output;
-
-//   console.log(`GENERATE IMAGE FOR INSTAGRAM STARTED`)
-
-//   try {
-//     const imagePrompt = `Using this content (${metaDescription}), you will create a good prompt for an image to be generated. Do not add any comments or any other unnecessary content. Use an Attractive Filipino female or male as the subject in and instagrammable style. Either in the BPO work place. Make sure to not include the Title itself (${metaDescription}), and remove any quotations ("").`;
-
-//     const pinecone = new Pinecone({
-//       apiKey: process.env.PINECONE_API_KEY,
-//       environment: process.env.PINECONE_ENVIRONMENT
-//     });
-//     const index = pinecone.index('sagpt');
-//     const queryEmbedding = await new OpenAIEmbeddings().embedQuery(imagePrompt);
-//     const queryResponse = await index.query({
-//       topK: 5,
-//       vector: queryEmbedding,
-//       includeMetadata: true,
-//       includeValues: true
-//     });
-
-//     if (queryResponse.matches.length) {
-//       const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4-1106-preview" });
-//       const chain = loadQAStuffChain(llm);
-
-//       const concatenatedPageContent = queryResponse.matches
-//         .map((match) => match.metadata.text)
-//         .join("\n\n");
-
-//       console.log(`Generating prompt using the meta description "${metaDescription}"`)
-
-//       const finalPrompt = await chain.call({
-//         input_documents: [new Document({ pageContent: concatenatedPageContent })],
-//         question: imagePrompt
-//       });
-
-//       console.log(`Generating image using the generated prompt "${finalPrompt.text}"`)
-
-//       const imageOutput = await replicate.run(
-//         `konieshadow/fooocus-api-realistic:${process.env.FOOOCUS_API}`,
-//         {
-//           input: {
-//             prompt: finalPrompt.text,
-//             cn_type1: "ImagePrompt",
-//             cn_type2: "ImagePrompt",
-//             cn_type3: "ImagePrompt",
-//             cn_type4: "ImagePrompt",
-//             sharpness: 2,
-//             image_seed: 1062324901251685922,
-//             uov_method: "Disabled",
-//             image_number: 1,
-//             guidance_scale: 4,
-//             refiner_switch: 0.5,
-//             negative_prompt: "unrealistic, saturated, high contrast, big nose, painting, drawing, sketch, cartoon, anime, manga, render, CG, 3d, watermark, signature, label",
-//             style_selections: "Fooocus V2,Fooocus Photograph,Fooocus Negative, Fooocus Enhance, Fooocus Sharp",
-//             uov_upscale_value: 0,
-//             outpaint_selections: "",
-//             outpaint_distance_top: 0,
-//             performance_selection: "Quality",
-//             outpaint_distance_left: 0,
-//             aspect_ratios_selection: "1344*768",
-//             outpaint_distance_right: 0,
-//             outpaint_distance_bottom: 0,
-//             inpaint_additional_prompt: ""
-//           }
-//         }
-//       );
-
-//       output = imageOutput[0];
-//       console.log("Image Successfully Generated");
-//       console.log("IMAGE OUTPUT LINK: " + output);
-
-//     }
-//   } catch (error) {
-//     console.log("An error has occured while generating the image.");
-//     console.log("ERROR MESSAGE: " + error);
-//     output = "An error has occured while generating the image.";
-//   }
-
-
-//   res.send({ output });
-// });
-
 router.post('/instagram-image', async (req, res) => {
   const metaDescription = req.body.metaDescription;
   var output;
 
-  console.log(`GENERATE IMAGE FOR INSTAGRAM STARTED`);
+  console.log(`GENERATE IMAGE FOR INSTAGRAM STARTED`)
 
   try {
     const imagePrompt = `Using this content (${metaDescription}), you will create a good prompt for an image to be generated. Do not add any comments or any other unnecessary content. Use an Attractive Filipino female or male as the subject in and instagrammable style. Either in the BPO work place. Make sure to not include the Title itself (${metaDescription}), and remove any quotations ("").`;
@@ -536,120 +449,204 @@ router.post('/instagram-image', async (req, res) => {
 
       console.log(`Generating image using the generated prompt "${finalPrompt.text}"`)
 
-      await fetch('http://172.16.218.116:8888/v2/generation/image-prompt', {
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          prompt: finalPrompt.text,
-          negative_prompt: "unrealistic, saturated, high contrast, big nose, painting, drawing, sketch, cartoon, anime, manga, render, CG, 3d, watermark, signature, label",
-          style_selections: [
-            "Fooocus V2",
-            "Fooocus Enhance",
-            "Fooocus Sharp"
-          ],
-          performance_selection: "Speed",
-          aspect_ratios_selection: "1344*768",
-          image_number: 1,
-          image_seed: 1062324901251685922,
-          sharpness: 2,
-          guidance_scale: 4,
-          base_model_name: "juggernautXL_version6Rundiffusion.safetensors",
-          refiner_model_name: "None",
-          refiner_switch: 0.5,
-          loras: [
-            {
-              "model_name": "sd_xl_offset_example-lora_1.0.safetensors",
-              "weight": 0.1
-            }
-          ],
-          advanced_params: {
-            adaptive_cfg: 7,
-            adm_scaler_end: 0.3,
-            adm_scaler_negative: 0.8,
-            adm_scaler_positive: 1.5,
-            canny_high_threshold: 128,
-            canny_low_threshold: 64,
-            controlnet_softness: 0.25,
-            debugging_cn_preprocessor: false,
-            debugging_inpaint_preprocessor: false,
-            disable_preview: false,
-            freeu_b1: 1.01,
-            freeu_b2: 1.02,
-            freeu_enabled: false,
-            freeu_s1: 0.99,
-            freeu_s2: 0.95,
-            inpaint_disable_initial_latent: false,
-            inpaint_engine: "v1",
-            inpaint_erode_or_dilate: 0,
-            inpaint_respective_field: 1,
-            inpaint_strength: 1,
-            invert_mask_checkbox: false,
-            mixing_image_prompt_and_inpaint: false,
-            mixing_image_prompt_and_vary_upscale: false,
-            overwrite_height: -1,
-            overwrite_step: -1,
-            overwrite_switch: -1,
-            overwrite_upscale_strength: -1,
-            overwrite_vary_strength: -1,
-            overwrite_width: -1,
-            refiner_swap_method: "joint",
-            sampler_name: "dpmpp_2m_sde_gpu",
-            scheduler_name: "karras",
-            skipping_cn_preprocessor: false
-          },
-          require_base64: false,
-          async_process: false,
-          webhook_url: "",
-          input_image: null,
-          input_mask: "",
-          inpaint_additional_prompt: "",
-          outpaint_selections: [],
-          outpaint_distance_left: -1,
-          outpaint_distance_right: -1,
-          outpaint_distance_top: -1,
-          outpaint_distance_bottom: -1,
-          image_prompts: [
-            {
-              "cn_img": "string",
-              "cn_stop": 0,
-              "cn_weight": 0,
-              "cn_type": "ImagePrompt"
-            },
-            {
-              cn_img: "string",
-              cn_stop: 0,
-              cn_weight: 0,
-              cn_type: "ImagePrompt"
-            }
-          ]
-        })
-      }).then(res => res.json()).then(async (data) => {
-        if (data.error) {
-          console.log(data.error.message);
-          output = "An error has occured while generating the image.";
-        } else {
-          output = data[0];
-          console.log("Image Successfully Generated");
-          console.log(data);
+      const imageOutput = await replicate.run(
+        `konieshadow/fooocus-api-realistic:${process.env.FOOOCUS_API}`,
+        {
+          input: {
+            prompt: finalPrompt.text,
+            cn_type1: "ImagePrompt",
+            cn_type2: "ImagePrompt",
+            cn_type3: "ImagePrompt",
+            cn_type4: "ImagePrompt",
+            sharpness: 2,
+            image_seed: 1062324901251685922,
+            uov_method: "Disabled",
+            image_number: 1,
+            guidance_scale: 4,
+            refiner_switch: 0.5,
+            negative_prompt: "unrealistic, saturated, high contrast, big nose, painting, drawing, sketch, cartoon, anime, manga, render, CG, 3d, watermark, signature, label",
+            style_selections: "Fooocus V2,Fooocus Photograph,Fooocus Negative, Fooocus Enhance, Fooocus Sharp",
+            uov_upscale_value: 0,
+            outpaint_selections: "",
+            outpaint_distance_top: 0,
+            performance_selection: "Quality",
+            outpaint_distance_left: 0,
+            aspect_ratios_selection: "1344*768",
+            outpaint_distance_right: 0,
+            outpaint_distance_bottom: 0,
+            inpaint_additional_prompt: ""
+          }
         }
-      }).catch((error) => {
-        console.log("Catches Error:")
-        console.log(error);
-        output = "An error has occured while generating the image.";
-      })
+      );
+
+      output = imageOutput[0];
+      console.log("Image Successfully Generated");
+      console.log("IMAGE OUTPUT LINK: " + output);
 
     }
   } catch (error) {
     console.log("An error has occured while generating the image.");
-    console.log("ERROR MESSAGE:");
-    console.log(error);
+    console.log("ERROR MESSAGE: " + error);
     output = "An error has occured while generating the image.";
   }
 
+
   res.send({ output });
 });
+
+// router.post('/instagram-image', async (req, res) => {
+//   const metaDescription = req.body.metaDescription;
+//   var output;
+
+//   console.log(`GENERATE IMAGE FOR INSTAGRAM STARTED`);
+
+//   try {
+//     const imagePrompt = `Using this content (${metaDescription}), you will create a good prompt for an image to be generated. Do not add any comments or any other unnecessary content. Use an Attractive Filipino female or male as the subject in and instagrammable style. Either in the BPO work place. Make sure to not include the Title itself (${metaDescription}), and remove any quotations ("").`;
+
+//     const pinecone = new Pinecone({
+//       apiKey: process.env.PINECONE_API_KEY,
+//       environment: process.env.PINECONE_ENVIRONMENT
+//     });
+//     const index = pinecone.index('sagpt');
+//     const queryEmbedding = await new OpenAIEmbeddings().embedQuery(imagePrompt);
+//     const queryResponse = await index.query({
+//       topK: 5,
+//       vector: queryEmbedding,
+//       includeMetadata: true,
+//       includeValues: true
+//     });
+
+//     if (queryResponse.matches.length) {
+//       const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4-1106-preview" });
+//       const chain = loadQAStuffChain(llm);
+
+//       const concatenatedPageContent = queryResponse.matches
+//         .map((match) => match.metadata.text)
+//         .join("\n\n");
+
+//       console.log(`Generating prompt using the meta description "${metaDescription}"`)
+
+//       const finalPrompt = await chain.call({
+//         input_documents: [new Document({ pageContent: concatenatedPageContent })],
+//         question: imagePrompt
+//       });
+
+//       console.log(`Generating image using the generated prompt "${finalPrompt.text}"`)
+
+//       await fetch('http://172.16.218.116:8888/v2/generation/image-prompt', {
+//         method: "POST",
+//         headers: {
+//           'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify({
+//           prompt: finalPrompt.text,
+//           negative_prompt: "unrealistic, saturated, high contrast, big nose, painting, drawing, sketch, cartoon, anime, manga, render, CG, 3d, watermark, signature, label",
+//           style_selections: [
+//             "Fooocus V2",
+//             "Fooocus Enhance",
+//             "Fooocus Sharp"
+//           ],
+//           performance_selection: "Speed",
+//           aspect_ratios_selection: "1344*768",
+//           image_number: 1,
+//           image_seed: 1062324901251685922,
+//           sharpness: 2,
+//           guidance_scale: 4,
+//           base_model_name: "juggernautXL_version6Rundiffusion.safetensors",
+//           refiner_model_name: "None",
+//           refiner_switch: 0.5,
+//           loras: [
+//             {
+//               "model_name": "sd_xl_offset_example-lora_1.0.safetensors",
+//               "weight": 0.1
+//             }
+//           ],
+//           advanced_params: {
+//             adaptive_cfg: 7,
+//             adm_scaler_end: 0.3,
+//             adm_scaler_negative: 0.8,
+//             adm_scaler_positive: 1.5,
+//             canny_high_threshold: 128,
+//             canny_low_threshold: 64,
+//             controlnet_softness: 0.25,
+//             debugging_cn_preprocessor: false,
+//             debugging_inpaint_preprocessor: false,
+//             disable_preview: false,
+//             freeu_b1: 1.01,
+//             freeu_b2: 1.02,
+//             freeu_enabled: false,
+//             freeu_s1: 0.99,
+//             freeu_s2: 0.95,
+//             inpaint_disable_initial_latent: false,
+//             inpaint_engine: "v1",
+//             inpaint_erode_or_dilate: 0,
+//             inpaint_respective_field: 1,
+//             inpaint_strength: 1,
+//             invert_mask_checkbox: false,
+//             mixing_image_prompt_and_inpaint: false,
+//             mixing_image_prompt_and_vary_upscale: false,
+//             overwrite_height: -1,
+//             overwrite_step: -1,
+//             overwrite_switch: -1,
+//             overwrite_upscale_strength: -1,
+//             overwrite_vary_strength: -1,
+//             overwrite_width: -1,
+//             refiner_swap_method: "joint",
+//             sampler_name: "dpmpp_2m_sde_gpu",
+//             scheduler_name: "karras",
+//             skipping_cn_preprocessor: false
+//           },
+//           require_base64: false,
+//           async_process: false,
+//           webhook_url: "",
+//           input_image: null,
+//           input_mask: "",
+//           inpaint_additional_prompt: "",
+//           outpaint_selections: [],
+//           outpaint_distance_left: -1,
+//           outpaint_distance_right: -1,
+//           outpaint_distance_top: -1,
+//           outpaint_distance_bottom: -1,
+//           image_prompts: [
+//             {
+//               "cn_img": "string",
+//               "cn_stop": 0,
+//               "cn_weight": 0,
+//               "cn_type": "ImagePrompt"
+//             },
+//             {
+//               cn_img: "string",
+//               cn_stop: 0,
+//               cn_weight: 0,
+//               cn_type: "ImagePrompt"
+//             }
+//           ]
+//         })
+//       }).then(res => res.json()).then(async (data) => {
+//         if (data.error) {
+//           console.log(data.error.message);
+//           output = "An error has occured while generating the image.";
+//         } else {
+//           output = data[0];
+//           console.log("Image Successfully Generated");
+//           console.log(data);
+//         }
+//       }).catch((error) => {
+//         console.log("Catches Error:")
+//         console.log(error);
+//         output = "An error has occured while generating the image.";
+//       })
+
+//     }
+//   } catch (error) {
+//     console.log("An error has occured while generating the image.");
+//     console.log("ERROR MESSAGE:");
+//     console.log(error);
+//     output = "An error has occured while generating the image.";
+//   }
+
+//   res.send({ output });
+// });
 
 router.post('/', async (req, res) => {
   const userAction = req.body.userAction;
