@@ -30,6 +30,7 @@
     "method-override": "^3.0.0",
     "nodemon": "^3.0.1",
     "openai": "^4.19.1",
-    "replicate": "^0.12.3"
+    "replicate": "^0.12.3",
+    "undici": "^6.9.0"
   }
 }

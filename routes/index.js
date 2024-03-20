@@ -12,6 +12,9 @@ import jwt from 'jsonwebtoken';
 import fs from 'fs';
 import { Parser } from 'json2csv';
 import Replicate from "replicate";
+import { fetch, setGlobalDispatcher, Agent } from 'undici'
+
+setGlobalDispatcher(new Agent({ connect: { timeout: 60_000 } }) )
 
 const router = express.Router()
 
