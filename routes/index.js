@@ -371,7 +371,7 @@ router.post('/instagram-image', async (req, res) => {
 
       console.log(`Generating image using the generated prompt "${finalPrompt.text}"`)
 
-      await fetch('https://dcc6-122-55-242-30.ngrok-free.app/v2/generation/image-prompt', {
+      await fetch('https://15c0-122-55-242-30.ngrok-free.app/v2/generation/image-prompt', {
         method: "POST",
         headers: {
           'Content-Type': 'application/json',
