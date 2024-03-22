@@ -23,6 +23,7 @@
     "froala-editor": "^4.1.2",
     "fs": "^0.0.1-security",
     "hnswlib-node": "^1.4.2",
+    "https": "^1.0.0",
     "json2csv": "^6.0.0-alpha.2",
     "jsonwebtoken": "^9.0.2",
     "langchain": "^0.0.145",

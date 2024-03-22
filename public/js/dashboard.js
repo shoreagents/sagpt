@@ -37,6 +37,7 @@ $(document).ready(function () {
     $(".item").click(function () {
         if ($(".ai-assistant").is("#active")) {
             $(".tab-content-1").css("display", "flex");
+            $(".input-chat-container").css("display", "flex");
             $(this).css("display", "flex");
             $(".tab-content-2").css("display", "none");
             $(".tab-content-3").css("display", "none");
@@ -49,6 +50,7 @@ $(document).ready(function () {
             $(".tab-content-2").css("display", "flex");
             $(".tab-content-1").css("display", "none");
             $(".tab-content-3").css("display", "none");
+            $(".input-chat-container").css("display", "none");
             $(".tab-content-settings").css("display", "none");
             $(".sidebar .item").css("pointer-events", "all");
             $(this).css("pointer-events", "none");
@@ -57,6 +59,7 @@ $(document).ready(function () {
         } else if ($(".instructive-article-generator").is("#active")) {
             $(".tab-content-3").css("display", "flex");
             $(".tab-content-2").css("display", "none");
+            $(".input-chat-container").css("display", "none");
             $(".tab-content-1").css("display", "none");
             $(".tab-content-settings").css("display", "none");
             $(".sidebar .item").css("pointer-events", "all");
@@ -66,6 +69,7 @@ $(document).ready(function () {
         } else if ($(".settings").is("#active")) {
             $(".tab-content-settings").css("display", "grid");
             $(".tab-content-2").css("display", "none");
+            $(".input-chat-container").css("display", "none");
             $(".tab-content-3").css("display", "none");
             $(".tab-content-1").css("display", "none");
             $(".sidebar .item").css("pointer-events", "all");
