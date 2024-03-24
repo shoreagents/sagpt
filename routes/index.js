@@ -340,7 +340,7 @@ router.post('/instagram-image', async (req, res) => {
 
   try {
     const imagePrompt = `Using this content (${metaDescription}), you will create a good prompt for an image to be generated. Do not add any comments or any other unnecessary content. Use an Attractive Filipino female or male as the subject in and instagrammable style. Either in the BPO work place. Make sure to not include the Title itself (${metaDescription}), and remove any quotations ("").`;
-
+    console.log(imagePrompt);
     const pinecone = new Pinecone({
       apiKey: process.env.PINECONE_API_KEY,
       environment: process.env.PINECONE_ENVIRONMENT
@@ -371,7 +371,7 @@ router.post('/instagram-image', async (req, res) => {
 
       console.log(`Generating image using the generated prompt "${finalPrompt.text}"`)
 
-      await fetch('https://15c0-122-55-242-30.ngrok-free.app/v2/generation/image-prompt', {
+      await fetch('https://2434-122-55-242-30.ngrok-free.app/v2/generation/image-prompt', {
         method: "POST",
         headers: {
           'Content-Type': 'application/json',
