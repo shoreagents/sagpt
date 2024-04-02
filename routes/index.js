@@ -249,49 +249,20 @@ router.post('/fine-tuned', async (req, res) => {
 })
 
 router.post('/instagram-image', async (req, res) => {
-  const metaDescription = req.body.metaDescription;
+  const prompt = req.body.prompt;
   var output;
 
   console.log(`GENERATE IMAGE FOR INSTAGRAM STARTED`)
 
   try {
-    const imagePrompt = `Using this content (${metaDescription}), you will create a good prompt for an image to be generated. Do not add any comments or any other unnecessary content. Use an Attractive Filipino female or male as the subject in and instagrammable style. Either in the BPO work place. Make sure to not include the Title itself (${metaDescription}), and remove any quotations ("").`;
-
-    const pinecone = new Pinecone({
-      apiKey: process.env.PINECONE_API_KEY,
-      environment: process.env.PINECONE_ENVIRONMENT
-    });
-    const index = pinecone.index('sagpt');
-    const queryEmbedding = await new OpenAIEmbeddings().embedQuery(imagePrompt);
-    const queryResponse = await index.query({
-      topK: 5,
-      vector: queryEmbedding,
-      includeMetadata: true,
-      includeValues: true
-    });
-
-    if (queryResponse.matches.length) {
-      const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4-1106-preview" });
-      const chain = loadQAStuffChain(llm);
-
-      const concatenatedPageContent = queryResponse.matches
-        .map((match) => match.metadata.text)
-        .join("\n\n");
-
-      console.log(`Generating prompt using the meta description "${metaDescription}"`)
-
-      const finalPrompt = await chain.call({
-        input_documents: [new Document({ pageContent: concatenatedPageContent })],
-        question: imagePrompt
-      });
-
-      console.log(`Generating image using the generated prompt "${finalPrompt.text}"`)
+    
+      console.log(`Generating image using the generated prompt "${prompt}"`)
 
       const imageOutput = await replicate.run(
         `konieshadow/fooocus-api-realistic:${process.env.FOOOCUS_API}`,
         {
           input: {
-            prompt: finalPrompt.text,
+            prompt: prompt,
             cn_type1: "ImagePrompt",
             cn_type2: "ImagePrompt",
             cn_type3: "ImagePrompt",
@@ -321,7 +292,6 @@ router.post('/instagram-image', async (req, res) => {
       console.log("Image Successfully Generated");
       console.log("IMAGE OUTPUT LINK: " + output);
 
-    }
   } catch (error) {
     console.log("An error has occured while generating the image.");
     console.log("ERROR MESSAGE: " + error);
@@ -1224,7 +1194,6 @@ router.post('/', async (req, res) => {
   } else if (userAction == "ChangePassword") {
     try {
       var loggeduser = users.find(({ username }) => username === req.cookies["username"]);
-      console.log(loggeduser);
       const identifier = loggeduser.username;
       const password = loggeduser.password;
       const currentPassword = req.body.password;
