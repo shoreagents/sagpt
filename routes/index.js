@@ -913,7 +913,7 @@ router.post('/', async (req, res) => {
       var num = wordCount - 500;
       console.log(wordCount);
       var headings = [];
-      // var imageLinks = [];
+      var imageLinks = [];
       console.log('---------------------------------------------------------------');
       console.log("This article is for " + site);
       for (let i = 0; i < 20; i++) {
@@ -932,17 +932,17 @@ router.post('/', async (req, res) => {
           const articleHeading = await getArticleHeading(headings, createArticle);
           headings.push(articleHeading);
           console.log(headings);
-          // const imageLink = await generateHeadingImage(headings, i);
-          // console.log(imageLink);
-          // imageLinks.push(imageLink);
+          const imageLink = await generateHeadingImage(headings, i);
+          console.log(imageLink);
+          imageLinks.push(imageLink);
         } else {
           createArticle += "\n\n" + await generateConclusion(createArticle, articleOverview, title, keyword, perspectiveOutput, toneOutput, targetOutput, authorOutput, customerObjectiveOutput);
           const articleHeading = await getArticleHeading(headings, createArticle);
           headings.push(articleHeading);
           console.log(headings);
-          // const imageLink = await generateHeadingImage(headings, i);
-          // console.log(imageLink);
-          // imageLinks.push(imageLink);
+          const imageLink = await generateHeadingImage(headings, i);
+          console.log(imageLink);
+          imageLinks.push(imageLink);
           break;
         }
       }
@@ -958,14 +958,14 @@ router.post('/', async (req, res) => {
       console.log("//////////////////////////////////// OUTPUT /////////////////////////////////////");
       console.log("/////////////////////////////////////////////////////////////////////////////////");
 
-      // const articleImages = imageLinks.reduce((acc, cur) => ({ ...acc, [cur.imageKey]: cur.imageLink }), {})
+      const articleImages = imageLinks.reduce((acc, cur) => ({ ...acc, [cur.imageKey]: cur.imageLink }), {})
 
       output = {
         content,
         seoTitle,
         articleTitle,
         metaDescription,
-        // articleImages,
+        articleImages,
         slug
       }
 
