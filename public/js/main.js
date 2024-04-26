@@ -816,6 +816,12 @@ $('#queriedGenerator .input-container').on('click', function () {
   }
 });
 
+$('#queriedGenerator .drawer ul').on('click', function () {
+  if ($('#queriedGenerator .input-container').children().length > 0 && $('#queriedKeyword').val().length > 1 && $('#articleOverview').val().length > 1) {
+    $("#nextBtnQuery").removeClass('btn-disabled');
+  }
+});
+
 
 /* Bulk Generator Step Script */
 
@@ -1344,7 +1350,7 @@ $('#regForm .generator-input').keyup(function () {
 });
 
 $('#queriedGenerator .generator-input').keyup(function () {
-  if ($('#queriedKeyword').val().length > 1 && $('#articleOverview').val().length > 1) {
+  if ($('#queriedKeyword').val().length > 1 && $('#articleOverview').val().length > 1 && $('#queriedGenerator .input-container').children().length > 0) {
     $('#nextBtnQuery').removeClass('btn-disabled');
   } else {
     $('#nextBtnQuery').addClass('btn-disabled');
