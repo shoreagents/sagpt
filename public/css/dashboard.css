@@ -491,6 +491,10 @@ main .separator input {
         padding-bottom: 40px;
     }
 
+    #regForm .title-container {
+        margin-bottom: 20px 0;
+      }
+
     .container .left-section .logo a,
     .container .left-section .sidebar a,
     .container .left-section .pic img {

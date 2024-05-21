@@ -31,7 +31,8 @@
 <div class="container">
 
   <aside class="left-section">
-    <div class="menu-hide"><span class="material-symbols-outlined">chevron_left</span><span class="tooltiptext">Minimize Menu</span></div>
+    <div class="menu-hide"><span class="material-symbols-outlined">chevron_left</span><span class="tooltiptext">Minimize
+        Menu</span></div>
     <div class="logo">
       <button class="menu-btn" id="menu-close">
         <span class="material-symbols-outlined">close</span>
@@ -57,6 +58,14 @@
         <span class="material-symbols-outlined">schema</span>
         <a>Schema Generator</a>
       </div> -->
+      <div class="item landing-page-builder">
+        <span class="material-symbols-outlined">two_pager</span>
+        <a>Landing Page Builder</a>
+      </div>
+      <div class="item social-media-post">
+        <span class="material-symbols-outlined">language</span>
+        <a>Social Media Post</a>
+      </div>
       <div class="item settings">
         <span class="material-symbols-outlined">settings</span>
         <a>Settings</a>
@@ -83,8 +92,9 @@
       </div>
       <form action="/logout?_method=DELETE" method="POST">
         <input type="hidden" name="username" value="<%= username %>">
-        <button type="submit" class="logout material-symbols-rounded">logout<span class="tooltiptext">Logout</span></button>
-        
+        <button type="submit" class="logout material-symbols-rounded">logout<span
+            class="tooltiptext">Logout</span></button>
+
       </form>
     </div>
 
@@ -97,10 +107,12 @@
         <button class="menu-btn" id="menu-open">
           <span class="material-symbols-outlined">menu</span>
         </button>
-        <h5>Hello <b><%= firstname %></b>, welcome back!</h5>
+        <h5>Hello <b>
+            <%= firstname %>
+          </b>, welcome back!</h5>
       </div>
 
-      <div class="chatbot tabs-section tab-content-1">
+      <div class="chatbot tabs-section ai-assistant-container">
         <div class="tab-content typography">
           <ul class="chatbox">
             <li class="chat incoming">
@@ -138,6 +150,10 @@
           <div class="settings-item strapi-admin">
             <span class="material-symbols-outlined">shield_person</span>
             <span>Admin Database</span>
+          </div>
+          <div class="settings-item sa-flowise">
+            <span class="material-symbols-outlined">forum</span>
+            <span>SA Flowise</span>
           </div>
           <style>
             .download-logs {
@@ -263,7 +279,7 @@
                     <select name="target" id="target" multiple>
                       <option value="None" selected>None</option>
                       <% targetMarkets.forEach(targetMarket=> {%>
-                        <option value="<%= targetMarket.attributes.tonename %>">
+                        <option value="<%= targetMarket.attributes.targetname %>">
                           <%= targetMarket.attributes.targetname %>
                         </option>
                         <% }); %>
@@ -331,10 +347,10 @@
             </form>
       </div>
 
-      <form class="tabs-section tab-content-2" id="regForm">
+      <form class="tabs-section manual-article-generator-container tab-not-1" id="regForm">
         <input type="hidden" name="userAction" id="userAction" value="ArticleGenerator">
         <input type="hidden" name="userName" id="userName" value="<%= username %>">
-        <div class="tab">
+        <div class="menu-tabs tab">
           <p class="instruction ins-1">* Article Title and Focus Keyword is required, make sure to add content.</p>
           <p class="instruction ins-2">* Make sure to click the check icon after editing a heading/subheading title.
           </p>
@@ -398,12 +414,14 @@
         </div>
         <div class="tab regform-settings">
           <h2 class="choose-site-info">Choose the website where the article is intended for creation.</h2>
-          
+
           <div class="choose-site-container">
             <input type="radio" id="companySite" name="choose-site" value="Company Site" checked="checked">
-            <label for="companySite" class="shoreagents-site"><img src="/images/shoreagents-white.png" alt="ShoreAgents Logo"></label>
+            <label for="companySite" class="shoreagents-site"><img src="/images/shoreagents-white.png"
+                alt="ShoreAgents Logo"></label>
             <input type="radio" id="careersSite" name="choose-site" value="Careers Site">
-            <label for="careersSite" class="careers-site"><img src="/images/shoreagents-careers-white.png" alt="ShoreAgents Careers Logo"></label>
+            <label for="careersSite" class="careers-site"><img src="/images/shoreagents-careers-white.png"
+                alt="ShoreAgents Careers Logo"></label>
           </div>
 
           <div class="title-container">
@@ -489,10 +507,10 @@
             <div class="title-input">
               <div class="column">
                 <input type="hidden" name="articleTargetOptions" id="articleTargetOptions" required>
-                <select name="target" id="articleTarget" multiple>
+                <select name="articleTarget" id="articleTarget" multiple>
                   <option value="None" selected>None</option>
                   <% targetMarkets.forEach(targetMarket=> {%>
-                    <option value="<%= targetMarket.attributes.tonename %>">
+                    <option value="<%= targetMarket.attributes.targetname %>">
                       <%= targetMarket.attributes.targetname %>
                     </option>
                     <% }); %>
@@ -546,16 +564,18 @@
 
       </form>
 
-      <div class="tabs-section tab-content-3" id="queriedGenerator">
+      <div class="tabs-section instructive-article-generator-container tab-not-1" id="queriedGenerator">
         <input type="hidden" name="userAction" id="userAction" value="QueriedGenerator">
         <input type="hidden" name="userName" id="userNameQuery" value="<%= username %>">
-        <div class="query-tab">
+        <div class="menu-tabs query-tab">
           <h2 class="choose-site-info">Choose the website where the article is intended for creation.</h2>
           <div class="choose-site-container-query">
             <input type="radio" id="companySiteQuery" name="choose-site-query" value="Company Site" checked="checked">
-            <label for="companySiteQuery" class="shoreagents-site"><img src="/images/shoreagents-white.png" alt="ShoreAgents Logo"></label>
+            <label for="companySiteQuery" class="shoreagents-site"><img src="/images/shoreagents-white.png"
+                alt="ShoreAgents Logo"></label>
             <input type="radio" id="careersSiteQuery" name="choose-site-query" value="Careers Site">
-            <label for="careersSiteQuery" class="careers-site"><img src="/images/shoreagents-careers-white.png" alt="ShoreAgents Careers Logo"></label>
+            <label for="careersSiteQuery" class="careers-site"><img src="/images/shoreagents-careers-white.png"
+                alt="ShoreAgents Careers Logo"></label>
           </div>
           <div class="title-container">
             <div class="article-title">Focus Keyword</div>
@@ -571,11 +591,11 @@
             <div class="article-title">Target Market</div>
             <div class="title-input">
               <div>
-                <input type="hidden" name="articleTargetOptions" id="queryArticleTO" required>
-                <select name="target" id="articleTargetBulk" multiple>
+                <input type="hidden" name="queryTargetOptions" id="queryArticleTO" required>
+                <select name="queryTarget" id="queryTarget" multiple>
                   <option value="None" selected>None</option>
                   <% targetMarkets.forEach(targetMarket=> {%>
-                    <option value="<%= targetMarket.attributes.tonename %>">
+                    <option value="<%= targetMarket.attributes.targetname %>">
                       <%= targetMarket.attributes.targetname %>
                     </option>
                     <% }); %>
@@ -660,6 +680,287 @@
           <div class="generate-btn-query">
             <button type="button" id="nextBtnQuery" class="button btn-disabled"
               onclick="nextPrevQuery()">Generate</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="tabs-section landing-page-builder-container tab-not-1" id="landingPageBuilder">
+        <input type="hidden" name="userAction" id="userAction" value="LandingPageBuilder">
+        <input type="hidden" name="userName" id="userNameLpb" value="<%= username %>">
+        <div class="menu-tabs landing-page-tab">
+          <h2 class="choose-site-info">Landing Page Builder</h2>
+          <div class="title-container">
+            <div class="article-title">Focus Keyword</div>
+            <div class="title-input"><input type="text" name="lpb-article-title" class="generator-input" id="lpbKeyword"
+                placeholder="Enter your focus keyword..." required></div>
+          </div>
+          <div class="title-container">
+            <div class="textarea-title">Article Overview</div>
+            <div class="title-input"><textarea name="overview" class="generator-input" id="articleOverviewLpb"
+                placeholder="Enter article overview and instructions..." rows="7" required></textarea></div>
+          </div>
+          <div class="title-container to-outer">
+            <div class="article-title">Target Market</div>
+            <div class="title-input">
+              <div>
+                <input type="hidden" name="lpbTargetOptions" id="lpbArticleTO" required>
+                <select name="lpbTarget" id="lpbTarget" multiple>
+                  <option value="None" selected>None</option>
+                  <% targetMarkets.forEach(targetMarket=> {%>
+                    <option value="<%= targetMarket.attributes.targetname %>">
+                      <%= targetMarket.attributes.targetname %>
+                    </option>
+                    <% }); %>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="title-container">
+            <div class="article-title">Customer Objective</div>
+            <div class="title-input">
+              <div class="column">
+                <div for="customerObjective" class="hide" id="lpbOutputCO"></div>
+                <select name="customerObjective" id="lpbCO">
+                  <option class="selected" value="Select Customer Objective" disabled selected>Select Customer
+                    Objective
+                  </option>
+                  <option value="None">None</option>
+                  <% customerObjectives.forEach(customerObjective=> {%>
+                    <option value="<%= customerObjective.attributes.objectivename %>">
+                      <%= customerObjective.attributes.objectivename %>
+                    </option>
+                    <% }); %>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="title-container">
+            <div class="article-title">Tone / Personality</div>
+            <div class="title-input">
+              <div class="column">
+                <div for="tone" class="hide" id="lpbOutputTone"></div>
+                <select name="tone" id="lpbArticleTone">
+                  <option class="selected" value="Select Tone/Personality" disabled selected>Select Tone/Personality
+                  </option>
+                  <option value="None">Standard</option>
+                  <% tones.forEach(tone=> {%>
+                    <option value="<%= tone.attributes.tonename %>">
+                      <%= tone.attributes.tonename %>
+                    </option>
+                    <% }); %>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="title-container">
+            <div class="article-title">Author</div>
+            <div class="title-input">
+              <div class="column">
+                <div for="author" class="hide" id="lpbOutputAuthor"></div>
+                <select name="author" id="lpbArticleAuthor">
+                  <option class="selected" value="Select Author" disabled selected>Select Author</option>
+                  <option value="None">None</option>
+                  <% authors.forEach(author=> {%>
+                    <% if (author.username !="sadev" ) { %>
+                      <option value="<%= author.firstname %> <%= author.lastname %>">
+                        <%= author.firstname %>
+                          <%= author.lastname %>
+                      </option>
+                      <% } %>
+                        <% }); %>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="title-container">
+            <div class="article-title">Perspective</div>
+            <div class="title-input">
+              <div class="column">
+                <div for="perspective" class="hide" id="lpbOutputPerspective"></div>
+                <select name="perspective" id="lpbArticlePerspective">
+                  <option class="selected" value="Select Perspective" disabled selected>Select Perspective</option>
+                  <option value="None">None</option>
+                  <% perspectives.forEach(perspective=> {%>
+                    <option value="<%= perspective.attributes.perspectivename %>">
+                      <%= perspective.attributes.perspectivename %>
+                    </option>
+                    <% }); %>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="generate-btn-lpb">
+            <button type="button" id="nextBtnLpb" class="button btn-disabled" onclick="nextPrevLpb()">Generate</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="tabs-section social-media-post-container tab-not-1" id="socialMediaPost">
+        <div class="social-media-tab">
+          <div class="social-medias">
+            <h2 class="choose-site-info">Select the social media platform where you want to create the post.</h2>
+            <div class="sm sm-facebook">
+              <svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512">
+                <path
+                  d="M480 257.35c0-123.7-100.3-224-224-224s-224 100.3-224 224c0 111.8 81.9 204.47 189 221.29V322.12h-56.89v-64.77H221V208c0-56.13 33.45-87.16 84.61-87.16 24.51 0 50.15 4.38 50.15 4.38v55.13H327.5c-27.81 0-36.51 17.26-36.51 35v42h62.12l-9.92 64.77H291v156.54c107.1-16.81 189-109.48 189-221.31z"
+                  fill-rule="evenodd" />
+              </svg>
+            </div>
+            <div class="sm sm-instagram">
+              <svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512">
+                <path
+                  d="M349.33 69.33a93.62 93.62 0 0193.34 93.34v186.66a93.62 93.62 0 01-93.34 93.34H162.67a93.62 93.62 0 01-93.34-93.34V162.67a93.62 93.62 0 0193.34-93.34h186.66m0-37.33H162.67C90.8 32 32 90.8 32 162.67v186.66C32 421.2 90.8 480 162.67 480h186.66C421.2 480 480 421.2 480 349.33V162.67C480 90.8 421.2 32 349.33 32z" />
+                <path
+                  d="M377.33 162.67a28 28 0 1128-28 27.94 27.94 0 01-28 28zM256 181.33A74.67 74.67 0 11181.33 256 74.75 74.75 0 01256 181.33m0-37.33a112 112 0 10112 112 112 112 0 00-112-112z" />
+              </svg>
+            </div>
+            <div class="sm sm-linkedin">
+              <svg xmlns="http://www.w3.org/2000/svg" class="ionicon" viewBox="0 0 512 512">
+                <path
+                  d="M444.17 32H70.28C49.85 32 32 46.7 32 66.89v374.72C32 461.91 49.85 480 70.28 480h373.78c20.54 0 35.94-18.21 35.94-38.39V66.89C480.12 46.7 464.6 32 444.17 32zm-273.3 373.43h-64.18V205.88h64.18zM141 175.54h-.46c-20.54 0-33.84-15.29-33.84-34.43 0-19.49 13.65-34.42 34.65-34.42s33.85 14.82 34.31 34.42c-.01 19.14-13.31 34.43-34.66 34.43zm264.43 229.89h-64.18V296.32c0-26.14-9.34-44-32.56-44-17.74 0-28.24 12-32.91 23.69-1.75 4.2-2.22 9.92-2.22 15.76v113.66h-64.18V205.88h64.18v27.77c9.34-13.3 23.93-32.44 57.88-32.44 42.13 0 74 27.77 74 87.64z" />
+              </svg>
+            </div>
+          </div>
+          <div class="sm-tab facebook-tab">
+            <span class="material-symbols-outlined back">keyboard_return</span>
+            <h2 class="choose-site-info">Facebook Post</h2>
+            <div class="title-container">
+              <div class="textarea-title">Post Overview</div>
+              <div class="title-input"><textarea name="overview" class="generator-input" id="postOverview"
+                  placeholder="Enter post overview and instructions..." rows="7" required></textarea></div>
+            </div>
+            <div class="title-container">
+              <div class="article-title">Tone / Personality</div>
+              <div class="title-input">
+                <div class="column">
+                  <div for="tone" class="hide" id="smpFbOutputTone"></div>
+                  <select name="tone" id="smpFbArticleTone">
+                    <option class="selected" value="Select Tone/Personality" disabled selected>Select Tone/Personality
+                    </option>
+                    <option value="None">Standard</option>
+                    <% tones.forEach(tone=> {%>
+                      <option value="<%= tone.attributes.tonename %>">
+                        <%= tone.attributes.tonename %>
+                      </option>
+                      <% }); %>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="title-container">
+              <div class="article-title">Perspective</div>
+              <div class="title-input">
+                <div class="column">
+                  <div for="perspective" class="hide" id="smpFbOutputPerspective"></div>
+                  <select name="perspective" id="smpFbArticlePerspective">
+                    <option class="selected" value="Select Perspective" disabled selected>Select Perspective</option>
+                    <option value="None">None</option>
+                    <% perspectives.forEach(perspective=> {%>
+                      <option value="<%= perspective.attributes.perspectivename %>">
+                        <%= perspective.attributes.perspectivename %>
+                      </option>
+                      <% }); %>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="generate-btn-smp">
+              <button type="button" id="nextBtnSmpFb" class="button btn-disabled" onclick="nextPrevSmpFb()">Generate</button>
+            </div>
+          </div>
+          <div class="sm-tab instagram-tab">
+            <span class="material-symbols-outlined back">keyboard_return</span>
+            <h2 class="choose-site-info">Instagram Post</h2>
+            <div class="title-container">
+              <div class="textarea-title">Post Overview</div>
+              <div class="title-input"><textarea name="overview" class="generator-input" id="postOverview"
+                  placeholder="Enter post overview and instructions..." rows="7" required></textarea></div>
+            </div>
+            <div class="title-container">
+              <div class="article-title">Tone / Personality</div>
+              <div class="title-input">
+                <div class="column">
+                  <div for="tone" class="hide" id="smpIgOutputTone"></div>
+                  <select name="tone" id="smpIgArticleTone">
+                    <option class="selected" value="Select Tone/Personality" disabled selected>Select Tone/Personality
+                    </option>
+                    <option value="None">Standard</option>
+                    <% tones.forEach(tone=> {%>
+                      <option value="<%= tone.attributes.tonename %>">
+                        <%= tone.attributes.tonename %>
+                      </option>
+                      <% }); %>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="title-container">
+              <div class="article-title">Perspective</div>
+              <div class="title-input">
+                <div class="column">
+                  <div for="perspective" class="hide" id="smpIgOutputPerspective"></div>
+                  <select name="perspective" id="smpIgArticlePerspective">
+                    <option class="selected" value="Select Perspective" disabled selected>Select Perspective</option>
+                    <option value="None">None</option>
+                    <% perspectives.forEach(perspective=> {%>
+                      <option value="<%= perspective.attributes.perspectivename %>">
+                        <%= perspective.attributes.perspectivename %>
+                      </option>
+                      <% }); %>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="generate-btn-smp">
+              <button type="button" id="nextBtnSmpIg" class="button btn-disabled" onclick="nextPrevSmpIg()">Generate</button>
+            </div>
+          </div>
+          <div class="sm-tab linkedin-tab">
+            <span class="material-symbols-outlined back">keyboard_return</span>
+            <h2 class="choose-site-info">LinkedIn Post</h2>
+            <div class="title-container">
+              <div class="textarea-title">Post Overview</div>
+              <div class="title-input"><textarea name="overview" class="generator-input" id="postOverview"
+                  placeholder="Enter post overview and instructions..." rows="7" required></textarea></div>
+            </div>
+            <div class="title-container">
+              <div class="article-title">Tone / Personality</div>
+              <div class="title-input">
+                <div class="column">
+                  <div for="tone" class="hide" id="smpLiOutputTone"></div>
+                  <select name="tone" id="smpLiArticleTone">
+                    <option class="selected" value="Select Tone/Personality" disabled selected>Select Tone/Personality
+                    </option>
+                    <option value="None">Standard</option>
+                    <% tones.forEach(tone=> {%>
+                      <option value="<%= tone.attributes.tonename %>">
+                        <%= tone.attributes.tonename %>
+                      </option>
+                      <% }); %>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="title-container">
+              <div class="article-title">Perspective</div>
+              <div class="title-input">
+                <div class="column">
+                  <div for="perspective" class="hide" id="smpLiOutputPerspective"></div>
+                  <select name="perspective" id="smpLiArticlePerspective">
+                    <option class="selected" value="Select Perspective" disabled selected>Select Perspective</option>
+                    <option value="None">None</option>
+                    <% perspectives.forEach(perspective=> {%>
+                      <option value="<%= perspective.attributes.perspectivename %>">
+                        <%= perspective.attributes.perspectivename %>
+                      </option>
+                      <% }); %>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="generate-btn-smp">
+              <button type="button" id="nextBtnSmpLi" class="button btn-disabled" onclick="nextPrevSmp()">Generate</button>
+            </div>
           </div>
         </div>
       </div>
@@ -759,12 +1060,12 @@
               </div>
               <div class="row">
                 <div class="column">
-                  <input type="hidden" name="articleTargetOptions" id="bulkArticleTO" required>
+                  <input type="hidden" name="bulkTargetOptions" id="bulkArticleTO" required>
                   <label for="target">Target Market</label>
-                  <select name="target" id="articleTargetBulk" multiple>
+                  <select name="bulkTarget" id="articleTargetBulk" multiple>
                     <option value="None" selected>None</option>
                     <% targetMarkets.forEach(targetMarket=> {%>
-                      <option value="<%= targetMarket.attributes.tonename %>">
+                      <option value="<%= targetMarket.attributes.targetname %>">
                         <%= targetMarket.attributes.targetname %>
                       </option>
                       <% }); %>

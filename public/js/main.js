@@ -2,6 +2,8 @@
 
 new MultiSelectTag('target');
 new MultiSelectTag('articleTarget');
+new MultiSelectTag('queryTarget');
+new MultiSelectTag('lpbTarget');
 new MultiSelectTag('articleTargetBulk');
 
 /* Accordion Script */
@@ -130,7 +132,7 @@ const generateResponse = (chatElement) => {
 }
 
 const handleChat = () => {
-  var values = Array.from(document.querySelectorAll(".tab-content-2 .item-label")).map(t => t.innerText)
+  var values = Array.from(document.querySelectorAll(".manual-article-generator-container .item-label")).map(t => t.innerText)
   $('#targetOptions').val(values);
   values = [];
   userMessage = chatInput.value.trim();
@@ -331,6 +333,28 @@ $('.choose-site-container-query .careers-site').on('click', function () {
   $('.choose-site-container-query .shoreagents-site').css('opacity', '1');
 });
 
+$('.sm-tab .back').on('click', function () {
+  $('.social-medias').css('display', 'flex');
+  $('.facebook-tab').css('display', 'none');
+  $('.instagram-tab').css('display', 'none');
+  $('.linkedin-tab').css('display', 'none');
+});
+
+$('.sm-facebook').on('click', function () {
+  $('.social-medias').css('display', 'none');
+  $('.facebook-tab').css('display', 'flex');
+});
+
+$('.sm-instagram').on('click', function () {
+  $('.social-medias').css('display', 'none');
+  $('.instagram-tab').css('display', 'flex');
+});
+
+$('.sm-linkedin').on('click', function () {
+  $('.social-medias').css('display', 'none');
+  $('.linkedin-tab').css('display', 'flex');
+});
+
 /* Article Generate Response Script */
 
 function articleResponse() {
@@ -451,7 +475,7 @@ function articleResponse() {
   }
 }
 
-/* Queried Article Generate Response Script */
+/* Instructive Article Generate Response Script */
 
 function queryArticleResponse() {
   const keyword = document.getElementById('queriedKeyword').value;
@@ -506,6 +530,100 @@ function queryArticleResponse() {
         customerObjective: outputCustomerObjective.textContent,
         site: chooseSite,
         userAction: "QueryArticleGenerator",
+        userName: userName
+      })
+    }
+    fetch(API_URL, requestOptions).then(res => res.json()).then(data => {
+      if (data.output == "There is an error on our server. Sorry for inconvenience. Please try again later.") {
+        $("#server-notice").addClass("error").removeClass("success");
+        $("#server-notice span").text("There is an error on our server. Sorry for inconvenience. Please try again later.");
+        document.getElementById("myNav").style.display = "none";
+        document.getElementById("server-notice").style.display = "flex";
+      } else {
+        var $iframe = $('#default_ifr');
+        $iframe.ready(function () {
+          $iframe.contents().find("body").append(data.output.content);
+        });
+        $("#seoTitle").val(data.output.seoTitle);
+        $("#metaDescription").val(data.output.metaDescription);
+        $("#slug").val(data.output.slug);
+        $(".user-section").removeClass("hide");
+        $(".user-accordion").css("display", "none");
+        $("#server-notice").addClass("success").removeClass("error");
+        $("#server-notice span").text("Article Generated Successfully.");
+        document.getElementById("myNav").style.display = "none";
+        document.getElementById("server-notice").style.display = "flex";
+        setTimeout(function () { document.getElementById("server-notice").style.display = "none"; }, 6000);
+      }
+    }).catch((error) => {
+      $("#server-notice").addClass("error").removeClass("success");
+      $("#server-notice span").text("Oops! Something went wrong. Please try again.");
+      document.getElementById("myNav").style.display = "none";
+      document.getElementById("server-notice").style.display = "flex";
+      console.log(error);
+    }).finally(() => chatbox.scrollTo(0, chatbox.scrollHeight));
+  } catch (error) {
+    $("#server-notice").addClass("error").removeClass("success");
+    $("#server-notice span").text("Oops! Something went wrong. Please try again.");
+    document.getElementById("myNav").style.display = "none";
+    document.getElementById("server-notice").style.display = "flex";
+    console.log(error);
+  }
+}
+
+/* Landing Page Builder Response Script */
+
+function lpbArticleResponse() {
+  const keyword = document.getElementById('lpbKeyword').value;
+  const articleOverview = document.getElementById('articleOverviewLpb').value;
+
+  var tone = document.getElementById('lpbArticleTone');
+  var outputTone = document.getElementById('lpbOutputTone');
+  tone.onchange = function () {
+    outputTone.innerHTML = this.options[this.selectedIndex].getAttribute('value');
+  };
+  tone.onchange();
+
+  var author = document.getElementById('lpbArticleAuthor');
+  var outputAuthor = document.getElementById('lpbOutputAuthor');
+  author.onchange = function () {
+    outputAuthor.innerHTML = this.options[this.selectedIndex].getAttribute('value');
+  };
+  author.onchange();
+
+  var perspective = document.getElementById('lpbArticlePerspective');
+  var outputPerspective = document.getElementById('lpbOutputPerspective');
+  perspective.onchange = function () {
+    outputPerspective.innerHTML = this.options[this.selectedIndex].getAttribute('value');
+  };
+  perspective.onchange();
+
+  var customerObjective = document.getElementById('lpbCO');
+  var outputCustomerObjective = document.getElementById('lpbOutputCO');
+  customerObjective.onchange = function () {
+    outputCustomerObjective.innerHTML = this.options[this.selectedIndex].getAttribute('value');
+  };
+  customerObjective.onchange();
+
+  try {
+    const API_URL = "/";
+    const outputTarget = $("#lpbArticleTO").val();
+    const userName = document.getElementById('userNameLpb').value;
+    const requestOptions = {
+      method: "POST",
+
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        keyword: keyword,
+        articleOverview: articleOverview,
+        tone: outputTone.textContent,
+        author: outputAuthor.textContent,
+        target: outputTarget,
+        perspective: outputPerspective.textContent,
+        customerObjective: outputCustomerObjective.textContent,
+        userAction: "LandingPageBuilder",
         userName: userName
       })
     }
@@ -822,6 +940,27 @@ $('#queriedGenerator .drawer ul').on('click', function () {
   }
 });
 
+/* Landing Page Builder Step Script */
+
+function nextPrevLpb(n) {
+  document.getElementById("myNav").style.display = "block";
+  var values = Array.from(document.querySelectorAll("#landingPageBuilder .item-label")).map(t => t.innerText)
+  $('#lpbArticleTO').val(values);
+  values = [];
+  lpbArticleResponse();
+}
+
+$('#landingPageBuilder .input-container').on('click', function () {
+  if ($('#landingPageBuilder .input-container').children().length == 0) {
+    $("#nextBtnLpb").addClass('btn-disabled');
+  }
+});
+
+$('#landingPageBuilder .drawer ul').on('click', function () {
+  if ($('#landingPageBuilder .input-container').children().length > 0 && $('#lpbKeyword').val().length > 1 && $('#articleOverviewLpb').val().length > 1) {
+    $("#nextBtnLpb").removeClass('btn-disabled');
+  }
+});
 
 /* Bulk Generator Step Script */
 
@@ -1357,6 +1496,14 @@ $('#queriedGenerator .generator-input').keyup(function () {
   }
 });
 
+$('#landingPageBuilder .generator-input').keyup(function () {
+  if ($('#lpbKeyword').val().length > 1 && $('#articleOverviewLpb').val().length > 1 && $('#landingPageBuilder .input-container').children().length > 0) {
+    $('#nextBtnLpb').removeClass('btn-disabled');
+  } else {
+    $('#nextBtnLpb').addClass('btn-disabled');
+  }
+});
+
 $('#bulkGenerator .focuskeyword').keyup(function () {
   var validate = isEveryInputEmpty();
   if (validate == true) {
@@ -1392,7 +1539,7 @@ $(document).on('click', '.float', function () {
   $("body").css("overflow", "hidden");
 });
 
-$(document).on('click', '.back', function () {
+$(document).on('click', '.tab-content-settings .back', function () {
   $(".settings-item").css("display", "flex");
   $(".tab-content-settings").css("display", "grid");
   $(".settings-inner").css("display", "none");
@@ -1424,6 +1571,14 @@ $(document).on('click', '.change-password', function () {
 
 $(document).on('click', '.strapi-admin', function () {
   var win = window.open('https://sagpt-data.onrender.com/admin', '_blank');
+  if (win) {
+    win.focus();
+  } else {
+    alert('Please allow popups for this website');
+  }
+});
+$(document).on('click', '.sa-flowise', function () {
+  var win = window.open('https://sa-flowise.onrender.com/', '_blank');
   if (win) {
     win.focus();
   } else {

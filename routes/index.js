@@ -6,7 +6,7 @@ import { loadQAStuffChain } from 'langchain/chains';
 import { Document } from "langchain/document";
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai';
 import * as dotenv from 'dotenv';
-import express, { query } from "express";
+import express from "express";
 import cookieParser from 'cookie-parser';
 import jwt from 'jsonwebtoken';
 import fs from 'fs';
@@ -325,7 +325,7 @@ router.post('/instagram-image', async (req, res) => {
 //     });
 
 //     if (queryResponse.matches.length) {
-//       const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4-1106-preview" });
+//       const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4o" });
 //       const chain = loadQAStuffChain(llm);
 
 //       const concatenatedPageContent = queryResponse.matches
@@ -734,6 +734,91 @@ router.post('/', async (req, res) => {
       logAction(userName, "User attempted to generate an article using Instructive Article Generator but failed.");
       output = "There is an error on our server. Sorry for inconvenience. Please try again later.";
       console.log(bulkdata + " | " + error);
+      res.send({ output });
+    }
+  } else if (userAction == "LandingPageBuilder") {
+    const keyword = req.body.keyword;
+    const articleOverview = req.body.articleOverview;
+    const tone = req.body.tone;
+    const author = req.body.author;
+    const target = req.body.target;
+    const perspective = req.body.perspective;
+    const customerObjective = req.body.customerObjective;
+    const userName = req.body.userName;
+    console.log('---------------------------------------------------------------');
+
+    var toneOutput = "";
+    var authorOutput = "";
+    var targetOutput = "";
+    var perspectiveOutput = "";
+    var customerObjectiveOutput = "";
+
+    if (tone == "Select Tone/Personality") {
+      var toneOutput = "";
+    } else if (tone != "None") {
+      toneOutput = `You are in ${tone} personality, so you will answer with the given subtones of that personality.`;
+    }
+    if (author == "Select Author") {
+      var authorOutput = "";
+    } else if (author != "None") {
+      authorOutput = `The author is ${author}.`;
+    }
+    if (target == "Select Target Market") {
+      var targetOutput = "";
+    } else if (target != "None") {
+      targetOutput = `Your Target Market/s will be ${target}.`;
+    }
+    if (perspective == "Select Perspective") {
+      var perspectiveOutput = "";
+    } else if (perspective != "None") {
+      perspectiveOutput = `You will write in ${perspective} writing perspective.`;
+    }
+    if (customerObjective == "Select Customer Objective") {
+      var customerObjectiveOutput = "";
+    } else if (customerObjective != "None") {
+      customerObjectiveOutput = `The selected Customer Objective is ${customerObjective}.`;
+    }
+
+    try {
+      var title;
+      var output;
+      var temp;
+      const createTitle = await titleGenerator(keyword, perspectiveOutput, toneOutput, targetOutput, customerObjectiveOutput);
+      var titleTemp = createTitle.replace(/['"]+/g, '')
+      title = titleTemp;
+      console.log("Article Title: " + title);
+
+      var outline = "\n" + await generateLandingPage(articleOverview, title, keyword, perspectiveOutput, toneOutput, targetOutput, authorOutput, customerObjectiveOutput);
+
+      const tempcontent = "<h1>" + title + "</h1>" + "\n" + outline;
+      temp = tempcontent.replace(/```html/g, '');
+      const content = temp.replace(/```/g, '');
+      const seoTitle = await seoTitleGenerator(keyword);
+      const metaDescription = await metaDescriptionGenerator(keyword, content);
+      const slug = keyword.replace(/\s+/g, '-').toLowerCase();
+
+      // var createArticle = await bulkArticleGenerator(generalQuery, articleTitle, articleKeyword, perspectiveOutput, toneOutput, targetOutput, authorOutput,customerObjectiveOutput);
+      console.log("/////////////////////////////////////////////////////////////////////////////////");
+      console.log("//////////////////////////////////// OUTPUT /////////////////////////////////////");
+      console.log("/////////////////////////////////////////////////////////////////////////////////");
+
+
+      output = {
+        content,
+        seoTitle,
+        metaDescription,
+        slug
+      }
+
+      console.log(output);
+      // var wordCount = output.match(/(\w+)/g).length;
+      // console.log(wordCount);
+      logAction(userName, "User successfully generated an article outline using Landing Page Builder.");
+      res.send({ output });
+    } catch (error) {
+      logAction(userName, "User attempted to generate an article outline using Landing Page Builder. but failed.");
+      output = "There is an error on our server. Sorry for inconvenience. Please try again later.";
+      console.log(error);
       res.send({ output });
     }
   } else if (userAction == "IntegromatArticleGenerator") {
@@ -1421,7 +1506,7 @@ export const getArticleHeading = async (headings, article) => {
   });
 
   if (queryResponse.matches.length) {
-    const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4-1106-preview" });
+    const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4o" });
     const chain = loadQAStuffChain(llm);
 
     const concatenatedPageContent = queryResponse.matches
@@ -1463,7 +1548,7 @@ export const generateHeadingImage = async (headings, loopNum) => {
   });
 
   if (queryResponse.matches.length) {
-    const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4-1106-preview" });
+    const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4o" });
     const chain = loadQAStuffChain(llm);
 
     const concatenatedPageContent = queryResponse.matches
@@ -1542,7 +1627,7 @@ export const runWithEmbeddings = async (question, perspectiveOutput, toneOutput,
   // console.log("Pinecone Query Response:", queryResponse);
 
   if (queryResponse.matches.length) {
-    const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4-1106-preview" });
+    const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4o" });
     const chain = loadQAStuffChain(llm);
 
     const concatenatedPageContent = queryResponse.matches
@@ -1620,7 +1705,7 @@ export const articleGenerator = async (generalQuery, question, query, title, key
   // return output;
 
   if (queryResponse.matches.length) {
-    const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4-1106-preview" });
+    const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4o" });
     const chain = loadQAStuffChain(llm);
 
     const concatenatedPageContent = queryResponse.matches
@@ -1675,7 +1760,7 @@ export const seoTitleGenerator = async (focuskeyword) => {
   // console.log("Pinecone Query Response:", queryResponse);
 
   if (queryResponse.matches.length) {
-    const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4-1106-preview" });
+    const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4o" });
     const chain = loadQAStuffChain(llm);
 
     const concatenatedPageContent = queryResponse.matches
@@ -1729,7 +1814,7 @@ export const metaDescriptionGenerator = async (focuskeyword, articleContent) => 
   // console.log("Pinecone Query Response:", queryResponse);
 
   if (queryResponse.matches.length) {
-    const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4-1106-preview" });
+    const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4o" });
     const chain = loadQAStuffChain(llm);
 
     const concatenatedPageContent = queryResponse.matches
@@ -1781,7 +1866,7 @@ export const titleGenerator = async (focuskeyword, perspectiveOutput, toneOutput
   // console.log("Pinecone Query Response:", queryResponse);
 
   if (queryResponse.matches.length) {
-    const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4-1106-preview" });
+    const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4o" });
     const chain = loadQAStuffChain(llm);
 
     const concatenatedPageContent = queryResponse.matches
@@ -1817,7 +1902,7 @@ export const titleGenerator = async (focuskeyword, perspectiveOutput, toneOutput
 
 // export const bulkArticleGenerator = async (generalQuery, title, keyword, perspectiveOutput, toneOutput, targetOutput, authorOutput, customerObjectiveOutput) => {
 
-//   const model = new OpenAI({temperature:0.7, modelName:"gpt-4-1106-preview"});
+//   const model = new OpenAI({temperature:0.7, modelName:"gpt-4o"});
 
 //   let vectorStore;
 //   if (fs.existsSync(VECTOR_STORE_PATH)) {
@@ -1850,7 +1935,7 @@ export const titleGenerator = async (focuskeyword, perspectiveOutput, toneOutput
 // };
 
 // export const generateKeywords = async (keywords) => {
-//   const model = new OpenAI({temperature:0.7, modelName:"gpt-4-1106-preview"});
+//   const model = new OpenAI({temperature:0.7, modelName:"gpt-4o"});
 //   let vectorStore;
 //   if (fs.existsSync(VECTOR_STORE_PATH)) {
 //     vectorStore = await HNSWLib.load(VECTOR_STORE_PATH, new OpenAIEmbeddings());
@@ -1881,6 +1966,97 @@ export const titleGenerator = async (focuskeyword, perspectiveOutput, toneOutput
 //   return output;
 // };
 
+export const generateLandingPage = async (articleOverview, title, keyword, perspectiveOutput, toneOutput, targetOutput, authorOutput, customerObjectiveOutput) => {
+  var output;
+  var userprompt = `You are an expert Sales Copywriter specializing in crafting high-converting landing pages for sales and lead generation. The content you create should be engaging, persuasive, and formatted in a logical sequence to guide the customer through a journey that culminates in a sale or lead capture. The landing pages will be used primarily for PPC campaigns, so the copy must be closely related to a specific keyword provided by the user.  Make sure it's readability is good, should be in HTML format, and is SEO optimized, using the article title "${title}", and the focus keyword "${keyword}". ${perspectiveOutput} ${toneOutput} ${authorOutput} ${targetOutput} ${customerObjectiveOutput}.
+
+  Please follow the structure below:
+  1. Headline:
+  - Create a powerful, attention-grabbing headline that includes the keyword and immediately addresses the primary pain point or desire of the target audience.
+  2. Subheadline:
+  - Write a compelling subheadline that expands on the headline, providing a clear benefit and reinforcing the promise made in the headline.
+  3. Introduction:
+  - Provide a brief introduction that empathizes with the audience's situation, establishes credibility, and introduces the solution or product.
+  4. Features and Benefits:
+  - List the key features of the product or service, highlighting the benefits of each feature. Use bullet points for clarity and impact.
+  5. Social Proof:
+  - Include testimonials, case studies, or reviews that demonstrate the effectiveness and satisfaction of previous customers.
+  6. Offer Details:
+  - Clearly outline the offer, including any discounts, bonuses, or limited-time deals. Make it irresistible and urgent.
+  7. Call to Action (CTA):
+  - Craft a strong and clear call to action that tells the audience exactly what to do next. Use action-oriented language and ensure it stands out on the page.
+  8. Guarantee:
+  - Provide a risk-reversal guarantee to alleviate any concerns or objections. This could be a money-back guarantee, a free trial, or a satisfaction promise.
+  9. FAQ:
+  - Address common questions and objections in a concise FAQ section to remove any remaining barriers to conversion.
+  10. Closing Statement:
+  - End with a motivational closing statement that reinforces the benefits and urges immediate action.
+  11. Secondary CTA:
+  - Include a secondary, less prominent CTA for those who need additional time or information before making a decision.
+
+  Article Overview:
+  ${articleOverview}
+  
+  Instructions:
+    Make headings into <H2> and its content into <p>.
+    You can be creative such as adding <ul> <li> <strong> and <h4> subheadings inside H2 headings for more detail in the article outline.
+    Do not add the word 'Subheading:' in the subheading titles.
+    Strictly, you will not give any comments on the generated content, it must be content article body only.
+    Do not add the '${title}' itself.`;
+
+  console.log('---------------------------------------------------------------');
+  console.log("Generating Landing Page.");
+
+  const pinecone = new Pinecone({
+    apiKey: process.env.PINECONE_API_KEY,
+    environment: process.env.PINECONE_ENVIRONMENT
+  });
+  const index = pinecone.index('sagpt');
+  const queryEmbedding = await new OpenAIEmbeddings().embedQuery(userprompt);
+  const queryResponse = await index.query({
+    topK: 5,
+    vector: queryEmbedding,
+    includeMetadata: true,
+    includeValues: true
+  });
+
+  // console.log("Pinecone Query Response:", queryResponse);
+
+  if (queryResponse.matches.length) {
+    const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4o" });
+    const chain = loadQAStuffChain(llm);
+
+    const concatenatedPageContent = queryResponse.matches
+      .map((match) => match.metadata.text)
+      .join("\n\n");
+
+    // console.log("Concatenated Page Content:", concatenatedPageContent);
+    console.log('---------------------------------------------------------------');
+
+    try {
+      const result = await chain.call({
+        input_documents: [new Document({ pageContent: concatenatedPageContent })],
+        question: userprompt
+      });
+
+      // const temp = result.text;
+      // output = addInternalLinks(temp);
+      output = result.text;
+      console.log("Chain Result:", output);
+    } catch (error) {
+      console.error("Error in processing chain:", error);
+      output = "An error occurred while processing your request.";
+    }
+  } else {
+    console.log("Since there are no matches, GPT-3 will not be queried.");
+    output = "I'm sorry, there are no matches that are related in our data.";
+  }
+
+  console.log('---------------------------------------------------------------');
+
+  return output
+}
+
 export const addHeadingContent = async (wordCount, articleContent, generalQuery, title, keyword, perspectiveOutput, toneOutput, targetOutput, authorOutput, customerObjectiveOutput, site) => {
 
   var siteText;
@@ -1893,7 +2069,7 @@ export const addHeadingContent = async (wordCount, articleContent, generalQuery,
   var output;
   var userprompt;
   if (wordCount == 0) {
-    userprompt = `You are a content writer and will draft HTML formatted article heading where at the start of every paragraph you will just add '<p>' and must end with '</p>', it will be the same with Headings using '<h2>' and '</h2>', as well as Subheadings but with '<h3>' and '</h3>'. This is focused solely on generating an Introduction for the article "${title}". Your responsibility is to generate an article H2 Heading ONLY and it's content body. Make sure it's readability is good and is SEO optimized, using the article title "${title}", and the focus keyword "${keyword}". ${perspectiveOutput} ${toneOutput} ${authorOutput} ${targetOutput} ${customerObjectiveOutput}
+    userprompt = `You are a creative SEO content writer and will draft HTML formatted article heading where at the start of every paragraph you will just add '<p>' and must end with '</p>', it will be the same with Headings using '<h2>' and '</h2>', as well as Subheadings but with '<h3>' and '</h3>'. This is focused solely on generating an Introduction for the article "${title}". Your responsibility is to generate an article H2 Heading ONLY and it's content body. Make sure it's readability is good (should be 8th grade level) and is SEO optimized based on the best current google practices, using the article title "${title}", and the focus keyword "${keyword}". ${perspectiveOutput} ${toneOutput} ${authorOutput} ${targetOutput} ${customerObjectiveOutput}
   
     Instructions:
       ${generalQuery}
@@ -1907,7 +2083,7 @@ export const addHeadingContent = async (wordCount, articleContent, generalQuery,
       DO NOT add any comments or tags at the start ('''html) and end (''') of the output.
       Do not add the '${title}' itself.`;
   } else {
-    userprompt = `You are a content writer and will draft HTML formatted article heading where at the start of every paragraph you will just add '<p>' and must end with '</p>', it will be the same with Headings using '<h2>' and '</h2>', as well as Subheadings but with '<h3>' and '</h3>'. Your responsibility is to generate an article H2 Heading ONLY and it's content body, do not include the previous headings. Make sure it's readability is good and is SEO optimized, using the article title "${title}", and the focus keyword "${keyword}". ${perspectiveOutput} ${toneOutput} ${targetOutput} ${customerObjectiveOutput}
+    userprompt = `You are a creative SEO content writer and will draft HTML formatted article heading where at the start of every paragraph you will just add '<p>' and must end with '</p>', it will be the same with Headings using '<h2>' and '</h2>', as well as Subheadings but with '<h3>' and '</h3>'. Your responsibility is to generate an article H2 Heading ONLY and it's content body, do not include the previous headings. Make sure it's readability is good (should be 8th grade level) and is SEO optimized based on the best current google practices, using the article title "${title}", and the focus keyword "${keyword}". ${perspectiveOutput} ${toneOutput} ${targetOutput} ${customerObjectiveOutput}
 
     You will continue this article and make it as a reference only and do not add this in the new generated content '${articleContent}'. 
 
@@ -1949,7 +2125,7 @@ export const addHeadingContent = async (wordCount, articleContent, generalQuery,
   // console.log("Pinecone Query Response:", queryResponse);
 
   if (queryResponse.matches.length) {
-    const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4-1106-preview" });
+    const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4o" });
     const chain = loadQAStuffChain(llm);
 
     const concatenatedPageContent = queryResponse.matches
@@ -2016,7 +2192,7 @@ export const generateConclusion = async (articleContent, generalQuery, title, ke
   // console.log("Pinecone Query Response:", queryResponse);
 
   if (queryResponse.matches.length) {
-    const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4-1106-preview" });
+    const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4o" });
     const chain = loadQAStuffChain(llm);
 
     const concatenatedPageContent = queryResponse.matches
@@ -2084,7 +2260,7 @@ export const addInternalLinks = async (articleContent) => {
   // console.log("Pinecone Query Response:", queryResponse);
 
   if (queryResponse.matches.length) {
-    const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4-1106-preview" });
+    const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4o" });
     const chain = loadQAStuffChain(llm);
 
     const concatenatedPageContent = queryResponse.matches
