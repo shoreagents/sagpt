@@ -487,6 +487,10 @@ main .separator input {
 
 @media screen and (max-width: 992px) {
 
+    .ql-editor{
+        max-height: 350px;
+    }
+
     .generate-btn-query{
         padding-bottom: 40px;
     }
@@ -626,7 +630,7 @@ main .separator input {
         border-top: 1px solid #F0F0F0;
     }
 
-    .chatbot .chatbox {
+    .ai-assistant-container .chatbox {
         height: 70vh;
     }
 

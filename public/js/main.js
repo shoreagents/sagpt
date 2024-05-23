@@ -6,6 +6,47 @@ new MultiSelectTag('queryTarget');
 new MultiSelectTag('lpbTarget');
 new MultiSelectTag('articleTargetBulk');
 
+/* Editor Script */
+
+const quill = new Quill('#editor', {
+  modules: {
+    toolbar: [
+      [{ header: [1, 2, 3, 4, false] }],
+      ['bold', 'italic', 'underline'],
+      ['link'],
+      [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'list': 'check' }],
+      [{ 'indent': '-1' }, { 'indent': '+1' }],
+      ['clean']
+    ],
+  },
+  placeholder: 'Type your content here...',
+  theme: 'snow'
+});
+
+document
+  .querySelector(".ql-editor")
+  .addEventListener("keyup", function countWord() {
+    let res = [];
+    let str = this.innerText
+      .replace(/[\t\n\r\.\?\!]/gm, " ").split(" ");
+    str.map((s) => {
+      let trimStr = s.trim();
+      if (trimStr.length > 0) {
+        res.push(trimStr);
+      }
+    });
+    if (res.length == 1) {
+      document.querySelector(".word-count")
+        .innerText = res.length + " word";
+    } else if (res.length == 0) {
+      document.querySelector(".word-count")
+        .innerText = res.length + " word";
+    } else {
+      document.querySelector(".word-count")
+        .innerText = res.length + " words";
+    }
+  });
+
 /* Accordion Script */
 
 var acc = document.getElementsByClassName("accordion");
@@ -183,49 +224,49 @@ sendChatBtn.addEventListener("click", handleChat);
 
 /* Tiny WYSIWYG Script */
 
-tinymce.init({
-  selector: 'textarea#default',
-  height: "100%",
-  plugins: [
-    'advlist', 'autolink', 'link', 'image', 'lists', 'charmap', 'preview', 'anchor', 'pagebreak',
-    'searchreplace', 'wordcount', 'visualblocks', 'code', 'fullscreen', 'insertdatetime', 'media',
-    'table', 'emoticons', 'codesample', 'autosave', 'help', 'image', 'quickbars'
-  ],
-  editimage_toolbar: 'rotateleft rotateright | flipv fliph | editimage imageoptions',
-  toolbar: 'undo redo | styles | bold italic underline | alignleft aligncenter alignright alignjustify |' +
-    'bullist numlist outdent indent | link image | print preview media fullscreen | ' +
-    'forecolor backcolor emoticons' + 'restoredraft' + 'link image',
-  image_title: true,
-  automatic_uploads: true,
-  file_picker_types: 'image',
-  file_picker_callback: (cb, value, meta) => {
-    const input = document.createElement('input');
-    input.setAttribute('type', 'file');
-    input.setAttribute('accept', 'image/*');
+// tinymce.init({
+//   selector: 'textarea#default',
+//   height: "100%",
+//   plugins: [
+//     'advlist', 'autolink', 'link', 'image', 'lists', 'charmap', 'preview', 'anchor', 'pagebreak',
+//     'searchreplace', 'wordcount', 'visualblocks', 'code', 'fullscreen', 'insertdatetime', 'media',
+//     'table', 'emoticons', 'codesample', 'autosave', 'help', 'image', 'quickbars'
+//   ],
+//   editimage_toolbar: 'rotateleft rotateright | flipv fliph | editimage imageoptions',
+//   toolbar: 'undo redo | styles | bold italic underline | alignleft aligncenter alignright alignjustify |' +
+//     'bullist numlist outdent indent | link image | print preview media fullscreen | ' +
+//     'forecolor backcolor emoticons' + 'restoredraft' + 'link image',
+//   image_title: true,
+//   automatic_uploads: true,
+//   file_picker_types: 'image',
+//   file_picker_callback: (cb, value, meta) => {
+//     const input = document.createElement('input');
+//     input.setAttribute('type', 'file');
+//     input.setAttribute('accept', 'image/*');
 
-    input.addEventListener('change', (e) => {
-      const file = e.target.files[0];
+//     input.addEventListener('change', (e) => {
+//       const file = e.target.files[0];
 
-      const reader = new FileReader();
-      reader.addEventListener('load', () => {
-        const id = 'blobid' + (new Date()).getTime();
-        const blobCache = tinymce.activeEditor.editorUpload.blobCache;
-        const base64 = reader.result.split(',')[1];
-        const blobInfo = blobCache.create(id, file, base64);
-        blobCache.add(blobInfo);
-        cb(blobInfo.blobUri(), { title: file.name });
-      });
-      reader.readAsDataURL(file);
-    });
+//       const reader = new FileReader();
+//       reader.addEventListener('load', () => {
+//         const id = 'blobid' + (new Date()).getTime();
+//         const blobCache = tinymce.activeEditor.editorUpload.blobCache;
+//         const base64 = reader.result.split(',')[1];
+//         const blobInfo = blobCache.create(id, file, base64);
+//         blobCache.add(blobInfo);
+//         cb(blobInfo.blobUri(), { title: file.name });
+//       });
+//       reader.readAsDataURL(file);
+//     });
 
-    input.click();
-  },
-  menu: {
-    favs: { title: '☰', items: 'code visualaid | searchreplace | emoticons | help' }
-  },
-  menubar: 'favs file edit view insert format tools table',
-  content_style: 'body{ font-family:Montserrat,sans-serif; font-size:16px}'
-});
+//     input.click();
+//   },
+//   menu: {
+//     favs: { title: '☰', items: 'code visualaid | searchreplace | emoticons | help' }
+//   },
+//   menubar: 'favs file edit view insert format tools table',
+//   content_style: 'body{ font-family:Montserrat,sans-serif; font-size:16px}'
+// });
 
 /* Hide Menu Button Script */
 
