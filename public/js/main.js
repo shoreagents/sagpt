@@ -485,10 +485,7 @@ function articleResponse() {
         document.getElementById("myNav").style.display = "none";
         document.getElementById("server-notice").style.display = "flex";
       } else {
-        var $iframe = $('#default_ifr');
-        $iframe.ready(function () {
-          $iframe.contents().find("body").append(data.output.content);
-        });
+        $('.ql-editor').append(data.output.content);
         $("#seoTitle").val(data.output.seoTitle);
         $("#metaDescription").val(data.output.metaDescription);
         $("#slug").val(data.output.slug);
@@ -518,7 +515,7 @@ function articleResponse() {
 
 /* Instructive Article Generate Response Script */
 
-function queryArticleResponse() {
+async function queryArticleResponse() {
   const keyword = document.getElementById('queriedKeyword').value;
   const articleOverview = document.getElementById('articleOverview').value;
 
@@ -574,17 +571,14 @@ function queryArticleResponse() {
         userName: userName
       })
     }
-    fetch(API_URL, requestOptions).then(res => res.json()).then(data => {
+    await fetch(API_URL, requestOptions).then(res => res.json()).then(data => {
       if (data.output == "There is an error on our server. Sorry for inconvenience. Please try again later.") {
         $("#server-notice").addClass("error").removeClass("success");
         $("#server-notice span").text("There is an error on our server. Sorry for inconvenience. Please try again later.");
         document.getElementById("myNav").style.display = "none";
         document.getElementById("server-notice").style.display = "flex";
       } else {
-        var $iframe = $('#default_ifr');
-        $iframe.ready(function () {
-          $iframe.contents().find("body").append(data.output.content);
-        });
+        $('.ql-editor').append(data.output.content);
         $("#seoTitle").val(data.output.seoTitle);
         $("#metaDescription").val(data.output.metaDescription);
         $("#slug").val(data.output.slug);
@@ -602,7 +596,18 @@ function queryArticleResponse() {
       document.getElementById("myNav").style.display = "none";
       document.getElementById("server-notice").style.display = "flex";
       console.log(error);
-    }).finally(() => chatbox.scrollTo(0, chatbox.scrollHeight));
+    }).finally(() => {
+      $('.ql-editor p').each(function () {
+        var $this = $(this);
+        $this.find("br").parent().remove();
+      });
+      $('.ql-editor p').each(function () {
+        var $this = $(this);
+        if ($this.html().replace(/\s|&nbsp;/g, '').length == 0)
+          $this.remove();
+      });
+      chatbox.scrollTo(0, chatbox.scrollHeight)
+    });
   } catch (error) {
     $("#server-notice").addClass("error").removeClass("success");
     $("#server-notice span").text("Oops! Something went wrong. Please try again.");
@@ -675,10 +680,7 @@ function lpbArticleResponse() {
         document.getElementById("myNav").style.display = "none";
         document.getElementById("server-notice").style.display = "flex";
       } else {
-        var $iframe = $('#default_ifr');
-        $iframe.ready(function () {
-          $iframe.contents().find("body").append(data.output.content);
-        });
+        $('.ql-editor').append(data.output.content);
         $("#seoTitle").val(data.output.seoTitle);
         $("#metaDescription").val(data.output.metaDescription);
         $("#slug").val(data.output.slug);
@@ -1631,14 +1633,14 @@ $(document).on('click', '.login-modal .icon-button', function () {
   $("body").css("overflow", "auto");
 });
 
-$(document).on('click', '.loginbtn', function () {
+$(document).on('click', '.loginbtn', async function () {
   var status;
   const seoTitle = document.getElementById('seoTitle').value;
   const metaDescription = document.getElementById('metaDescription').value;
   const slug = document.getElementById('slug').value;
   const domain = $(".publish-website").val();
   try {
-    fetch(`https://${domain}/wp-json/jwt-auth/v1/token`, {
+    await fetch(`https://${domain}/wp-json/jwt-auth/v1/token`, {
       method: "POST",
       headers: {
         'Content-Type': 'application/json',
@@ -1649,13 +1651,13 @@ $(document).on('click', '.loginbtn', function () {
         username: $("#loginusername").val(),
         password: $("#loginpassword").val()
       })
-    }).then(function (response) {
+    }).then(async function (response) {
       status = response.status;
       console.log("Status: " + response.status);
       if (response.ok) {
         return response.json();
       }
-    }).then(function (user) {
+    }).then(async function (user) {
       if (status == 200) {
         $("#login").css("display", "none");
         console.log("Login Success");
@@ -1664,7 +1666,7 @@ $(document).on('click', '.loginbtn', function () {
         $(".float").css("background-color", "#c3db63");
         $(".float").css("pointer-events", "none");
         $(".float").css("cursor", "not-allowed");
-        fetch(`https://${domain}/wp-json/wp/v2/posts`, {
+        await fetch(`https://${domain}/wp-json/wp/v2/posts`, {
           method: "POST",
           headers: {
             'Content-Type': 'application/json',
@@ -1672,8 +1674,8 @@ $(document).on('click', '.loginbtn', function () {
             'Authorization': `Bearer ${user.token}`
           },
           body: JSON.stringify({
-            title: $("#default_ifr").contents().find("h1").html(),
-            content: $("#default_ifr").contents().find("body").clone().find("h1").remove().end().html(),
+            title: $(".ql-editor h1").text(),
+            content: $(".ql-editor").clone().find("h1").remove().end().html(),
             author: 1,
             yoast_head_json: {
               title: seoTitle,
@@ -1683,7 +1685,13 @@ $(document).on('click', '.loginbtn', function () {
             status: 'private'
           })
         }).then(function (response) {
-          return response.json()
+          status = response.status;
+          console.log("Status: " + response.status);
+          if (status == 200 || status == 201) {
+            return response.json();
+          } else {
+            throw "Bad Request"
+          }
         }).then(function (post) {
           $(".my-float").text("update");
           $(".float-content").text("Update");
@@ -1697,6 +1705,15 @@ $(document).on('click', '.loginbtn', function () {
           $(".float").removeClass('float').addClass('updatepost');
           postID = post.id;
           console.log("Article successfully published as private.");
+        }).catch((error) => {
+          $("#server-notice").addClass("error").removeClass("success");
+          $("#server-notice span").text("An error has occured: " + error);
+          document.getElementById("server-notice").style.display = "flex";
+          $(".my-float").text("publish");
+          $(".float-content").text("Publish Article");
+          $(".float").css("background-color", "#7eac0b");
+          $(".float").css("pointer-events", "all");
+          $(".float").css("cursor", "pointer");
         });
       } else {
         $(".login-error").css("display", "block");

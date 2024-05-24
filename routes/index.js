@@ -683,7 +683,6 @@ router.post('/', async (req, res) => {
       console.log("Article Title: " + title);
       var createArticle;
       var wordCount;
-      var num = wordCount - 500;
       console.log(wordCount);
 
       for (let i = 0; i < 20; i++) {
@@ -692,7 +691,7 @@ router.post('/', async (req, res) => {
         } else {
           wordCount = createArticle.match(/(\w+)/g).length;
         }
-        var num = wordCount - 500;
+        var num = wordCount;
         console.log(wordCount);
         if (num < 1500) {
           if (typeof createArticle === 'undefined') {
