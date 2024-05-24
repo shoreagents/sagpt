@@ -2125,7 +2125,7 @@ export const addHeadingContent = async (wordCount, articleContent, generalQuery,
   // console.log("Pinecone Query Response:", queryResponse);
 
   if (queryResponse.matches.length) {
-    const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4-turbo" });
+    const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4o" });
     const chain = loadQAStuffChain(llm);
 
     const concatenatedPageContent = queryResponse.matches
@@ -2192,7 +2192,7 @@ export const generateConclusion = async (articleContent, generalQuery, title, ke
   // console.log("Pinecone Query Response:", queryResponse);
 
   if (queryResponse.matches.length) {
-    const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4-turbo" });
+    const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4o" });
     const chain = loadQAStuffChain(llm);
 
     const concatenatedPageContent = queryResponse.matches
