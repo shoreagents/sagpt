@@ -325,7 +325,7 @@ router.post('/instagram-image', async (req, res) => {
 //     });
 
 //     if (queryResponse.matches.length) {
-//       const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4-turbo" });
+//       const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4o" });
 //       const chain = loadQAStuffChain(llm);
 
 //       const concatenatedPageContent = queryResponse.matches
@@ -1505,7 +1505,7 @@ export const getArticleHeading = async (headings, article) => {
   });
 
   if (queryResponse.matches.length) {
-    const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4-turbo" });
+    const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4o" });
     const chain = loadQAStuffChain(llm);
 
     const concatenatedPageContent = queryResponse.matches
@@ -1547,7 +1547,7 @@ export const generateHeadingImage = async (headings, loopNum) => {
   });
 
   if (queryResponse.matches.length) {
-    const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4-turbo" });
+    const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4o" });
     const chain = loadQAStuffChain(llm);
 
     const concatenatedPageContent = queryResponse.matches
@@ -1626,7 +1626,7 @@ export const runWithEmbeddings = async (question, perspectiveOutput, toneOutput,
   // console.log("Pinecone Query Response:", queryResponse);
 
   if (queryResponse.matches.length) {
-    const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4-turbo" });
+    const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4o" });
     const chain = loadQAStuffChain(llm);
 
     const concatenatedPageContent = queryResponse.matches
@@ -1704,7 +1704,7 @@ export const articleGenerator = async (generalQuery, question, query, title, key
   // return output;
 
   if (queryResponse.matches.length) {
-    const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4-turbo" });
+    const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4o" });
     const chain = loadQAStuffChain(llm);
 
     const concatenatedPageContent = queryResponse.matches
@@ -1759,7 +1759,7 @@ export const seoTitleGenerator = async (focuskeyword) => {
   // console.log("Pinecone Query Response:", queryResponse);
 
   if (queryResponse.matches.length) {
-    const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4-turbo" });
+    const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4o" });
     const chain = loadQAStuffChain(llm);
 
     const concatenatedPageContent = queryResponse.matches
@@ -1813,7 +1813,7 @@ export const metaDescriptionGenerator = async (focuskeyword, articleContent) => 
   // console.log("Pinecone Query Response:", queryResponse);
 
   if (queryResponse.matches.length) {
-    const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4-turbo" });
+    const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4o" });
     const chain = loadQAStuffChain(llm);
 
     const concatenatedPageContent = queryResponse.matches
@@ -1865,7 +1865,7 @@ export const titleGenerator = async (focuskeyword, perspectiveOutput, toneOutput
   // console.log("Pinecone Query Response:", queryResponse);
 
   if (queryResponse.matches.length) {
-    const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4-turbo" });
+    const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4o" });
     const chain = loadQAStuffChain(llm);
 
     const concatenatedPageContent = queryResponse.matches
@@ -1901,7 +1901,7 @@ export const titleGenerator = async (focuskeyword, perspectiveOutput, toneOutput
 
 // export const bulkArticleGenerator = async (generalQuery, title, keyword, perspectiveOutput, toneOutput, targetOutput, authorOutput, customerObjectiveOutput) => {
 
-//   const model = new OpenAI({temperature:0.7, modelName:"gpt-4-turbo"});
+//   const model = new OpenAI({temperature:0.7, modelName:"gpt-4o"});
 
 //   let vectorStore;
 //   if (fs.existsSync(VECTOR_STORE_PATH)) {
@@ -1934,7 +1934,7 @@ export const titleGenerator = async (focuskeyword, perspectiveOutput, toneOutput
 // };
 
 // export const generateKeywords = async (keywords) => {
-//   const model = new OpenAI({temperature:0.7, modelName:"gpt-4-turbo"});
+//   const model = new OpenAI({temperature:0.7, modelName:"gpt-4o"});
 //   let vectorStore;
 //   if (fs.existsSync(VECTOR_STORE_PATH)) {
 //     vectorStore = await HNSWLib.load(VECTOR_STORE_PATH, new OpenAIEmbeddings());
@@ -2022,7 +2022,7 @@ export const generateLandingPage = async (articleOverview, title, keyword, persp
   // console.log("Pinecone Query Response:", queryResponse);
 
   if (queryResponse.matches.length) {
-    const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4-turbo" });
+    const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4o" });
     const chain = loadQAStuffChain(llm);
 
     const concatenatedPageContent = queryResponse.matches
@@ -2124,7 +2124,7 @@ export const addHeadingContent = async (wordCount, articleContent, generalQuery,
   // console.log("Pinecone Query Response:", queryResponse);
 
   if (queryResponse.matches.length) {
-    const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4-turbo" });
+    const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4o" });
     const chain = loadQAStuffChain(llm);
 
     const concatenatedPageContent = queryResponse.matches
@@ -2191,7 +2191,7 @@ export const generateConclusion = async (articleContent, generalQuery, title, ke
   // console.log("Pinecone Query Response:", queryResponse);
 
   if (queryResponse.matches.length) {
-    const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4-turbo" });
+    const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4o" });
     const chain = loadQAStuffChain(llm);
 
     const concatenatedPageContent = queryResponse.matches
@@ -2259,7 +2259,7 @@ export const addInternalLinks = async (articleContent) => {
   // console.log("Pinecone Query Response:", queryResponse);
 
   if (queryResponse.matches.length) {
-    const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4-turbo" });
+    const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4o" });
     const chain = loadQAStuffChain(llm);
 
     const concatenatedPageContent = queryResponse.matches
