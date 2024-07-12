@@ -311,40 +311,46 @@ router.post('/access-pinecone', async (req, res) => {
   });
   const index = pinecone.index('sagpt');
   const queryEmbedding = await new OpenAIEmbeddings().embedQuery(question);
-  const output = await index.query({
+  const queryResponse = await index.query({
     topK: 5,
     vector: queryEmbedding,
     includeMetadata: true,
     includeValues: true
   });
 
-  // if (queryResponse.matches.length) {
-  //   const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4o" });
-  //   const chain = loadQAStuffChain(llm);
+  if (queryResponse.matches.length) {
+    const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4o" });
+    const chain = loadQAStuffChain(llm);
 
-  //   const concatenatedPageContent = queryResponse.matches
-  //     .map((match) => match.metadata.text)
-  //     .join("\n\n");
+    const concatenatedPageContent = queryResponse.matches
+      .map((match) => match.metadata.text)
+      .join("\n\n");
 
-  //   console.log('---------------------------------------------------------------');
+    console.log('---------------------------------------------------------------');
 
-  //   try {
-  //     const result = await chain.call({
-  //       input_documents: [new Document({ pageContent: concatenatedPageContent })],
-  //       question: userprompt
-  //     });
+    
 
-  //     output = result.text;
-  //     console.log("User Prompt:", userprompt);
-  //     console.log("Chain Result:", result.text);
-  //   } catch (error) {
-  //     console.error("Error in processing chain:", error);
-  //     output = "An error occurred while processing your request.";
-  //   }
-  // } else {
-  //   console.log("Since there are no matches, GPT-3 will not be queried.");
-  //   output = "I'm sorry, there are no matches that are related to the question in our data.";
-  // }
+    try {
+      const prompt = "Summarize the following data clearly and concisely. Highlight the key points, and any significant findings. Ensure the summary is easily understandable for someone without prior knowledge of the data. Avoid adding any unnecessary comments or details beyond the core information."
+      
+      const result = await chain.call({
+        input_documents: [new Document({ pageContent: concatenatedPageContent })],
+        question: prompt
+      });
+
+      
+
+      output = result.text;
+      console.log("Prompt:", prompt);
+      console.log("Chain Result:", result.text);
+    } catch (error) {
+      console.error("Error in processing chain:", error);
+      output = "An error occurred while processing your request.";
+    }
+  } else {
+    console.log("Since there are no matches, GPT-3 will not be queried.");
+    output = "I'm sorry, there are no matches that are related to the question in our data.";
+  }
 
   res.send({ output });
 })
