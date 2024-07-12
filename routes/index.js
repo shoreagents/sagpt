@@ -256,41 +256,41 @@ router.post('/instagram-image', async (req, res) => {
 
   try {
 
-      console.log(`Generating image using the generated prompt "${prompt}"`)
+    console.log(`Generating image using the generated prompt "${prompt}"`)
 
-      const imageOutput = await replicate.run(
-        `konieshadow/fooocus-api-realistic:${process.env.FOOOCUS_API}`,
-        {
-          input: {
-            prompt: prompt,
-            cn_type1: "ImagePrompt",
-            cn_type2: "ImagePrompt",
-            cn_type3: "ImagePrompt",
-            cn_type4: "ImagePrompt",
-            sharpness: 2,
-            image_seed: 1062324901251685922,
-            uov_method: "Disabled",
-            image_number: 1,
-            guidance_scale: 4,
-            refiner_switch: 0.5,
-            negative_prompt: "unrealistic, saturated, high contrast, big nose, painting, drawing, sketch, cartoon, anime, manga, render, CG, 3d, watermark, signature, label",
-            style_selections: "Fooocus V2,Fooocus Photograph,Fooocus Negative, Fooocus Enhance, Fooocus Sharp",
-            uov_upscale_value: 0,
-            outpaint_selections: "",
-            outpaint_distance_top: 0,
-            performance_selection: "Quality",
-            outpaint_distance_left: 0,
-            aspect_ratios_selection: "1344*768",
-            outpaint_distance_right: 0,
-            outpaint_distance_bottom: 0,
-            inpaint_additional_prompt: ""
-          }
+    const imageOutput = await replicate.run(
+      `konieshadow/fooocus-api-realistic:${process.env.FOOOCUS_API}`,
+      {
+        input: {
+          prompt: prompt,
+          cn_type1: "ImagePrompt",
+          cn_type2: "ImagePrompt",
+          cn_type3: "ImagePrompt",
+          cn_type4: "ImagePrompt",
+          sharpness: 2,
+          image_seed: 1062324901251685922,
+          uov_method: "Disabled",
+          image_number: 1,
+          guidance_scale: 4,
+          refiner_switch: 0.5,
+          negative_prompt: "unrealistic, saturated, high contrast, big nose, painting, drawing, sketch, cartoon, anime, manga, render, CG, 3d, watermark, signature, label",
+          style_selections: "Fooocus V2,Fooocus Photograph,Fooocus Negative, Fooocus Enhance, Fooocus Sharp",
+          uov_upscale_value: 0,
+          outpaint_selections: "",
+          outpaint_distance_top: 0,
+          performance_selection: "Quality",
+          outpaint_distance_left: 0,
+          aspect_ratios_selection: "1344*768",
+          outpaint_distance_right: 0,
+          outpaint_distance_bottom: 0,
+          inpaint_additional_prompt: ""
         }
-      );
+      }
+    );
 
-      output = imageOutput[0];
-      console.log("Image Successfully Generated");
-      console.log("IMAGE OUTPUT LINK: " + output);
+    output = imageOutput[0];
+    console.log("Image Successfully Generated");
+    console.log("IMAGE OUTPUT LINK: " + output);
 
   } catch (error) {
     console.log("An error has occured while generating the image.");
@@ -304,52 +304,49 @@ router.post('/instagram-image', async (req, res) => {
 
 router.post('/access-pinecone', async (req, res) => {
   const question = req.body.input;
-    const userprompt = req.body.prompt;
 
-    var output;
+  const pinecone = new Pinecone({
+    apiKey: process.env.PINECONE_API_KEY,
+    environment: process.env.PINECONE_ENVIRONMENT
+  });
+  const index = pinecone.index('sagpt');
+  const queryEmbedding = await new OpenAIEmbeddings().embedQuery(question);
+  const output = await index.query({
+    topK: 5,
+    vector: queryEmbedding,
+    includeMetadata: true,
+    includeValues: true
+  });
 
-    const pinecone = new Pinecone({
-      apiKey: process.env.PINECONE_API_KEY,
-      environment: process.env.PINECONE_ENVIRONMENT
-    });
-    const index = pinecone.index('sagpt');
-    const queryEmbedding = await new OpenAIEmbeddings().embedQuery(question);
-    const queryResponse = await index.query({
-      topK: 5,
-      vector: queryEmbedding,
-      includeMetadata: true,
-      includeValues: true
-    });
-  
-    if (queryResponse.matches.length) {
-      const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4o" });
-      const chain = loadQAStuffChain(llm);
-  
-      const concatenatedPageContent = queryResponse.matches
-        .map((match) => match.metadata.text)
-        .join("\n\n");
-  
-      console.log('---------------------------------------------------------------');
-  
-      try {
-        const result = await chain.call({
-          input_documents: [new Document({ pageContent: concatenatedPageContent })],
-          question: userprompt
-        });
-  
-        output = result.text;
-        console.log("User Prompt:", userprompt);
-        console.log("Chain Result:", result.text);
-      } catch (error) {
-        console.error("Error in processing chain:", error);
-        output = "An error occurred while processing your request.";
-      }
-    } else {
-      console.log("Since there are no matches, GPT-3 will not be queried.");
-      output = "I'm sorry, there are no matches that are related to the question in our data.";
-    }
-    
-    res.send({ output });
+  // if (queryResponse.matches.length) {
+  //   const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4o" });
+  //   const chain = loadQAStuffChain(llm);
+
+  //   const concatenatedPageContent = queryResponse.matches
+  //     .map((match) => match.metadata.text)
+  //     .join("\n\n");
+
+  //   console.log('---------------------------------------------------------------');
+
+  //   try {
+  //     const result = await chain.call({
+  //       input_documents: [new Document({ pageContent: concatenatedPageContent })],
+  //       question: userprompt
+  //     });
+
+  //     output = result.text;
+  //     console.log("User Prompt:", userprompt);
+  //     console.log("Chain Result:", result.text);
+  //   } catch (error) {
+  //     console.error("Error in processing chain:", error);
+  //     output = "An error occurred while processing your request.";
+  //   }
+  // } else {
+  //   console.log("Since there are no matches, GPT-3 will not be queried.");
+  //   output = "I'm sorry, there are no matches that are related to the question in our data.";
+  // }
+
+  res.send({ output });
 })
 
 // router.post('/instagram-image', async (req, res) => {
