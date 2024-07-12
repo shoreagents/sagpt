@@ -302,6 +302,56 @@ router.post('/instagram-image', async (req, res) => {
   res.send({ output });
 });
 
+router.post('/access-pinecone', async (req, res) => {
+  const question = req.body.input;
+    const userprompt = req.body.prompt;
+
+    var output;
+
+    const pinecone = new Pinecone({
+      apiKey: process.env.PINECONE_API_KEY,
+      environment: process.env.PINECONE_ENVIRONMENT
+    });
+    const index = pinecone.index('sagpt');
+    const queryEmbedding = await new OpenAIEmbeddings().embedQuery(question);
+    const queryResponse = await index.query({
+      topK: 5,
+      vector: queryEmbedding,
+      includeMetadata: true,
+      includeValues: true
+    });
+  
+    if (queryResponse.matches.length) {
+      const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4o" });
+      const chain = loadQAStuffChain(llm);
+  
+      const concatenatedPageContent = queryResponse.matches
+        .map((match) => match.metadata.text)
+        .join("\n\n");
+  
+      console.log('---------------------------------------------------------------');
+  
+      try {
+        const result = await chain.call({
+          input_documents: [new Document({ pageContent: concatenatedPageContent })],
+          question: userprompt
+        });
+  
+        output = result.text;
+        console.log("User Prompt:", userprompt);
+        console.log("Chain Result:", result.text);
+      } catch (error) {
+        console.error("Error in processing chain:", error);
+        output = "An error occurred while processing your request.";
+      }
+    } else {
+      console.log("Since there are no matches, GPT-3 will not be queried.");
+      output = "I'm sorry, there are no matches that are related to the question in our data.";
+    }
+    
+    res.send({ output });
+})
+
 // router.post('/instagram-image', async (req, res) => {
 //   const metaDescription = req.body.metaDescription;
 //   var output;
@@ -1623,8 +1673,6 @@ export const runWithEmbeddings = async (question, perspectiveOutput, toneOutput,
     includeValues: true
   });
 
-  // console.log("Pinecone Query Response:", queryResponse);
-
   if (queryResponse.matches.length) {
     const llm = new OpenAI({ temperature: 0.7, modelName: "gpt-4o" });
     const chain = loadQAStuffChain(llm);
@@ -1633,7 +1681,6 @@ export const runWithEmbeddings = async (question, perspectiveOutput, toneOutput,
       .map((match) => match.metadata.text)
       .join("\n\n");
 
-    // console.log("Concatenated Page Content:", concatenatedPageContent);
     console.log('---------------------------------------------------------------');
 
     try {
