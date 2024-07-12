@@ -305,6 +305,8 @@ router.post('/instagram-image', async (req, res) => {
 router.post('/access-pinecone', async (req, res) => {
   const question = req.body.input;
 
+  var output;
+
   const pinecone = new Pinecone({
     apiKey: process.env.PINECONE_API_KEY,
     environment: process.env.PINECONE_ENVIRONMENT
@@ -328,8 +330,6 @@ router.post('/access-pinecone', async (req, res) => {
 
     console.log('---------------------------------------------------------------');
 
-    
-
     try {
       const prompt = "Summarize the following data clearly and concisely. Highlight the key points, and any significant findings. Ensure the summary is easily understandable for someone without prior knowledge of the data. Avoid adding any unnecessary comments or details beyond the core information."
       
@@ -337,8 +337,6 @@ router.post('/access-pinecone', async (req, res) => {
         input_documents: [new Document({ pageContent: concatenatedPageContent })],
         question: prompt
       });
-
-      
 
       output = result.text;
       console.log("Prompt:", prompt);
