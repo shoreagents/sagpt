@@ -209,9 +209,20 @@ router.get('/', checkAuthenticated, async (req, res) => {
   res.render('index', { authors: authors, targetMarkets: targetMarkets, customerObjectives: customerObjectives, tones: tones, perspectives: perspectives, role: loggeduser.role, firstname: req.user.firstname, lastname: req.user.lastname, username: req.user.username, email: req.user.email, bio: req.user.bio, notice: "none", noticemsg: "none" });
 })
 
-router.get('*', function (req, res) {
-  res.status(404).render('404');
-});
+router.get('/get-zep-jwt', checkAuthenticated, async (req, res) => {
+  var token = process.env.ZEP_JWT_TOKEN;
+  
+  const ZEP_API_URL = "https://zep-v9eu.onrender.com/api/v1/sessions";
+  const zepRequestOptions = {
+    method: "GET",
+    headers: {
+      "Authorization": `Bearer ${token}`
+    }
+  }
+  await fetch(ZEP_API_URL, zepRequestOptions).then(res => res.json()).then(output => {
+    res.send({ output });
+  })
+})
 
 router.delete('/logout', (req, res) => {
   const userName = req.body.username;
@@ -224,6 +235,43 @@ router.delete('/logout', (req, res) => {
     return obj.username !== userName;
   });
   res.redirect('/');
+})
+
+router.post('/clear-messages', async (req, res) => {
+  const sessionID = req.body.sessionID;
+  const zeptoken = process.env.ZEP_JWT_TOKEN;
+  const API_URL = `https://zep-v9eu.onrender.com/api/v1/sessions/${sessionID}/memory`;
+  const requestOptions = {
+    method: "DELETE",
+    headers: {
+      'Authorization': `Bearer ${zeptoken}`,
+    }
+  }
+  await fetch(API_URL, requestOptions).then( () => {
+    const output = "success";
+    res.send({ output })
+  }).catch((error) => {
+    console.log(error);
+    const output = "error";
+    res.send({ output })
+  });
+});
+
+router.post('/display-convo', checkAuthenticated, async (req, res) => {
+  const sessionID = req.body.sessionID;
+  var output;
+  const zeptoken = process.env.ZEP_JWT_TOKEN;
+  const API_URL = `https://zep-v9eu.onrender.com/api/v1/sessions/${sessionID}/messages`;
+  const requestOptions = {
+    method: "GET",
+    headers: {
+      "Authorization": `Bearer ${zeptoken}`
+    }
+  }
+  await fetch(API_URL, requestOptions).then(res => res.json()).then(data => {
+    output = data;
+  })
+  res.send({ output })
 })
 
 router.post('/users', authenticateToken, async (req, res) => {
@@ -332,7 +380,7 @@ router.post('/access-pinecone', async (req, res) => {
 
     try {
       const prompt = "Summarize the following data clearly and concisely. Highlight the key points, and any significant findings. Ensure the summary is easily understandable for someone without prior knowledge of the data. Avoid adding any unnecessary comments or details beyond the core information."
-      
+
       const result = await chain.call({
         input_documents: [new Document({ pageContent: concatenatedPageContent })],
         question: prompt

@@ -35,6 +35,21 @@ sidebarItems.forEach(element => {
 
 $(document).ready(function () {
     $(".item").click(function () {
+        if ($(".ava-lopez-conversations").is("#active")) {
+            if (window.matchMedia('(max-width: 992px)').matches) {
+                $(".container").css("grid-template-columns", "1fr 0");
+            } else {
+                $(".container").css("grid-template-columns", "1fr 5fr 0");
+            }
+            $(".container").css("transition", ".0s");
+        } else {
+            if (window.matchMedia('(max-width: 992px)').matches) {
+                $(".container").css("grid-template-columns", "1fr 1fr");
+            } else {
+                $(".container").css("grid-template-columns", "1fr 2fr 3fr");
+            }
+            $(".container").css("transition", "0s");
+        }
         if ($(".ai-assistant").is("#active")) {
             $(".ai-assistant-container").css("display", "flex");
             $(".input-chat-container").css("display", "flex");
@@ -48,6 +63,7 @@ $(document).ready(function () {
             $(".settings-inner").css("display", "none");
             $(".landing-page-builder-container").css("display", "none");
             $(".social-media-post-container").css("display", "none");
+            $(".ava-lopez-conversations-container").css("display", "none");
         } else if ($(".manual-article-generator").is("#active")) {
             $(".manual-article-generator-container").css("display", "flex");
             $(".ai-assistant-container").css("display", "none");
@@ -60,6 +76,7 @@ $(document).ready(function () {
             $(".settings-inner").css("display", "none");
             $(".landing-page-builder-container").css("display", "none");
             $(".social-media-post-container").css("display", "none");
+            $(".ava-lopez-conversations-container").css("display", "none");
         } else if ($(".instructive-article-generator").is("#active")) {
             $(".instructive-article-generator-container").css("display", "flex");
             $(".manual-article-generator-container").css("display", "none");
@@ -72,6 +89,7 @@ $(document).ready(function () {
             $(".settings-inner").css("display", "none");
             $(".landing-page-builder-container").css("display", "none");
             $(".social-media-post-container").css("display", "none");
+            $(".ava-lopez-conversations-container").css("display", "none");
         } else if ($(".landing-page-builder").is("#active")) {
             $(".landing-page-builder-container").css("display", "flex");
             $(".manual-article-generator-container").css("display", "none");
@@ -84,6 +102,7 @@ $(document).ready(function () {
             $(".settings-item").css("display", "flex");
             $(".settings-inner").css("display", "none");
             $(".social-media-post-container").css("display", "none");
+            $(".ava-lopez-conversations-container").css("display", "none");
         } else if ($(".social-media-post").is("#active")) {
             $(".social-media-post-container").css("display", "flex");
             $(".manual-article-generator-container").css("display", "none");
@@ -96,6 +115,20 @@ $(document).ready(function () {
             $(".settings-item").css("display", "flex");
             $(".settings-inner").css("display", "none");
             $(".landing-page-builder-container").css("display", "none");
+            $(".ava-lopez-conversations-container").css("display", "none");
+        } else if ($(".ava-lopez-conversations").is("#active")) {
+            $(".ava-lopez-conversations-container").css("display", "flex");
+            $(".manual-article-generator-container").css("display", "none");
+            $(".instructive-article-generator-container").css("display", "none");
+            $(".input-chat-container").css("display", "none");
+            $(".ai-assistant-container").css("display", "none");
+            $(".tab-content-settings").css("display", "none");
+            $(".sidebar .item").css("pointer-events", "all");
+            $(this).css("pointer-events", "none");
+            $(".settings-item").css("display", "flex");
+            $(".settings-inner").css("display", "none");
+            $(".landing-page-builder-container").css("display", "none");
+            $(".social-media-post-container").css("display", "none");
         } else if ($(".settings").is("#active")) {
             $(".tab-content-settings").css("display", "grid");
             $(".manual-article-generator-container").css("display", "none");
@@ -108,6 +141,7 @@ $(document).ready(function () {
             $(".settings-inner").css("display", "none");
             $(".landing-page-builder-container").css("display", "none");
             $(".social-media-post-container").css("display", "none");
+            $(".ava-lopez-conversations-container").css("display", "none");
         }
     });
 });

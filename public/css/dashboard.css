@@ -476,7 +476,7 @@ main .separator input {
 @media screen and (max-width: 1200px) {
 
     .container {
-        grid-template-columns: 1fr 4fr 5fr !important;
+        grid-template-columns: 1fr 4fr 5fr;
     }
 
     main {
@@ -534,7 +534,7 @@ main .separator input {
     }
 
     .container {
-        grid-template-columns: 1fr 1fr !important;
+        grid-template-columns: 1fr 1fr;
     }
 
     .article-title,
@@ -639,8 +639,50 @@ main .separator input {
         width: 100%;
     }
 
+    .discussions .discussion{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .desc-contact{
+        display: flex;
+        justify-content: center;
+        width: 100%;
+    }
+
+    .discussions .discussion .name{
+        margin: 0;
+        width: 70%;
+    }
+    
+    .timer{
+        display: flex;
+        justify-content: center;
+        width: 50%;
+        margin: 0;
+        text-align: center;
+    }
+
     #regForm .icon-button {
         right: 12%;
+    }
+
+    .chat-ava .messages-chat .text{
+        margin: 0;
+    }
+
+    .chat-ava .header-chat .icon{
+        margin-left: 10px;
+    }
+
+    .chat-ava .header-chat .name{
+        width: 60%;
+    }
+    
+    .chat-ava .header-chat .right{
+        right: 25px;
     }
 
     .container {

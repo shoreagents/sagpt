@@ -222,52 +222,6 @@ chatInput.addEventListener("keydown", (e) => {
 });
 sendChatBtn.addEventListener("click", handleChat);
 
-/* Tiny WYSIWYG Script */
-
-// tinymce.init({
-//   selector: 'textarea#default',
-//   height: "100%",
-//   plugins: [
-//     'advlist', 'autolink', 'link', 'image', 'lists', 'charmap', 'preview', 'anchor', 'pagebreak',
-//     'searchreplace', 'wordcount', 'visualblocks', 'code', 'fullscreen', 'insertdatetime', 'media',
-//     'table', 'emoticons', 'codesample', 'autosave', 'help', 'image', 'quickbars'
-//   ],
-//   editimage_toolbar: 'rotateleft rotateright | flipv fliph | editimage imageoptions',
-//   toolbar: 'undo redo | styles | bold italic underline | alignleft aligncenter alignright alignjustify |' +
-//     'bullist numlist outdent indent | link image | print preview media fullscreen | ' +
-//     'forecolor backcolor emoticons' + 'restoredraft' + 'link image',
-//   image_title: true,
-//   automatic_uploads: true,
-//   file_picker_types: 'image',
-//   file_picker_callback: (cb, value, meta) => {
-//     const input = document.createElement('input');
-//     input.setAttribute('type', 'file');
-//     input.setAttribute('accept', 'image/*');
-
-//     input.addEventListener('change', (e) => {
-//       const file = e.target.files[0];
-
-//       const reader = new FileReader();
-//       reader.addEventListener('load', () => {
-//         const id = 'blobid' + (new Date()).getTime();
-//         const blobCache = tinymce.activeEditor.editorUpload.blobCache;
-//         const base64 = reader.result.split(',')[1];
-//         const blobInfo = blobCache.create(id, file, base64);
-//         blobCache.add(blobInfo);
-//         cb(blobInfo.blobUri(), { title: file.name });
-//       });
-//       reader.readAsDataURL(file);
-//     });
-
-//     input.click();
-//   },
-//   menu: {
-//     favs: { title: '☰', items: 'code visualaid | searchreplace | emoticons | help' }
-//   },
-//   menubar: 'favs file edit view insert format tools table',
-//   content_style: 'body{ font-family:Montserrat,sans-serif; font-size:16px}'
-// });
-
 /* Hide Menu Button Script */
 
 $('.menu-hide').on('click', function () {
@@ -283,10 +237,15 @@ $('.menu-hide').on('click', function () {
     $('.profile form').css('justify-content', 'right');
     $('.profile form').css('padding', '0');
     $('.profile .material-symbols-rounded').css('padding-right', '30px');
-    $('.container').css('grid-template-columns', '1fr 2fr 3fr');
+    if ($(".ava-lopez-conversations").is("#active")) {
+      $('.container').css('grid-template-columns', '1fr 5fr 0');
+    } else {
+      $('.container').css('grid-template-columns', '1fr 2fr 3fr');
+    }
     $('.menu-expand .material-symbols-outlined').text('chevron_left');
     $('.menu-expand .tooltiptext').text('Minimize Menu');
     $(".menu-expand").removeClass("menu-expand");
+    $(".container").css("transition", "all .2s");
   } else {
     $('.logo a').css('display', 'none');
     $('.sidebar a').css('display', 'none');
@@ -299,10 +258,15 @@ $('.menu-hide').on('click', function () {
     $('.profile form').css('justify-content', 'center');
     $('.profile form').css('padding', '10px');
     $('.profile .material-symbols-rounded').css('padding-right', '0');
-    $('.container').css('grid-template-columns', '0fr 3fr 7fr');
+    if ($(".ava-lopez-conversations").is("#active")) {
+      $('.container').css('grid-template-columns', '0fr 10fr 0');
+    } else {
+      $('.container').css('grid-template-columns', '0fr 3fr 7fr');
+    }
     $('.menu-hide .material-symbols-outlined').text('chevron_right');
     $('.menu-hide .tooltiptext').text('Expand Menu');
     $(".menu-hide").addClass("menu-expand");
+    $(".container").css("transition", "all .2s");
   }
 
 });
@@ -1862,3 +1826,201 @@ $(document).on('click', '.updatepost', function () {
     });
   });
 });
+
+/* Ava Lopez Conversations Script */
+
+var converter = new showdown.Converter();
+
+async function loadConvo() {
+  const jwtRequestOptions = {
+    method: "GET"
+  }
+  await fetch('/get-zep-jwt', jwtRequestOptions).then(res => res.json()).then(data => {
+    data = data.output;
+    data.forEach((user) => {
+      $(".discussions .search").after(`
+        <div class="discussion">
+          <div class="desc-contact">
+            <p class="name">${user.session_id}</p>
+          </div>
+          <div class="timer">${user.created_at}</div>
+        </div>`);
+    })
+  })
+
+  const convoDate = document.getElementsByClassName("timer");
+  function timeSince(convoDate) {
+
+    var seconds = Math.floor((new Date() - convoDate) / 1000);
+
+    var interval = seconds / 31536000;
+
+    if (interval > 2) {
+      return Math.floor(interval) + " years";
+    } else if (interval > 1) {
+      return Math.floor(interval) + " year";
+    }
+    interval = seconds / 2592000;
+    if (interval > 2) {
+      return Math.floor(interval) + " months";
+    } else if (interval > 1) {
+      return Math.floor(interval) + " month";
+    }
+    interval = seconds / 86400;
+    if (interval > 2) {
+      return Math.floor(interval) + " days";
+    } else if (interval > 1) {
+      return Math.floor(interval) + " day";
+    }
+    interval = seconds / 3600;
+    if (interval > 2) {
+      return Math.floor(interval) + " hrs";
+    } else if (interval > 1) {
+      return Math.floor(interval) + " hr";
+    }
+    interval = seconds / 60;
+    if (interval > 2) {
+      return Math.floor(interval) + " mins";
+    } else if (interval > 1) {
+      return Math.floor(interval) + " min";
+    }
+    return Math.floor(seconds) + " secs";
+  }
+
+  for (let i = 0; i < convoDate.length; i++) {
+    convoDate[i].textContent = timeSince(new Date(convoDate[i].innerText));
+  }
+
+  var msgActive = $('.discussions').find('.discussion:first');
+  msgActive.addClass('message-active');
+  var sessionActive = msgActive.find(".desc-contact .name").text()
+  $('.header-chat .name').text(sessionActive);
+
+  const sessionID = msgActive.find(".desc-contact .name").text()
+  $('.header-chat .name').text(sessionID);
+
+  const API_URL = "/display-convo";
+  const requestOptions = {
+    method: "POST",
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      sessionID: sessionID
+    })
+  }
+  fetch(API_URL, requestOptions).then(res => res.json()).then(data => {
+    data = data.output.messages;
+    data.forEach((message) => {
+      const content = converter.makeHtml(message.content);
+      if (message.role == "ai") {
+        $(".messages-chat").append(`
+          <div class="message">
+            <div class="response">
+              <div class="text">${content}</div>
+            </div>
+          </div>`);
+        $(".messages-chat").append(`<p class="response-time time">${message.created_at}</p>`);
+
+      } else {
+        $(".messages-chat").append(`
+          <div class="message">
+            <p class="text">${message.content}</p>
+          </div>`);
+        $(".messages-chat").append(`<p class="time">${message.created_at}</p>`);
+      }
+      const messageTime = document.getElementsByClassName("time");
+      for (let i = 0; i < messageTime.length; i++) {
+        const msgDate = new Date(messageTime[i].innerText);
+        messageTime[i].textContent = msgDate.toLocaleString();
+      }
+    })
+  })
+  $('.discussion').on("click", async function () {
+    $('.discussion').removeClass('message-active');
+    $('.discussion').css('pointer-events', 'none');
+    $(this).addClass('message-active');
+    $('.messages-chat').empty();
+    const sessionID = $(this).find(".desc-contact .name").text()
+    $('.header-chat .name').text(sessionID);
+  
+    const API_URL = "/display-convo";
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        sessionID: sessionID
+      })
+    }
+    await fetch(API_URL, requestOptions).then(res => res.json()).then(data => {
+      data = data.output.messages;
+      data.forEach((message) => {
+        const content = converter.makeHtml(message.content);
+        if (message.role == "ai") {
+          $(".messages-chat").append(`
+            <div class="message">
+              <div class="response">
+                <div class="text">${content}</div>
+              </div>
+            </div>`);
+          $(".messages-chat").append(`<p class="response-time time">${message.created_at}</p>`);
+  
+        } else {
+          $(".messages-chat").append(`
+            <div class="message">
+              <p class="text">${message.content}</p>
+            </div>`);
+          $(".messages-chat").append(`<p class="time">${message.created_at}</p>`);
+        }
+        const messageTime = document.getElementsByClassName("time");
+        for (let i = 0; i < messageTime.length; i++) {
+          const msgDate = new Date(messageTime[i].innerText);
+          messageTime[i].textContent = msgDate.toLocaleString();
+        }
+      })
+    })
+    $('.discussion').css('pointer-events', 'all');
+  });
+}
+loadConvo();
+
+$('.clear-confirm-button').on("click", async function () {
+  const sessionID = $(".header-chat .name").text();
+  $(".clear-confirm-button").css('pointer-events', 'none');
+  const API_URL = `/clear-messages`;
+  const requestOptions = {
+    method: "POST",
+    headers: {
+      'Content-Type': `application/json`,
+    },
+    body: JSON.stringify({
+      sessionID: sessionID
+    })
+  }
+  await fetch(API_URL, requestOptions).then(res => res.json()).then(data => {
+    if (data.output == "success") {
+      $("#server-notice").addClass("success").removeClass("error");
+      $("#server-notice span").text("Session Cleared Successfully.");
+      document.getElementById("server-notice").style.display = "flex";
+      document.getElementById("clearConfirm").style.display = "none";
+      document.getElementById("clearConfirm").style.display = "none";
+      $(".chat-container").css('pointer-events', 'none');
+      $(".chat-settings").css('pointer-events', 'none');
+      $('.discussion').remove();
+      $('.message').remove();
+      $('.time').remove();
+      loadConvo();
+    } else {
+      $("#server-notice").addClass("error").removeClass("success");
+      $("#server-notice span").text("An error has occured.");
+      document.getElementById("server-notice").style.display = "flex";
+      document.getElementById("clearConfirm").style.display = "none";
+    }
+  }).then(() => {
+    $(".clear-confirm-button").css('pointer-events', 'all');
+    $(".chat-settings").css('pointer-events', 'all');
+    $(".chat-container").css('pointer-events', 'all');
+  });
+})

@@ -66,6 +66,10 @@
         <span class="material-symbols-outlined">language</span>
         <a>Social Media Post</a>
       </div>
+      <div class="item ava-lopez-conversations">
+        <span class="material-symbols-outlined">forum</span>
+        <a>Ava Lopez Conversations</a>
+      </div>
       <div class="item settings">
         <span class="material-symbols-outlined">settings</span>
         <a>Settings</a>
@@ -865,7 +869,8 @@
               </div>
             </div>
             <div class="generate-btn-smp">
-              <button type="button" id="nextBtnSmpFb" class="button btn-disabled" onclick="nextPrevSmpFb()">Generate</button>
+              <button type="button" id="nextBtnSmpFb" class="button btn-disabled"
+                onclick="nextPrevSmpFb()">Generate</button>
             </div>
           </div>
           <div class="sm-tab instagram-tab">
@@ -912,7 +917,8 @@
               </div>
             </div>
             <div class="generate-btn-smp">
-              <button type="button" id="nextBtnSmpIg" class="button btn-disabled" onclick="nextPrevSmpIg()">Generate</button>
+              <button type="button" id="nextBtnSmpIg" class="button btn-disabled"
+                onclick="nextPrevSmpIg()">Generate</button>
             </div>
           </div>
           <div class="sm-tab linkedin-tab">
@@ -959,8 +965,52 @@
               </div>
             </div>
             <div class="generate-btn-smp">
-              <button type="button" id="nextBtnSmpLi" class="button btn-disabled" onclick="nextPrevSmp()">Generate</button>
+              <button type="button" id="nextBtnSmpLi" class="button btn-disabled"
+                onclick="nextPrevSmp()">Generate</button>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tabs-section ava-lopez-conversations-container tab-not-1" id="avaLopezConversations">
+        <div class="chat-settings" onclick="document.getElementById('clearConfirm').style.display='flex'"><span class="material-symbols-outlined">ink_eraser</span>Clear</div>
+        <div class="chat-container">
+          <div class="chat-row">
+            <section class="discussions">
+              <div class="search">
+                <div class="searchbar">
+                  <i class="fa fa-search" aria-hidden="true"></i>
+                  <input type="text" placeholder="Search...">
+                </div>
+              </div>
+            </section>
+            <section class="chat-ava">
+              <div class="header-chat">
+                <i class="icon fa fa-user-o" aria-hidden="true"></i>
+                <p class="name"></p>
+              </div>
+              <div class="messages-chat"></div>
+            </section>
+          </div>
+        </div>
+        <div class="clear-confirm-modal" id="clearConfirm">
+          <div class="modal-container">
+            <div class="modal-container-header">
+              <h1 class="modal-container-title">
+                Are you sure you want to clear messages?
+              </h1>
+              <span class="icon-button" onclick="document.getElementById('clearConfirm').style.display='none'">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+                  <path fill="none" d="M0 0h24v24H0z" />
+                  <path fill="currentColor"
+                    d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z" />
+                </svg>
+              </span>
+            </div>
+            <section class="modal-container-body rtf">
+              <span class="clear-confirm-button is-primary">Clear</span>
+              <span class="confirm-no is-primary" onclick="document.getElementById('clearConfirm').style.display='none'">Cancel</span>
+            </section>
           </div>
         </div>
       </div>
