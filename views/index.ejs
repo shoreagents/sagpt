@@ -975,14 +975,16 @@
       <div class="tabs-section ava-lopez-conversations-container tab-not-1" id="avaLopezConversations">
         <div class="chat-settings" onclick="document.getElementById('clearConfirm').style.display='flex'"><span class="material-symbols-outlined">ink_eraser</span>Clear</div>
         <div class="chat-container">
-          <div class="chat-row">
+          <div class="chat-row" id="data-container">
             <section class="discussions">
               <div class="search">
-                <div class="searchbar">
-                  <i class="fa fa-search" aria-hidden="true"></i>
-                  <input type="text" placeholder="Search...">
+                <div class="pagination" id="pagination">
+                  <span id="page-numbers"> </span>
+                  <a id="ava-prev"><</a>
+                  <a id="ava-next">></a>
                 </div>
               </div>
+              
             </section>
             <section class="chat-ava">
               <div class="header-chat">

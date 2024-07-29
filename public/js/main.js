@@ -1943,7 +1943,7 @@ async function loadConvo() {
     $('.messages-chat').empty();
     const sessionID = $(this).find(".desc-contact .name").text()
     $('.header-chat .name').text(sessionID);
-  
+
     const API_URL = "/display-convo";
     const requestOptions = {
       method: "POST",
@@ -1966,7 +1966,7 @@ async function loadConvo() {
               </div>
             </div>`);
           $(".messages-chat").append(`<p class="response-time time">${message.created_at}</p>`);
-  
+
         } else {
           $(".messages-chat").append(`
             <div class="message">
@@ -1984,7 +1984,6 @@ async function loadConvo() {
     $('.discussion').css('pointer-events', 'all');
   });
 }
-loadConvo();
 
 $('.clear-confirm-button').on("click", async function () {
   const sessionID = $(".header-chat .name").text();
@@ -2024,3 +2023,98 @@ $('.clear-confirm-button').on("click", async function () {
     $(".chat-container").css('pointer-events', 'all');
   });
 })
+
+/* Ava Lopez Conversations Pagination Script */
+
+//script.js
+async function avaPagination() {
+  await loadConvo();
+  const cardsPerPage = 9; // Number of cards to show per page 
+  const dataContainer = document.getElementById('data-container');
+  const pagination = document.getElementById('pagination');
+  const prevButton = document.getElementById('ava-prev');
+  const nextButton = document.getElementById('ava-next');
+  const pageNumbers = document.getElementById('page-numbers');
+
+  const cards =
+    Array.from(dataContainer.getElementsByClassName('discussion'));
+
+  // Calculate the total number of pages 
+  const totalPages = Math.ceil(cards.length / cardsPerPage);
+  if (totalPages == 1) {
+    $(".pagination").hide();
+  } else {
+    $(".pagination").show();
+    for (let i = totalPages; i > 0; i--) {
+      $("#ava-prev").after(`<a class="page-link hide" data-page="${i}">${i}</a>`);
+      pageLinks = document.querySelectorAll('.page-link');
+    }
+  }
+
+
+  let currentPage = 1;
+
+  // Function to display cards for a specific page 
+  function displayPage(page) {
+    const startIndex = (page - 1) * cardsPerPage;
+    const endIndex = startIndex + cardsPerPage;
+    cards.forEach((card, index) => {
+      if (index >= startIndex && index < endIndex) {
+        card.style.display = 'flex';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  }
+
+  // Function to update pagination buttons and page numbers 
+  function updatePagination() {
+    pageNumbers.innerHTML =
+      `<span class="pagination-title">Page:</span> <input value="${currentPage} of ${totalPages}"> `;
+    prevButton.disabled = currentPage === 1;
+    nextButton.disabled = currentPage === totalPages;
+    pageLinks.forEach((link) => {
+      const page = parseInt(link.getAttribute('data-page'));
+      link.classList.toggle('ava-active', page === currentPage);
+    });
+  }
+
+  // Event listener for "Previous" button 
+  prevButton.addEventListener('click', () => {
+    if (currentPage > 1) {
+      currentPage--;
+      displayPage(currentPage);
+      updatePagination();
+    }
+  });
+
+  // Event listener for "Next" button 
+  nextButton.addEventListener('click', () => {
+    if (currentPage < totalPages) {
+      currentPage++;
+      displayPage(currentPage);
+      updatePagination();
+    }
+  });
+
+  // Event listener for page number buttons 
+  pageLinks.forEach((link) => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const page = parseInt(link.getAttribute('data-page'));
+      if (page !== currentPage) {
+        currentPage = page;
+        displayPage(currentPage);
+        updatePagination();
+      }
+    });
+  });
+
+  // Initial page load 
+  displayPage(currentPage);
+  updatePagination();
+}
+
+avaPagination();
+
+

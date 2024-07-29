@@ -2588,7 +2588,7 @@ select {
 
 .discussions .discussion {
   width: 100%;
-  height: 90px;
+  height: 87px;
   direction: ltr;
   float: left;
   background-color: #FAFAFA;
@@ -2603,7 +2603,7 @@ select {
   display: flex;
   direction: ltr;
   align-items: center;
-  justify-content: center;
+  justify-content: end;
   background-color: #FAFAFA;
   border-bottom: solid 1px #E0E0E0;
   width: 100%;
@@ -2651,7 +2651,7 @@ select {
 
 .discussions .message-active {
   width: 98.5%;
-  height: 90px;
+  height: 87px;
   float: left;
   background-color: #FFF;
   border-bottom: solid 1px #E0E0E0;
@@ -2863,6 +2863,52 @@ select {
 
 .ava-lopez-conversations-container .modal-container-body {
   gap: 10px;
+}
+
+/* Ava Lopez Conversations Pagination Style */
+
+.pagination {
+  text-align: center;
+  margin-top: 1rem;
+  margin-right: 10px;
+}
+
+.pagination-title {
+  position: absolute;
+  margin-top: 8px;
+  margin-left: 19px;
+  color: #7eac0b;
+  font-size: 14px;
+}
+
+.pagination a,
+.pagination input {
+  color: #7eac0b;
+  padding: 8px 16px;
+  text-decoration: none;
+  border: 1px solid #7eac0b;
+  margin: 0 5px;
+  border-radius: 4px;
+}
+
+.pagination input {
+  width: 115px;
+  text-align: right;
+}
+
+.pagination a:hover {
+  background-color: #7eac0b;
+  color: white;
+}
+
+.pagination .ava-active {
+  background-color: #7eac0b;
+  color: white;
+}
+
+#page-numbers {
+  margin-top: 20px;
+  font-size: 16px;
 }
 
 /* Responsive style */
