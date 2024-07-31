@@ -979,7 +979,7 @@
             <section class="discussions">
               <div class="search">
                 <div class="pagination" id="pagination">
-                  <span id="page-numbers"> </span>
+                  <span id="page-numbers"><span class="pagination-title">Page:</span> <input type="number" pattern="/^-?\d+\.?\d*$/" onKeyPress="if(this.value.length==3) return false;" id="currentPage"/> <span id="totalPages"></span></span>
                   <a id="ava-prev"><</a>
                   <a id="ava-next">></a>
                 </div>

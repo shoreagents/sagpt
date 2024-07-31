@@ -2031,10 +2031,11 @@ async function avaPagination() {
   await loadConvo();
   const cardsPerPage = 9; // Number of cards to show per page 
   const dataContainer = document.getElementById('data-container');
-  const pagination = document.getElementById('pagination');
   const prevButton = document.getElementById('ava-prev');
   const nextButton = document.getElementById('ava-next');
   const pageNumbers = document.getElementById('page-numbers');
+  const pageInput = document.getElementById('currentPage');
+  let pageLinks;
 
   const cards =
     Array.from(dataContainer.getElementsByClassName('discussion'));
@@ -2050,7 +2051,6 @@ async function avaPagination() {
       pageLinks = document.querySelectorAll('.page-link');
     }
   }
-
 
   let currentPage = 1;
 
@@ -2068,14 +2068,20 @@ async function avaPagination() {
   }
 
   // Function to update pagination buttons and page numbers 
-  function updatePagination() {
-    pageNumbers.innerHTML =
-      `<span class="pagination-title">Page:</span> <input value="${currentPage} of ${totalPages}"> `;
-    prevButton.disabled = currentPage === 1;
-    nextButton.disabled = currentPage === totalPages;
+  function updatePagination(currPage) {
+    // pageNumbers.innerHTML =
+    //   `<span class="pagination-title">Page:</span> <input type="number" pattern="/^-?\d+\.?\d*$/" onKeyPress="if(this.value.length==3) return false;" id="currentPage" min="1" max="${totalPages}" value="${currPage}"/> of ${totalPages}`;
+    $("#currentPage").attr({
+      "max" : totalPages,        // substitute your own
+      "min" : 1          // values (or variables) here
+   });
+   $("#currentPage").val(currPage);
+   $("#totalPages").text("of " + totalPages);
+    prevButton.disabled = currPage === 1;
+    nextButton.disabled = currPage === totalPages;
     pageLinks.forEach((link) => {
       const page = parseInt(link.getAttribute('data-page'));
-      link.classList.toggle('ava-active', page === currentPage);
+      link.classList.toggle('ava-active', currPage === page);
     });
   }
 
@@ -2084,7 +2090,7 @@ async function avaPagination() {
     if (currentPage > 1) {
       currentPage--;
       displayPage(currentPage);
-      updatePagination();
+      updatePagination(currentPage);
     }
   });
 
@@ -2093,28 +2099,26 @@ async function avaPagination() {
     if (currentPage < totalPages) {
       currentPage++;
       displayPage(currentPage);
-      updatePagination();
+      updatePagination(currentPage);
     }
-  });
-
-  // Event listener for page number buttons 
-  pageLinks.forEach((link) => {
-    link.addEventListener('click', (e) => {
-      e.preventDefault();
-      const page = parseInt(link.getAttribute('data-page'));
-      if (page !== currentPage) {
-        currentPage = page;
-        displayPage(currentPage);
-        updatePagination();
-      }
-    });
   });
 
   // Initial page load 
   displayPage(currentPage);
-  updatePagination();
+  updatePagination(currentPage);
+
+  
+  pageInput.addEventListener('keypress', (e) => {
+    if (e.code == "Enter") {
+      currentPage = e.target.value;
+      console.log(currentPage);
+      displayPage(currentPage);
+      updatePagination(currentPage);
+    }
+  });
 }
 
 avaPagination();
+
 
 

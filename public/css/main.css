@@ -2871,6 +2871,7 @@ select {
   text-align: center;
   margin-top: 1rem;
   margin-right: 10px;
+  color: #303030;
 }
 
 .pagination-title {
@@ -2892,8 +2893,10 @@ select {
 }
 
 .pagination input {
-  width: 115px;
+  width: 95px;
   text-align: right;
+  outline: none;
+  padding: 8px 5px;
 }
 
 .pagination a:hover {
@@ -2908,7 +2911,7 @@ select {
 
 #page-numbers {
   margin-top: 20px;
-  font-size: 16px;
+  font-size: 14px;
 }
 
 /* Responsive style */
