@@ -2109,7 +2109,6 @@ async function avaPagination() {
   pageInput.addEventListener('keypress', (e) => {
     if (e.code == "Enter") {
       currentPage = e.target.value;
-      console.log(currentPage);
       displayPage(currentPage);
       updatePagination(currentPage);
     }
