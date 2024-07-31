@@ -676,10 +676,6 @@ main .separator input {
     .chat-ava .header-chat .icon{
         margin-left: 10px;
     }
-
-    .chat-ava .header-chat .name{
-        width: 60%;
-    }
     
     .chat-ava .header-chat .right{
         right: 25px;

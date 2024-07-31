@@ -2069,11 +2069,9 @@ async function avaPagination() {
 
   // Function to update pagination buttons and page numbers 
   function updatePagination(currPage) {
-    // pageNumbers.innerHTML =
-    //   `<span class="pagination-title">Page:</span> <input type="number" pattern="/^-?\d+\.?\d*$/" onKeyPress="if(this.value.length==3) return false;" id="currentPage" min="1" max="${totalPages}" value="${currPage}"/> of ${totalPages}`;
     $("#currentPage").attr({
-      "max" : totalPages,        // substitute your own
-      "min" : 1          // values (or variables) here
+      "max" : totalPages,
+      "min" : 1
    });
    $("#currentPage").val(currPage);
    $("#totalPages").text("of " + totalPages);
@@ -2120,5 +2118,12 @@ async function avaPagination() {
 
 avaPagination();
 
+$( ".discussion-close" ).on( "click", function() {
+  $('.discussions').css('width','0');
+} );
+
+$( ".discussion-open" ).on( "click", function() {
+  $('.discussions').css('width','65%');
+} );
 
 

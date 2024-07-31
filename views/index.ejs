@@ -978,6 +978,9 @@
           <div class="chat-row" id="data-container">
             <section class="discussions">
               <div class="search">
+                <button class="menu-btn discussion-close">
+                  <span class="material-symbols-outlined">chevron_left</span>
+                </button>
                 <div class="pagination" id="pagination">
                   <span id="page-numbers"><span class="pagination-title">Page:</span> <input type="number" pattern="/^-?\d+\.?\d*$/" onKeyPress="if(this.value.length==3) return false;" id="currentPage"/> <span id="totalPages"></span></span>
                   <a id="ava-prev"><</a>
@@ -988,7 +991,9 @@
             </section>
             <section class="chat-ava">
               <div class="header-chat">
-                <i class="icon fa fa-user-o" aria-hidden="true"></i>
+                <button class="menu-btn discussion-open">
+                  <span class="material-symbols-outlined">chevron_right</span>
+                </button>
                 <p class="name"></p>
               </div>
               <div class="messages-chat"></div>
