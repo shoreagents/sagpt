@@ -1692,7 +1692,7 @@ export const generateHeadingImage = async (headings, loopNum) => {
       }
     );
 
-    const imageKey = "image" + num;
+    const imageKey = headingTitle;
 
     output = {
       imageKey: imageKey,
