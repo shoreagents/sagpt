@@ -2720,6 +2720,7 @@ select {
   font-family: 'Montserrat', sans-serif;
   font-size: 13pt;
   color: #515151;
+  margin-left: 30px;
 }
 
 .chat-ava .header-chat .right {

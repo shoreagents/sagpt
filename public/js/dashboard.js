@@ -35,18 +35,31 @@ sidebarItems.forEach(element => {
 
 $(document).ready(function () {
     $(".item").click(function () {
+        if ($(".menu-hide").hasClass("menu-expand")) {
+            if ($(".ava-lopez-conversations").is("#active")) {
+                $('.container').css('grid-template-columns', '0fr 10fr 0');
+                console.log("1");
+            } else {
+                $('.container').css('grid-template-columns', '0fr 3fr 7fr');
+                console.log("2");
+            }
+        } else {
+            if ($(".ava-lopez-conversations").is("#active")) {
+                $('.container').css('grid-template-columns', '1fr 5fr 0');
+                console.log("3");
+            } else {
+                $('.container').css('grid-template-columns', '1fr 2fr 3fr');
+                console.log("4");
+            }
+        }
         if ($(".ava-lopez-conversations").is("#active")) {
             if (window.matchMedia('(max-width: 992px)').matches) {
                 $(".container").css("grid-template-columns", "1fr 0");
-            } else {
-                $(".container").css("grid-template-columns", "1fr 5fr 0");
             }
             $(".container").css("transition", ".0s");
         } else {
             if (window.matchMedia('(max-width: 992px)').matches) {
                 $(".container").css("grid-template-columns", "1fr 1fr");
-            } else {
-                $(".container").css("grid-template-columns", "1fr 2fr 3fr");
             }
             $(".container").css("transition", "0s");
         }
