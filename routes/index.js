@@ -1021,7 +1021,7 @@ router.post('/', async (req, res) => {
       console.log("//////////////////////////////////// OUTPUT /////////////////////////////////////");
       console.log("/////////////////////////////////////////////////////////////////////////////////");
 
-      const articleImages = imageLinks.reduce((acc, cur) => ({ ...acc, [cur.imageKey]: cur.imageLink }), {})
+      const articleImages = imageLinks.reduce((acc, cur) => ({ ...acc, [cur.imageKey]: { "headingTitle": cur.headingTitle, [cur.imageKey]: cur.imageLink }}), {})
 
       output = {
         content,
@@ -1696,7 +1696,8 @@ export const generateHeadingImage = async (headings, loopNum) => {
 
     output = {
       imageKey: imageKey,
-      imageLink: imageOutput[0]
+      imageLink: imageOutput[0],
+      headingTitle: headingTitle
     }
 
   }
